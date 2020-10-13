@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { login,getUser } from '../../utils/UserFunctions'
 import jwt_decode from 'jwt-decode'
-import { addContact } from '../../redux/actions'
-import { connect } from "react-redux";
+// import { addContact } from '../../redux/actions'
+// import { connect } from "react-redux";
 
 
 class Login extends Component {
@@ -24,7 +24,7 @@ class Login extends Component {
   }
   onSubmit(e) {
     
-    const { contacts, addNewContact } = this.props;
+    // const { contacts, addNewContact } = this.props;
     e.preventDefault()
 
     const user = {
@@ -43,8 +43,8 @@ class Login extends Component {
             name: res.data.name
           })
         })
-        addNewContact({nama:this.state.name,token:this.state.token})
-        console.log(this.props)
+        // addNewContact({nama:this.state.name,token:this.state.token})
+        console.log(getUser.data)
         // this.setState({token:getUser.data.name})
         this.props.history.push(`/voting`)
       }
@@ -52,15 +52,15 @@ class Login extends Component {
   }
 
     componentDidMount() {
-      // const token = localStorage.getItem("usertoken")
-      // if(token!==null){
-      //   this.props.history.push(`/voting`)
-      // }
-      const { contacts, addNewContact } = this.props;
-      if(contacts.token!=null){
+      const token = localStorage.getItem("usertoken")
+      if(token!==null){
         this.props.history.push(`/voting`)
-        console.log(contacts)
       }
+      // const { contacts, addNewContact } = this.props;
+      // if(contacts.token!=null){
+      //   this.props.history.push(`/voting`)
+      //   console.log(contacts)
+      // }
   }
 
   render() {
@@ -110,15 +110,16 @@ class Login extends Component {
 
 // Mengambil state dari store dan mempassing nya
 // kedalam component App sebagai props
-const mapStateToProps = ({ contacts }) => ({
-  contacts
-});
+// const mapStateToProps = ({ contacts }) => ({
+//   contacts
+// });
 
 // Membuat fungsional yang membutuhkan fungsi dispatch
-const mapDispatchToProps = dispatch => ({
-  addNewContact: contact => {
-    dispatch(addContact(contact));
-  }
-});
+// const mapDispatchToProps = dispatch => ({
+//   addNewContact: contact => {
+//     dispatch(addContact(contact));
+//   }
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+// export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default Login

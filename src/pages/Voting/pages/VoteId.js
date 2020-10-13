@@ -1,6 +1,6 @@
 import React,{Component} from 'react'
-import { URL_API } from "../../../utils/api";
-import axios from 'axios'
+import api from '../../../api'
+import {setHeader} from '../../../Helpers/Auth'
 // import { Sugar } from 'react-preloaders';
 
 export default class ListAll extends Component{
@@ -17,7 +17,7 @@ export default class ListAll extends Component{
 
     var { vote } = this.state.data;
     console.log(vote[index]);
-    axios.post(URL_API + "sendvote", vote[index]).then((res) => {
+    api.post("sendvote", vote[index],setHeader()).then((res) => {
       window.location.reload(false);
     });
   };
@@ -44,7 +44,7 @@ export default class ListAll extends Component{
      * Fetch API dan menggunakan Await untuk Menunggu
      * sampai Fetch API resolve atau mendapatkan hasil
      */
-    const urlFetch = await fetch(URL_API+"get/"+id) 
+    const urlFetch = await api.get("get/"+id,setHeader()) 
     
     console.log("execute: if urlFetch.status === 200 && 'json' in urlFetch")
     console.log("Jika True, maka setState data dengan nilai await urlFetch.json()")
@@ -54,10 +54,10 @@ export default class ListAll extends Component{
      * urlFetch maka setState untuk data menggunakan setStateAsync 
      * dengan nilai await urlFetch.json() 
      */
-    if ( urlFetch.status === 200 && 'json' in urlFetch ){
+    if ( urlFetch.status === 200 ){
         console.log("Dan hasilnya adalah true maka setState dilakukan")
         this.setStateAsync({
-            data: await urlFetch.json()
+            data: await urlFetch.data
         }) 
     }
   }

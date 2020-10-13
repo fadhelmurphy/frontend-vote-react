@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { URL_API } from "../../../utils/api";
-import axios from "axios";
 import Add from "../../../component/Add";
-// import { logout } from "../../../utils/UserFunctions";
-import { connect } from "react-redux";
-import { removeContact } from "../../../redux/actions";
+import { logout } from "../../../utils/UserFunctions";
+import api from '../../../api'
+// import { connect } from "react-redux";
+// import { removeContact } from "../../../redux/actions";
 // import { Sugar } from 'react-preloaders';
+import {setHeader} from '../../../Helpers/Auth'
 
 class ListAll extends Component {
   constructor(props) {
@@ -22,14 +22,14 @@ class ListAll extends Component {
 
     var { Vote } = this.state;
     console.log(Vote);
-    axios.post(URL_API + "update", { Vote }).then((res) => {
+    api.post( "update", { Vote },setHeader()).then((res) => {
       window.location.reload(false);
     });
   };
 
   handleDelete = () => {
     var { Vote } = this.state;
-    axios.get(URL_API + "delete/" + Vote[0].id_vote).then((res) => {
+    api.get( "delete/" + Vote[0].id_vote,setHeader()).then((res) => {
       window.location.reload(false);
     });
   };
@@ -71,12 +71,7 @@ class ListAll extends Component {
   };
   _getVote = async (e) => {
     var id = e.target.attributes.getNamedItem("data-id").value;
-    const configaxios = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const response = await axios.get(URL_API + "get/" + id, configaxios);
+    const response = await api.get( "get/" + id, setHeader());
     const list = response.data.vote.map((el) => {
       el["id_vote"] = id;
       el["action"] = "ubah";
@@ -87,12 +82,8 @@ class ListAll extends Component {
   };
 
   _getList = async () => {
-    const configaxios = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const response = await axios.get(URL_API, configaxios);
+    console.log(setHeader())
+    const response = await api.get('', setHeader());
     this.setState({
       AllData: response.data.votes,
       isLoading: false,
@@ -103,7 +94,7 @@ class ListAll extends Component {
   }
   render() {
     const { AllData, Vote } = this.state;
-    const {contacts,removeExistingContact} = this.props
+    // const {contacts,removeExistingContact} = this.props
     return (
       <>
       {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}
@@ -118,7 +109,7 @@ class ListAll extends Component {
                 <li class="list-group-item">
                   <i class="fa fa-user-circle"></i> My Profile
                 </li>
-                <a href="#" class="list-group-item" onClick={()=>removeExistingContact(contacts.nama)} style={{ color: "#212529" }}>
+                <a href="#" class="list-group-item" onClick={()=>logout()} style={{ color: "#212529" }}>
                   <i class="fa fa-sign-out-alt"></i> Logout
                 </a>
               </ul>
@@ -128,7 +119,8 @@ class ListAll extends Component {
                 <div class="card-body">
                   <label>DASBOARD</label>
                   <hr />
-                  Selamat Datang {contacts.nama}
+                  Selamat Datang 
+                  {/* {contacts.nama} */}
                 </div>
               </div>
               <div class="card-body px-0">
@@ -296,17 +288,18 @@ class ListAll extends Component {
 }
 // Mengambil state dari store dan mempassing nya
 // kedalam component App sebagai props
-const mapStateToProps = ({ contacts }) => ({
-  contacts
-});
+// const mapStateToProps = ({ contacts }) => ({
+//   contacts
+// });
 
 // Membuat fungsional yang membutuhkan fungsi dispatch
-const mapDispatchToProps = dispatch => ({
-  removeExistingContact: contact => {
-    dispatch(removeContact(contact));
+// const mapDispatchToProps = dispatch => ({
+//   removeExistingContact: contact => {
+//     dispatch(removeContact(contact));
     
-    window.location.replace('/login')
-  }
-});
+//     window.location.replace('/login')
+//   }
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListAll);
+// export default connect(mapStateToProps, mapDispatchToProps)(ListAll);
+export default ListAll

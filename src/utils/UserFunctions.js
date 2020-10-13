@@ -1,9 +1,10 @@
 import React from 'react'
-import axios from 'axios'
-import { URL_API } from "./api";
+import api from '../api'
+// import api from 'api'
+// import { URL_API } from "./api";
 
 export const register = newUser => {
-  return axios
+  return api
     .post('users/register', {
       first_name: newUser.first_name,
       last_name: newUser.last_name,
@@ -16,13 +17,13 @@ export const register = newUser => {
 }
 
 export const login = user => {
-  return axios
-    .post(URL_API+'login', {
+  return api
+    .post('login', {
       email: user.email,
       password: user.password
     })
     .then(res => {
-      // localStorage.setItem('usertoken', res.data.token)
+      localStorage.setItem('usertoken', res.data.token)
       return res.data
     })
     .catch(err => {
@@ -36,8 +37,8 @@ export const logout = () => {
 }
 
 export const getUser = id => {
-  return axios
-    .get(URL_API+`getuser/${id}`)
+  return api
+    .get(`getuser/${id}`)
     .then(response => {
       return response
     })

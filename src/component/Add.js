@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { URL_API } from "../utils/api";
-import axios from 'axios'
+import api from '../api'
+import {setHeader} from '../Helpers/Auth'
 function Add() {
   const [inputList, setInputList] = useState([{votename:"",data:[{ kandidat: "" }]}]);
 
@@ -34,7 +34,7 @@ function Add() {
     event.preventDefault();
     const list = inputList[0]
     console.log(list);
-    axios.post(URL_API+'add', list).then((res) => {
+    api.post('add', list,setHeader()).then((res) => {
       window.location.reload(false);
     });
   };
@@ -54,7 +54,7 @@ function Add() {
             <div class="modal-body">
                 
               <div class="form-group">
-    <label for="exampleInputEmail1">Judul vote : </label>
+    <label for="exampleInputEmail1">Nama Vote : </label>
     <input type="text" class="form-control" 
               name="votename"
 			  placeholder="judul vote"
@@ -66,7 +66,7 @@ function Add() {
           <div className="box">
             
             <div class="form-group">
-        <label for="exampleInputEmail1">Kandidat {i+1} : </label>
+        <label for="exampleInputEmail1">Opsi {i+1} : </label>
     <input type="text" class="form-control" aria-describedby="emailHelp" 
               name="kandidat"
 			  placeholder="Masukkan kandidat"
