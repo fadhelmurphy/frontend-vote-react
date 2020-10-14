@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Add from "../../../component/Add";
-import { logout } from "../../../utils/UserFunctions";
+import { logout,getUser } from "../../../utils/UserFunctions";
 import api from '../../../api'
 // import { connect } from "react-redux";
 // import { removeContact } from "../../../redux/actions";
@@ -14,6 +14,7 @@ class ListAll extends Component {
       AllData: [],
       Vote: null,
       isLoading: true,
+      name:null
     };
   }
 
@@ -89,11 +90,21 @@ class ListAll extends Component {
       isLoading: false,
     });
   };
+  _getUser = async () => {
+    await getUser()
+    .then(res => {
+      this.setState({
+        name: res.data.name
+      })
+    })
+  }
   componentDidMount() {
     this._getList();
+    this._getUser()
   }
   render() {
-    const { AllData, Vote } = this.state;
+    const { AllData, Vote,name } = this.state;
+    console.log(name)
     // const {contacts,removeExistingContact} = this.props
     return (
       <>
@@ -119,8 +130,7 @@ class ListAll extends Component {
                 <div class="card-body">
                   <label>DASBOARD</label>
                   <hr />
-                  Selamat Datang 
-                  {/* {contacts.nama} */}
+                  Selamat Datang {name}
                 </div>
               </div>
               <div class="card-body px-0">

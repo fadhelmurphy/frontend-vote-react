@@ -1,5 +1,6 @@
 import React from 'react'
 import api from '../api'
+import {setHeader} from '../Helpers/Auth'
 // import api from 'api'
 // import { URL_API } from "./api";
 
@@ -36,9 +37,9 @@ export const logout = () => {
   window.location.replace('/login')
 }
 
-export const getUser = id => {
+export const getUser = () => {
   return api
-    .get(`getuser/${id}`)
+    .get(`getuser`,setHeader())
     .then(response => {
       return response
     })

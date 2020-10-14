@@ -36,15 +36,14 @@ class Login extends Component {
     .then(async(res) => {
       if (res) {
         await this.setState({token:res.token})
-        const decoded = jwt_decode(this.state.token)
-        await getUser(decoded.uid)
+        await getUser()
         .then(res => {
           this.setState({
             name: res.data.name
           })
         })
         // addNewContact({nama:this.state.name,token:this.state.token})
-        console.log(getUser.data)
+        console.log(this.state.name)
         // this.setState({token:getUser.data.name})
         this.props.history.push(`/voting`)
       }
