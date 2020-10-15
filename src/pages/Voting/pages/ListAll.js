@@ -1,20 +1,21 @@
 import React, { Component } from "react";
 import Add from "../../../component/Add";
-import { logout,getUser } from "../../../utils/UserFunctions";
-import api from '../../../api'
+import { logout, getUser } from "../../../utils/UserFunctions";
+import api from "../../../api";
 // import { connect } from "react-redux";
 // import { removeContact } from "../../../redux/actions";
 // import { Sugar } from 'react-preloaders';
-import {setHeader} from '../../../Helpers/Auth'
+import { setHeader } from "../../../Helpers/Auth";
 
 class ListAll extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       AllData: [],
       Vote: null,
       isLoading: true,
-      name:null
+      name: null,
+      isSelected:false,
     };
   }
 
@@ -23,14 +24,14 @@ class ListAll extends Component {
 
     var { Vote } = this.state;
     console.log(Vote);
-    api.post( "update", { Vote },setHeader()).then((res) => {
+    api.post("update", { Vote }, setHeader()).then((res) => {
       window.location.reload(false);
     });
   };
 
   handleDelete = () => {
     var { Vote } = this.state;
-    api.get( "delete/" + Vote[0].id_vote,setHeader()).then((res) => {
+    api.get("delete/" + Vote[0].id_vote, setHeader()).then((res) => {
       window.location.reload(false);
     });
   };
@@ -71,8 +72,8 @@ class ListAll extends Component {
     this.setState({ Vote: list });
   };
   _getVote = async (e) => {
-    var id = e.target.attributes.getNamedItem("data-id").value;
-    const response = await api.get( "get/" + id, setHeader());
+    var id = e.currentTarget.attributes.getNamedItem("data-id").value;
+    const response = await api.get("get/" + id, setHeader());
     const list = response.data.vote.map((el) => {
       el["id_vote"] = id;
       el["action"] = "ubah";
@@ -83,32 +84,30 @@ class ListAll extends Component {
   };
 
   _getList = async () => {
-    console.log(setHeader())
-    const response = await api.get('', setHeader());
+    console.log(setHeader());
+    const response = await api.get("", setHeader());
     this.setState({
       AllData: response.data.votes,
       isLoading: false,
     });
   };
   _getUser = async () => {
-    await getUser()
-    .then(res => {
+    await getUser().then((res) => {
       this.setState({
-        name: res.data.name
-      })
-    })
-  }
+        name: res.data.name,
+      });
+    });
+  };
   componentDidMount() {
     this._getList();
-    this._getUser()
+    this._getUser();
   }
   render() {
-    const { AllData, Vote,name } = this.state;
-    console.log(name)
+    const { AllData, Vote, name,isSelected } = this.state;
     // const {contacts,removeExistingContact} = this.props
     return (
       <>
-      {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}
+        {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}
         <div className="container-fluid my-5">
           <div class="row">
             <div class="col-md-3">
@@ -120,7 +119,12 @@ class ListAll extends Component {
                 <li class="list-group-item">
                   <i class="fa fa-user-circle"></i> My Profile
                 </li>
-                <a href="#" class="list-group-item" onClick={()=>logout()} style={{ color: "#212529" }}>
+                <a
+                  href="#"
+                  class="list-group-item"
+                  onClick={() => logout()}
+                  style={{ color: "#212529" }}
+                >
                   <i class="fa fa-sign-out-alt"></i> Logout
                 </a>
               </ul>
@@ -134,39 +138,59 @@ class ListAll extends Component {
                 </div>
               </div>
               <div class="card-body px-0">
-                <a
-                  href="#"
-                  type="button"
-                  class="btn btn-primary"
-                  data-toggle="modal"
-                  data-target="#addModal"
-                >
-                  Add
-                </a>
-                <Add />
-              </div>
-              {AllData && AllData.map((el) => {
-                return (
-                  <>
-                    <div
+                <div className="row justify-content-between">
+                  <div className="col-1 text-center">
+                    <a
                       href="#"
-                      class="list-group list-group-horizontal list-group-item-action mb-3"
+                      type="button"
+                      class="btn btn-primary"
+                      data-toggle="modal"
+                      data-target="#addModal"
                     >
-                      <a
-                        href="#"
-                        onClick={(e) => this._getVote(e)}
-                        class="list-group-item list-group-item-action"
-                        data-id={el.id_vote}
-                        data-name={el.name}
-                        data-toggle="modal"
-                        data-target="#my-modal"
-                      >
-                        {el.name}
-                      </a>
-                    </div>
-                  </>
-                );
-              })}
+                      Add
+                    </a>
+                    <Add />
+                  </div>
+                  <div className="col-1 text-center">
+                    <a href="#" type="button" class="btn btn-secondary" onClick={async()=>{
+                      await this.setState({isSelected:!this.state.isSelected})
+                    }}>
+                      Select
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {AllData &&
+                AllData.map((el) => {
+                  return (
+                    <>
+                      <div className="row mb-3">
+                        <div className="col">
+                          <div class="list-group">
+                            <a
+                              href="#"
+                              class="list-group-item justify-content-between"
+                              onClick={(e) => {
+                                !isSelected?this._getVote(e)
+                              :
+                              console.log(e.target.children)
+                              }
+                              }
+                              data-id={el.id_vote}
+                              data-name={el.name}
+                              data-toggle={!isSelected && "modal"}
+                              data-target={!isSelected && "#my-modal"}
+                            >
+                            {isSelected && 
+                                <input className="mr-5" type="checkbox" />}
+                              {el.name}
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })}
               <div
                 class="modal fade"
                 id="my-modal"
@@ -205,60 +229,59 @@ class ListAll extends Component {
                             id="recipient-title"
                           />
                         </div>
-                        {Vote && Vote.map((element, i) => {
-                              return (
-                                <>
-                                  {element.action !== "hapus" ? (
-                                    <>
-                                      <div class="form-group">
-                                        <label
-                                          for="recipient-name"
-                                          class="col-form-label"
+                        {Vote &&
+                          Vote.map((element, i) => {
+                            return (
+                              <>
+                                {element.action !== "hapus" ? (
+                                  <>
+                                    <div class="form-group">
+                                      <label
+                                        for="recipient-name"
+                                        class="col-form-label"
+                                      >
+                                        Opsi:
+                                      </label>
+                                      <input
+                                        type="text"
+                                        name="kandidat"
+                                        class="form-control"
+                                        onChange={(e) =>
+                                          this.handleCandidateChange(e, i)
+                                        }
+                                        value={element.kandidat}
+                                        id="recipient-title"
+                                      />
+                                    </div>
+                                    <div className="form-group">
+                                      {Vote.length - 1 === i && (
+                                        <button
+                                          type="button"
+                                          class="btn btn-primary mr-3"
+                                          onClick={() => this.handleAddClick(i)}
                                         >
-                                          Opsi:
-                                        </label>
-                                        <input
-                                          type="text"
-                                          name="kandidat"
-                                          class="form-control"
-                                          onChange={(e) =>
-                                            this.handleCandidateChange(e, i)
+                                          Add
+                                        </button>
+                                      )}
+                                      {Vote.length !== 1 && (
+                                        <button
+                                          type="button"
+                                          class="btn btn-danger mr-3"
+                                          onClick={() =>
+                                            this.handleRemoveClick(i)
                                           }
-                                          value={element.kandidat}
-                                          id="recipient-title"
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        {Vote.length - 1 === i && (
-                                          <button
-                                            type="button"
-                                            class="btn btn-primary mr-3"
-                                            onClick={() =>
-                                              this.handleAddClick(i)
-                                            }
-                                          >
-                                            Add
-                                          </button>
-                                        )}
-                                        {Vote.length !== 1 && (
-                                          <button
-                                            type="button"
-                                            class="btn btn-danger mr-3"
-                                            onClick={() =>
-                                              this.handleRemoveClick(i)
-                                            }
-                                          >
-                                            Remove
-                                          </button>
-                                        )}
-                                      </div>
-                                    </>
-                                  ) : (
-                                    ""
-                                  )}
-                                </>
-                              );
-                            })}
+                                        >
+                                          Remove
+                                        </button>
+                                      )}
+                                    </div>
+                                  </>
+                                ) : (
+                                  ""
+                                )}
+                              </>
+                            );
+                          })}
                       </div>
                       <div class="modal-footer">
                         <button
@@ -304,10 +327,10 @@ class ListAll extends Component {
 // const mapDispatchToProps = dispatch => ({
 //   removeExistingContact: contact => {
 //     dispatch(removeContact(contact));
-    
+
 //     window.location.replace('/login')
 //   }
 // });
 
 // export default connect(mapStateToProps, mapDispatchToProps)(ListAll);
-export default ListAll
+export default ListAll;
