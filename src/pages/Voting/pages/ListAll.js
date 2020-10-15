@@ -205,8 +205,7 @@ class ListAll extends Component {
                             id="recipient-title"
                           />
                         </div>
-                        {Vote !== null
-                          ? Vote.map((element, i) => {
+                        {Vote && Vote.map((element, i) => {
                               return (
                                 <>
                                   {element.action !== "hapus" ? (
@@ -259,8 +258,7 @@ class ListAll extends Component {
                                   )}
                                 </>
                               );
-                            })
-                          : ""}
+                            })}
                       </div>
                       <div class="modal-footer">
                         <button

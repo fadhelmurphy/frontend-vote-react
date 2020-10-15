@@ -1,2 +1,3 @@
 [1013/001448.321:ERROR:filesystem_win.cc(116)] GetFileAttributes C:\Users\asus\AppData\Local\Microsoft\Edge\User Data\Crashpad\reports\d3f4eb74-aceb-419e-848f-96908bae6e08.dmp: The system cannot find the file specified. (0x2)
 [1013/001448.326:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1014/170521.816:ERROR:settings.cc(430)] Settings version is not 5
