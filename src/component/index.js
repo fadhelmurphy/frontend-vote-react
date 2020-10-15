@@ -1,6 +1,9 @@
-import NavbarComp from './NavbarComp';
-import ADD from './Add';
+import PublicRoute from './PublicRoute'
+import AuthRoute from './AuthRoute'
+import GenerateLink from './GenerateLink'
+import Add from './Add';
 export {
-    NavbarComp,
-    Add
+    Add,GenerateLink,
+    PublicRoute,
+    AuthRoute
 }

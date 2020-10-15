@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Add from "../../../component/Add";
+import {Add,GenerateLink} from "../../../component";
 import { logout, getUser } from "../../../utils/UserFunctions";
 import api from "../../../api";
 // import { connect } from "react-redux";
@@ -86,10 +86,16 @@ class ListAll extends Component {
   _getList = async () => {
     console.log(setHeader());
     const response = await api.get("", setHeader());
+    var result = response.data.votes.map(function(el) {
+      var o = Object.assign({}, el);
+      o.isChecked = false;
+      return o;
+    })
     this.setState({
-      AllData: response.data.votes,
+      AllData: result,
       isLoading: false,
     });
+    console.log(result)
   };
   _getUser = async () => {
     await getUser().then((res) => {
@@ -98,6 +104,13 @@ class ListAll extends Component {
       });
     });
   };
+  handleChecked = async (index) => {
+    var datachecked = this.state.AllData
+    datachecked[index].isChecked = !datachecked[index].isChecked
+    this.setState({
+      AllData:datachecked
+    })
+  }
   componentDidMount() {
     this._getList();
     this._getUser();
@@ -138,8 +151,8 @@ class ListAll extends Component {
                 </div>
               </div>
               <div class="card-body px-0">
-                <div className="row justify-content-between">
-                  <div className="col-1 text-center">
+                <div className="row justify-content-center">
+                  <div className="col">
                     <a
                       href="#"
                       type="button"
@@ -151,17 +164,29 @@ class ListAll extends Component {
                     </a>
                     <Add />
                   </div>
-                  <div className="col-1 text-center">
-                    <a href="#" type="button" class="btn btn-secondary" onClick={async()=>{
+                  <div className="col">
+                    <a href="#" type="button" class="btn btn-secondary mr-5" onClick={async()=>{
+                      isSelected&&
+                      AllData.map(el=>{
+                        el.isChecked = false
+                      })
                       await this.setState({isSelected:!this.state.isSelected})
                     }}>
-                      Select
+                      {isSelected?'Deselect':'Select'}
                     </a>
+                    {isSelected&&
+                      <>
+                      <a href="#" type="button" class="btn btn-success"
+                      data-toggle="modal"
+                      data-target="#GenModal">
+                        Share
+                      </a>
+                      <GenerateLink/></>}
                   </div>
                 </div>
               </div>
               {AllData &&
-                AllData.map((el) => {
+                AllData.map((el,i) => {
                   return (
                     <>
                       <div className="row mb-3">
@@ -172,8 +197,7 @@ class ListAll extends Component {
                               class="list-group-item justify-content-between"
                               onClick={(e) => {
                                 !isSelected?this._getVote(e)
-                              :
-                              console.log(e.target.children)
+                                :this.handleChecked(i)
                               }
                               }
                               data-id={el.id_vote}
@@ -182,7 +206,7 @@ class ListAll extends Component {
                               data-target={!isSelected && "#my-modal"}
                             >
                             {isSelected && 
-                                <input className="mr-5" type="checkbox" />}
+                                <input className="mr-5" onClick={()=>this.handleChecked(i)} checked={el.isChecked} type="checkbox" />}
                               {el.name}
                             </a>
                           </div>
