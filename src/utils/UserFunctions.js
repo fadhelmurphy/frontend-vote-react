@@ -32,6 +32,11 @@ export const login = user => {
     })
 }
 
+export const showPriv8 = code => {
+  return api
+    .post('show/priv8', {code},setHeader())
+}
+
 export const logout = () => {
   localStorage.removeItem('usertoken');
   window.location.replace('/login')

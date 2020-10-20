@@ -12,11 +12,16 @@ class ListAll extends Component {
     super(props);
     this.state = {
       AllData: [],
+      ShareList:[],
       Vote: null,
       isLoading: true,
       name: null,
       isSelected:false,
+      isPublic:false,
+      code:null
     };
+    this._setPublic = this._setPublic.bind(this)
+    this._setCode = this._setCode.bind(this)
   }
 
   handleUpdate = (event) => {
@@ -34,6 +39,13 @@ class ListAll extends Component {
     api.get("delete/" + Vote[0].id_vote, setHeader()).then((res) => {
       window.location.reload(false);
     });
+  };
+
+  handleBulkDelete = async() => {
+    const sharelist = this.state.AllData.filter(el=>el.isChecked && el)
+    console.log(sharelist)
+    await api.post("bulkdelete/", sharelist ,setHeader())
+    window.location.reload(false);
   };
 
   // handle input change
@@ -106,17 +118,25 @@ class ListAll extends Component {
   };
   handleChecked = async (index) => {
     var datachecked = this.state.AllData
-    datachecked[index].isChecked = !datachecked[index].isChecked
+    datachecked[index].isChecked = await !datachecked[index].isChecked
+    var sharelist = await datachecked.filter((el) => el.isChecked && el);
     this.setState({
-      AllData:datachecked
+      AllData:datachecked,
+      ShareList:sharelist
     })
+  }
+  _setPublic(){
+    this.setState({isPublic:!this.state.isPublic})
+  }
+  _setCode(id){
+    this.setState({code:id})
   }
   componentDidMount() {
     this._getList();
     this._getUser();
   }
   render() {
-    const { AllData, Vote, name,isSelected } = this.state;
+    const { AllData, Vote, name,isSelected,ShareList } = this.state;
     // const {contacts,removeExistingContact} = this.props
     return (
       <>
@@ -165,23 +185,38 @@ class ListAll extends Component {
                     <Add />
                   </div>
                   <div className="col">
-                    <a href="#" type="button" class="btn btn-secondary mr-5" onClick={async()=>{
+                    <button class="btn btn-secondary mr-3" onClick={async()=>{
                       isSelected&&
                       AllData.map(el=>{
                         el.isChecked = false
                       })
-                      await this.setState({isSelected:!this.state.isSelected})
+                      await this.setState({
+                        ShareList:[],
+                        isSelected:!this.state.isSelected
+                      })
                     }}>
                       {isSelected?'Deselect':'Select'}
-                    </a>
+                    </button>
                     {isSelected&&
                       <>
-                      <a href="#" type="button" class="btn btn-success"
+                      <button class="btn btn-success mr-3"
                       data-toggle="modal"
-                      data-target="#GenModal">
+                      data-target="#GenModal" 
+                      onClick={async()=>await this.setState({isPublic:false,code:''})}
+                      disabled={ShareList.length==0&& true}>
                         Share
-                      </a>
-                      <GenerateLink/></>}
+                      </button>
+                      <button
+                      onClick={(e) => this.handleBulkDelete()}
+                      type="button"
+                      class="btn btn-danger"
+                      disabled={ShareList.length==0&& true}
+                    >
+                      Delete
+                    </button>
+                    
+                    <GenerateLink {...this}/>
+                      </>}
                   </div>
                 </div>
               </div>
