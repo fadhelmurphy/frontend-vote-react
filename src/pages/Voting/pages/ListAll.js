@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import {Add,GenerateLink} from "../../../component";
-import { logout, getUser } from "../../../utils/UserFunctions";
+import { logout, getUser, showPriv8 } from "../../../utils/UserFunctions";
 import api from "../../../api";
+import { imgVote } from '../../../asset';
 // import { connect } from "react-redux";
 // import { removeContact } from "../../../redux/actions";
 // import { Sugar } from 'react-preloaders';
@@ -13,15 +14,17 @@ class ListAll extends Component {
     this.state = {
       AllData: [],
       ShareList:[],
+      LinkList:[],
+      messageErr: '',
+      form: {
+          code: ''
+      },
       Vote: null,
       isLoading: true,
       name: null,
       isSelected:false,
-      isPublic:false,
-      code:null
+      ShowGen: false
     };
-    this._setPublic = this._setPublic.bind(this)
-    this._setCode = this._setCode.bind(this)
   }
 
   handleUpdate = (event) => {
@@ -125,18 +128,49 @@ class ListAll extends Component {
       ShareList:sharelist
     })
   }
-  _setPublic(){
-    this.setState({isPublic:!this.state.isPublic})
-  }
-  _setCode(id){
-    this.setState({code:id})
-  }
+  // _setPublic(){
+  //   this.setState({isPublic:!this.state.isPublic})
+  // }
+  // _setCode(id){
+  //   this.setState({code:id})
+  // }
+
+  _handleFormChange = (event) => {
+    let formData = { ...this.state.form }
+    formData[event.target.name] = event.target.value;
+    this.setState({
+        form: formData,
+        LinkList:formData[event.target.name].length>0?this.state.LinkList:[]
+    })
+}
+
+_handleFormSubmit = () => {
+  this.setState({isSelected:false})
+    const code = this.state.form.code;
+    if (code === '') {
+        this.setState({
+            messageErr: 'Harap masukan code',
+            LinkList:[]
+        })
+    }else{
+         showPriv8(code).then(
+            res=>this.setState({LinkList:res.data}) 
+        )
+    }
+}
+handleVoteClick = async(index) => {
+  const {Vote} = this.state
+  api.post("sendvote", Vote[index],setHeader()).then((res) => {
+    window.location.reload(false);
+  });
+}
+
   componentDidMount() {
     this._getList();
     this._getUser();
   }
   render() {
-    const { AllData, Vote, name,isSelected,ShareList } = this.state;
+    const { AllData, Vote, name,isSelected,ShareList,LinkList } = this.state;
     // const {contacts,removeExistingContact} = this.props
     return (
       <>
@@ -164,10 +198,22 @@ class ListAll extends Component {
             </div>
             <div class="col-md-9">
               <div class="card mb-5">
-                <div class="card-body">
-                  <label>DASBOARD</label>
-                  <hr />
-                  Selamat Datang {name}
+                <div class="card-body px-5">
+                <div className="row" data-aos="zoom-in" data-aos-duration="700" data-aos-delay="50">
+                <div className="col-md-6 pt-5 mt-2" >
+                    <span className="title" >
+                        evoting app
+                    </span>
+                    <br />
+                    <span className="subtitle mt-1 mb-2">
+                        Selamat datang {name} di aplikasi evoting.
+                        Silahkan masukan code jika memiliki code untuk Private Vote.
+                    </span>
+                </div>
+                <div className="col-md-6 pt-5 text-center">
+                    <img src={imgVote} alt="" width="400" className="img-fluid" data-aos="zoom-in" data-aos-duration="700" data-aos-delay="50" />
+                </div>
+                </div>
                 </div>
               </div>
               <div class="card-body px-0">
@@ -180,11 +226,22 @@ class ListAll extends Component {
                       data-toggle="modal"
                       data-target="#addModal"
                     >
-                      Add
+                      + Create your own vote
                     </a>
                     <Add />
                   </div>
-                  <div className="col">
+                  <div className="row">
+                      <div className="col">
+                          <input type="text" name="code" onChange={this._handleFormChange} id="" className="form-control" placeholder="Masukan code disini" value={this.state.form.code} />
+                          <small className="text-danger">{this.state.messageErr}</small>
+                      </div>
+                      <div>
+                          <button className="btn btn-primary mr-2" onClick={this._handleFormSubmit}>Enter</button>
+                      </div>
+                  </div>
+                  <div className="col text-right">
+                  {LinkList.length===0&&(<>
+                    
                     <button class="btn btn-secondary mr-3" onClick={async()=>{
                       isSelected&&
                       AllData.map(el=>{
@@ -198,30 +255,15 @@ class ListAll extends Component {
                       {isSelected?'Deselect':'Select'}
                     </button>
                     {isSelected&&
-                      <>
-                      <button class="btn btn-success mr-3"
-                      data-toggle="modal"
-                      data-target="#GenModal" 
-                      onClick={async()=>await this.setState({isPublic:false,code:''})}
-                      disabled={ShareList.length==0&& true}>
-                        Share
-                      </button>
-                      <button
-                      onClick={(e) => this.handleBulkDelete()}
-                      type="button"
-                      class="btn btn-danger"
-                      disabled={ShareList.length==0&& true}
-                    >
-                      Delete
-                    </button>
-                    
-                    <GenerateLink {...this}/>
-                      </>}
+                    <GenerateLink 
+                    {...this.state}
+                    />}
+                    </>)}
                   </div>
                 </div>
               </div>
-              {AllData &&
-                AllData.map((el,i) => {
+              {
+                (LinkList.length>0?LinkList:AllData).map((el,i) => {
                   return (
                     <>
                       <div className="row mb-3">
@@ -236,13 +278,13 @@ class ListAll extends Component {
                               }
                               }
                               data-id={el.id_vote}
-                              data-name={el.name}
+                              data-name={el.name?el.name:el.votename}
                               data-toggle={!isSelected && "modal"}
                               data-target={!isSelected && "#my-modal"}
                             >
                             {isSelected && 
                                 <input className="mr-5" onClick={()=>this.handleChecked(i)} checked={el.isChecked} type="checkbox" />}
-                              {el.name}
+                              {el.name?el.name:el.votename}
                             </a>
                           </div>
                         </div>
@@ -292,7 +334,7 @@ class ListAll extends Component {
                           Vote.map((element, i) => {
                             return (
                               <>
-                                {element.action !== "hapus" ? (
+                                {element.action !== "hapus" && (
                                   <>
                                     <div class="form-group">
                                       <label
@@ -313,6 +355,9 @@ class ListAll extends Component {
                                       />
                                     </div>
                                     <div className="form-group">
+                                    {LinkList.length===0?
+                                      (
+                                        <>
                                       {Vote.length - 1 === i && (
                                         <button
                                           type="button"
@@ -333,15 +378,28 @@ class ListAll extends Component {
                                           Remove
                                         </button>
                                       )}
+                                      </>
+                                      )
+                                      :(
+                                        <button
+                                          type="button"
+                                          class="btn btn-success mr-3"
+                                          onClick={() =>
+                                            this.handleVoteClick(i)
+                                          }
+                                        >
+                                          Vote
+                                        </button>)
+                                    
+                                    }
                                     </div>
                                   </>
-                                ) : (
-                                  ""
                                 )}
                               </>
                             );
                           })}
                       </div>
+                      {LinkList.length===0&&
                       <div class="modal-footer">
                         <button
                           type="button"
@@ -364,7 +422,7 @@ class ListAll extends Component {
                         >
                           Delete
                         </button>
-                      </div>
+                      </div>}
                     </form>
                   </div>
                 </div>

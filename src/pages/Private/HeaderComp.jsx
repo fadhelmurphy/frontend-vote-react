@@ -36,7 +36,6 @@ class HeaderComp extends Component {
                 res=>this.setState({data:res.data}) 
             )
         }
-        // this.setState({data:urlFetch.data}) 
     }
 
 
@@ -48,15 +47,8 @@ class HeaderComp extends Component {
         });
     }
 
-    setStateAsync(state){
-        return new Promise( resolve => {
-            this.setState(state, resolve) 
-        }) 
-        }
-
     render() {
         const data= this.state.data
-        console.log(data)
         return (
             <>
             <div className="container">
