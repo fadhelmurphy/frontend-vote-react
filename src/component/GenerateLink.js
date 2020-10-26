@@ -79,7 +79,7 @@ function GenerateLink(props) {
                     checked={Public}
                     type="checkbox"
                   />
-                  <label>Let everyone vote (public vote)</label>
+                  <label>Let everyone vote without login (public vote)</label>
                 </div>
                 {/* <div style={{ marginTop: 20 }}>{JSON.stringify(inputList)}</div> */}
               </div>
