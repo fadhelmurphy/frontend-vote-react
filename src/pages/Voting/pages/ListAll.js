@@ -7,6 +7,7 @@ import { imgVote } from "../../../asset";
 // import { removeContact } from "../../../redux/actions";
 // import { Sugar } from 'react-preloaders';
 import { setHeader } from "../../../Helpers/Auth";
+import {Doughnut} from 'react-chartjs-2';
 
 class ListAll extends Component {
   constructor(props) {
@@ -25,6 +26,11 @@ class ListAll extends Component {
       name: null,
       isSelected: false,
       ShowGen: false,
+      jumlahkandidat:{
+        title:null,
+        jumlah:[],
+        kandidat:[]
+      }
     };
   }
 
@@ -87,8 +93,7 @@ class ListAll extends Component {
     list[index]["action"] = "hapus";
     this.setState({ Vote: list });
   };
-  _getVote = async (e) => {
-    var id = e.currentTarget.attributes.getNamedItem("data-id").value;
+  _getVote = async (id) => {
     const response = await api.get("get/" + id, setHeader());
     const list = response.data.vote.map((el) => {
       el["id_vote"] = id;
@@ -98,6 +103,25 @@ class ListAll extends Component {
       Vote: response.data.vote,
     });
   };
+
+
+  _getHasilVote = async(title,obj)=>{
+    var jumlah = []
+    var kandidat = []
+    await Object.entries(obj).forEach(entry => {
+      const [key, value] = entry;
+      kandidat.push(key)
+      jumlah.push(value)
+      this.setState({
+        jumlahkandidat:
+        {
+          title:title,
+          jumlah:jumlah,
+          kandidat:kandidat
+        }
+      });
+    });
+  }
 
   _getResult = async (e) => {
     var id = e.currentTarget.attributes.getNamedItem("data-id").value;
@@ -123,7 +147,7 @@ class ListAll extends Component {
       AllData: result,
       isLoading: false,
     });
-    console.log(result);
+    console.log(result)
   };
   _getUser = async () => {
     await getUser().then((res) => {
@@ -158,7 +182,7 @@ class ListAll extends Component {
     });
   };
 
-  _handleFormSubmit = () => {
+  _handleFormSubmit = async() => {
     this.setState({ isSelected: false });
     const code = this.state.form.code;
     if (code === "") {
@@ -167,7 +191,8 @@ class ListAll extends Component {
         LinkList: [],
       });
     } else {
-      showPriv8(code).then((res) => this.setState({ LinkList: res.data }));
+      await showPriv8(code).then((res) => this.setState({ LinkList: res.data }));
+      console.log(this.state.LinkList)
     }
   };
   handleVoteClick = async (index) => {
@@ -284,7 +309,7 @@ class ListAll extends Component {
                     {LinkList.length === 0 && (
                       <>
                         <button
-                          class="btn btn-secondary mr-3"
+                          class={"btn btn-secondary"+ (isSelected ? " mr-3" : "")}
                           onClick={async () => {
                             isSelected &&
                               AllData.map((el) => {
@@ -312,14 +337,12 @@ class ListAll extends Component {
                         <div class="list-group flex-row">
                           <a
                             href="#"
-                            class="list-group-item w-100 mr-5"
-                            onClick={(e) => {
+                            class={"list-group-item w-100 mr-3"}
+                            onClick={() => {
                               !isSelected
-                                ? this._getVote(e)
+                                ? this._getVote(el.id_vote)
                                 : this.handleChecked(i);
                             }}
-                            data-id={el.id_vote}
-                            data-name={el.name ? el.name : el.votename}
                             data-toggle={!isSelected && "modal"}
                             data-target={!isSelected && "#my-modal"}
                           >
@@ -333,21 +356,53 @@ class ListAll extends Component {
                             )}
                             {el.name ? el.name : el.votename}
                           </a>
-                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target={".bd-example-modal-lg-"+i}>Hasil vote</button>
+                          {LinkList.length === 0 && 
+                            <button type="button" onClick={()=>this._getHasilVote(el.name,el.jumlahkandidat)} class="btn btn-primary" data-toggle="modal" data-target=".hasilvote">Hasil vote</button>}
                         </div>
-                        
-                    <div class={"modal fade bd-example-modal-lg-"+i} tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                      <div class="modal-content">
-                        {JSON.stringify(el.jumlahkandidat)}
-                      </div>
-                    </div>
-                  </div>
                       </div>
                     </div>
                   </>
                 );
               })}
+              <div class="modal fade hasilvote"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="my-modal"
+              aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">
+                    {this.state.jumlahkandidat.title}
+                  </h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                {this.state.jumlahkandidat.kandidat.length>0?
+                  <Doughnut data= {{
+                    labels: this.state.jumlahkandidat.kandidat,
+                    datasets: [{
+                    label: this.state.jumlahkandidat.title,
+                    backgroundColor: [
+                      'rgba(255, 99, 132, 0.6)',
+                      'rgba(54, 162, 235, 0.6)',
+                      'rgba(255, 206, 86, 0.6)',
+                      'rgba(75, 192, 192, 0.6)',
+                      'rgba(153, 102, 255, 0.6)'
+                  ],
+                    // borderColor: 'rgb(255, 99, 132)',
+                    data: this.state.jumlahkandidat.jumlah,
+                    }]
+                }} />:<h3 className="text-center m-5 text-uppercase">Belum ada yang vote</h3>}
+                </div>
+              </div>
+            </div>
               <div
                 class="modal fade"
                 id="my-modal"
