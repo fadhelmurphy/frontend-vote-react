@@ -108,19 +108,31 @@ class ListAll extends Component {
   _getHasilVote = async(title,obj)=>{
     var jumlah = []
     var kandidat = []
-    await Object.entries(obj).forEach(entry => {
-      const [key, value] = entry;
-      kandidat.push(key)
-      jumlah.push(value)
-      this.setState({
-        jumlahkandidat:
-        {
-          title:title,
-          jumlah:jumlah,
-          kandidat:kandidat
-        }
+    function isEmpty(o) {
+      return Object.entries(o).every(([k, v]) => v === null);
+    }
+    if (!isEmpty(obj)) {
+      await Object.entries(obj).forEach((entry) => {
+        const [key, value] = entry;
+        kandidat.push(key);
+        jumlah.push(value);
+        this.setState({
+          jumlahkandidat: {
+            title: title,
+            jumlah: jumlah,
+            kandidat: kandidat,
+          },
+        });
       });
-    });
+    } else {
+      this.setState({
+        jumlahkandidat: {
+          title: null,
+          jumlah: [],
+          kandidat: [],
+        },
+      });
+    }
   }
 
   _getResult = async (e) => {
