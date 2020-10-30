@@ -27,7 +27,7 @@ class HeaderComp extends Component {
 
     _handleFormSubmit = () => {
         const state = this.state;
-        if (state.form.token == '') {
+        if (state.form.token === '') {
             this.setState({
                 messageErr: 'Harap masukan token'
             })

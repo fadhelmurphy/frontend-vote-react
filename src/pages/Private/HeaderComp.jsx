@@ -83,7 +83,6 @@ class HeaderComp extends Component {
                         <div className="col">
                           <div class="list-group">
                             <a
-                              href="#"
                               class="list-group-item justify-content-between"
                               data-id={el.id_vote}
                               data-name={el.votename}

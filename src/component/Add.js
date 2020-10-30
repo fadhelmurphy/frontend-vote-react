@@ -56,11 +56,12 @@ function Add(props) {
         theData.data[i] = "mohon isi opsi/kandidat vote terlebih dahulu!"
         setErrorList({votename:theData.votename,data:theData.data})
         opsiMsg = true
-      }else{
-        theData.data[i] = ""
-        setErrorList({votename:theData.votename,data:theData.data})
-        opsiMsg = false
       }
+      // else{
+      //   theData.data[i] = ""
+      //   setErrorList({votename:theData.votename,data:theData.data})
+      //   opsiMsg = false
+      // }
     });
     if(opsiMsg)
     return alert("mohon isi opsi/kandidat terlebih dahulu!");

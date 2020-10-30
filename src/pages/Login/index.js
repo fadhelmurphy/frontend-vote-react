@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { login,getUser } from '../../utils/UserFunctions'
-import jwt_decode from 'jwt-decode'
+// import jwt_decode from 'jwt-decode'
 // import { addContact } from '../../redux/actions'
 // import { connect } from "react-redux";
 

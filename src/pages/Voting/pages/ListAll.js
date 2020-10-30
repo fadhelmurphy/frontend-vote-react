@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Add, GenerateLink, Notification } from "../../../component";
+import { Add, GenerateLink } from "../../../component";
 import { logout, getUser, showPriv8 } from "../../../utils/UserFunctions";
 import api from "../../../api";
 import { imgVote } from "../../../asset";
@@ -8,7 +8,6 @@ import { imgVote } from "../../../asset";
 // import { Sugar } from 'react-preloaders';
 import { setHeader } from "../../../Helpers/Auth";
 import { Doughnut } from "react-chartjs-2";
-import { type } from "jquery";
 
 class ListAll extends Component {
   constructor(props) {
@@ -107,7 +106,7 @@ class ListAll extends Component {
   };
   _getVote = async (id) => {
     const response = await api.get("get/" + id, setHeader());
-    const list = response.data.vote.map((el) => {
+    response.data.vote.map((el) => {
       el["id_vote"] = id;
       el["action"] = "ubah";
     });
@@ -149,7 +148,7 @@ class ListAll extends Component {
   _getResult = async (e) => {
     var id = e.currentTarget.attributes.getNamedItem("data-id").value;
     const response = await api.get("get/" + id, setHeader());
-    const list = response.data.vote.map((el) => {
+    response.data.vote.map((el) => {
       el["id_vote"] = id;
       el["action"] = "ubah";
     });
@@ -239,7 +238,7 @@ class ListAll extends Component {
     this._getUser();
   }
   render() {
-    const { AllData, Vote, name, isSelected, ShareList, LinkList } = this.state;
+    const { AllData, Vote, name, isSelected, LinkList } = this.state;
     // const {contacts,removeExistingContact} = this.props
     return (
       <>
@@ -585,11 +584,12 @@ class ListAll extends Component {
                                           </h5>
                                           <div className="text-center">
                                             <a
-                                              href="#"
+                                              // href="#"
                                               onClick={(e) =>
                                                 this.handleVoteClick(i)
                                               }
                                               class="btn btn-primary"
+                                              style={{cursor:'pointer'}}
                                             >
                                               Vote
                                             </a>
