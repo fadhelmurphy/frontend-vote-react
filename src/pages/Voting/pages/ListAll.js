@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Add, GenerateLink } from "../../../component";
+import { Add, GenerateLink, Notification } from "../../../component";
 import { logout, getUser, showPriv8 } from "../../../utils/UserFunctions";
 import api from "../../../api";
 import { imgVote } from "../../../asset";
@@ -7,7 +7,8 @@ import { imgVote } from "../../../asset";
 // import { removeContact } from "../../../redux/actions";
 // import { Sugar } from 'react-preloaders';
 import { setHeader } from "../../../Helpers/Auth";
-import {Doughnut} from 'react-chartjs-2';
+import { Doughnut } from "react-chartjs-2";
+import { type } from "jquery";
 
 class ListAll extends Component {
   constructor(props) {
@@ -16,7 +17,11 @@ class ListAll extends Component {
       AllData: [],
       ShareList: [],
       LinkList: [],
-      messageErr: "",
+      message: {
+        code: "",
+        votename: "",
+        opsi: [],
+      },
       form: {
         code: "",
       },
@@ -26,11 +31,11 @@ class ListAll extends Component {
       name: null,
       isSelected: false,
       ShowGen: false,
-      jumlahkandidat:{
-        title:null,
-        jumlah:[],
-        kandidat:[]
-      }
+      jumlahkandidat: {
+        title: null,
+        jumlah: [],
+        kandidat: [],
+      },
     };
   }
 
@@ -40,6 +45,7 @@ class ListAll extends Component {
     var { Vote } = this.state;
     console.log(Vote);
     api.post("update", { Vote }, setHeader()).then((res) => {
+      alert("berhasil diupdate!");
       window.location.reload(false);
     });
   };
@@ -47,16 +53,22 @@ class ListAll extends Component {
   handleDelete = () => {
     var { Vote } = this.state;
     api.get("delete/" + Vote[0].id_vote, setHeader()).then((res) => {
+      alert("berhasil didelete!");
       window.location.reload(false);
     });
   };
-
-  handleBulkDelete = async () => {
-    const sharelist = this.state.AllData.filter((el) => el.isChecked && el);
-    console.log(sharelist);
-    await api.post("bulkdelete/", sharelist, setHeader());
-    window.location.reload(false);
+  _setError = (key, message) => {
+    var obj = this.state.message;
+    obj[key] = message;
+    this.setState({ message: obj });
+    console.log(this.state.message)
   };
+  // handleBulkDelete = async () => {
+  //   const sharelist = this.state.AllData.filter((el) => el.isChecked && el);
+  //   console.log(sharelist);
+  //   await api.post("bulkdelete/", sharelist, setHeader());
+  //   window.location.reload(false);
+  // };
 
   // handle input change
   handleTitleChange = (e, index) => {
@@ -104,10 +116,9 @@ class ListAll extends Component {
     });
   };
 
-
-  _getHasilVote = async(title,obj)=>{
-    var jumlah = []
-    var kandidat = []
+  _getHasilVote = async (title, obj) => {
+    var jumlah = [];
+    var kandidat = [];
     function isEmpty(o) {
       return Object.entries(o).every(([k, v]) => v === null);
     }
@@ -133,7 +144,7 @@ class ListAll extends Component {
         },
       });
     }
-  }
+  };
 
   _getResult = async (e) => {
     var id = e.currentTarget.attributes.getNamedItem("data-id").value;
@@ -159,7 +170,7 @@ class ListAll extends Component {
       AllData: result,
       isLoading: false,
     });
-    console.log(result)
+    console.log(result);
   };
   _getUser = async () => {
     await getUser().then((res) => {
@@ -194,23 +205,32 @@ class ListAll extends Component {
     });
   };
 
-  _handleFormSubmit = async() => {
+  _handleFormSubmit = async () => {
     this.setState({ isSelected: false });
     const code = this.state.form.code;
     if (code === "") {
       this.setState({
-        messageErr: "Harap masukan code",
+        message: { code: "Harap masukan code" },
         LinkList: [],
       });
     } else {
-      await showPriv8(code).then((res) => this.setState({ LinkList: res.data }));
-      console.log(this.state.LinkList)
+      await showPriv8(code).then((res) =>
+        this.setState({ LinkList: res.data })
+      );
+      console.log(this.state.LinkList);
     }
   };
   handleVoteClick = async (index) => {
     const { Vote } = this.state;
     api.post("sendvote", Vote[index], setHeader()).then((res) => {
-      window.location.reload(false);
+      // console.log(res)
+      if (res.data === "berhasil") {
+        alert("Anda berhasil vote");
+        window.location.reload(false);
+      } else {
+        alert("Anda sudah vote!");
+        window.location.reload(false);
+      }
     });
   };
 
@@ -280,62 +300,74 @@ class ListAll extends Component {
                 </div>
               </div>
               <div class="card-body px-0">
-                <div className="row justify-content-center">
-                  <div className="col">
-                    <a
+                <div className="row justify-content-between">
+                  <div className="col-12 col-md-3">
+                    <button
                       href="#"
-                      type="button"
                       class="btn btn-primary"
                       data-toggle="modal"
                       data-target="#addModal"
                     >
                       + Create your own vote
-                    </a>
-                    <Add />
+                    </button>
+                    <Add
+                      _setError={(key, message) => {
+                        this._setError(key, message);
+                      }}
+                      {...this.state}
+                    />
                   </div>
-                  <div className="row">
-                    <div className="col">
-                      <input
-                        type="text"
-                        name="code"
-                        onChange={this._handleFormChange}
-                        id=""
-                        className="form-control"
-                        placeholder="Masukan code disini"
-                        value={this.state.form.code}
-                      />
-                      <small className="text-danger">
-                        {this.state.messageErr}
-                      </small>
+
+                  <div className="col-12 col-md-3 mt-3 mt-md-0">
+                    <div className="row">
+                      <div className="col-9">
+                        <input
+                          type="text"
+                          name="code"
+                          onChange={this._handleFormChange}
+                          id=""
+                          className="form-control"
+                          placeholder="Masukan code disini"
+                          value={this.state.form.code}
+                        />
+                      </div>
+                      <div className="col-3">
+                        <button
+                          className="btn btn-primary"
+                          onClick={this._handleFormSubmit}
+                        >
+                          Enter
+                        </button>
+                      </div>
                     </div>
-                    <div>
-                      <button
-                        className="btn btn-primary mr-2"
-                        onClick={this._handleFormSubmit}
-                      >
-                        Enter
-                      </button>
-                    </div>
+
+                    <small className="text-danger">
+                      {this.state.message.code}
+                    </small>
                   </div>
-                  <div className="col text-right">
+                  <div className="col-12 col-md-3 mt-3 mt-md-0 text-lg-right">
                     {LinkList.length === 0 && (
                       <>
-                        <button
-                          class={"btn btn-secondary"+ (isSelected ? " mr-3" : "")}
-                          onClick={async () => {
-                            isSelected &&
-                              AllData.map((el) => {
-                                el.isChecked = false;
+                        <div className="row justify-content-between justify-content-lg-end mx-auto">
+                          <button
+                            class={
+                              "btn btn-secondary" + (isSelected ? " mr-3" : "")
+                            }
+                            onClick={async () => {
+                              isSelected &&
+                                AllData.map((el) => {
+                                  el.isChecked = false;
+                                });
+                              await this.setState({
+                                ShareList: [],
+                                isSelected: !this.state.isSelected,
                               });
-                            await this.setState({
-                              ShareList: [],
-                              isSelected: !this.state.isSelected,
-                            });
-                          }}
-                        >
-                          {isSelected ? "Deselect" : "Select"}
-                        </button>
-                        {isSelected && <GenerateLink {...this.state} />}
+                            }}
+                          >
+                            {isSelected ? "Deselect" : "Select"}
+                          </button>
+                          {isSelected && <GenerateLink {...this.state} />}
+                        </div>
                       </>
                     )}
                   </div>
@@ -348,8 +380,11 @@ class ListAll extends Component {
                       <div className="col">
                         <div class="list-group flex-row">
                           <a
-                            href="#"
-                            class={"list-group-item w-100 mr-3"}
+                            // href="#"
+                            style={{ cursor: "pointer" }}
+                            class={
+                              "list-group-item w-100 mr-3 py-2 align-self-center"
+                            }
                             onClick={() => {
                               !isSelected
                                 ? this._getVote(el.id_vote)
@@ -368,53 +403,77 @@ class ListAll extends Component {
                             )}
                             {el.name ? el.name : el.votename}
                           </a>
-                          {LinkList.length === 0 && 
-                            <button type="button" onClick={()=>this._getHasilVote(el.name,el.jumlahkandidat)} class="btn btn-primary" data-toggle="modal" data-target=".hasilvote">Hasil vote</button>}
+                          {LinkList.length === 0 && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                this._getHasilVote(el.name, el.jumlahkandidat)
+                              }
+                              class="btn btn-primary"
+                              data-toggle="modal"
+                              data-target=".hasilvote"
+                            >
+                              Hasil vote
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
                   </>
                 );
               })}
-              <div class="modal fade hasilvote"
-              tabindex="-1"
-              role="dialog"
-              aria-labelledby="my-modal"
-              aria-hidden="true">
-              <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">
-                    {this.state.jumlahkandidat.title}
-                  </h5>
-                  <button
-                    type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-label="Close"
-                  >
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                {this.state.jumlahkandidat.kandidat.length>0?
-                  <Doughnut data= {{
-                    labels: this.state.jumlahkandidat.kandidat,
-                    datasets: [{
-                    label: this.state.jumlahkandidat.title,
-                    backgroundColor: [
-                      'rgba(255, 99, 132, 0.6)',
-                      'rgba(54, 162, 235, 0.6)',
-                      'rgba(255, 206, 86, 0.6)',
-                      'rgba(75, 192, 192, 0.6)',
-                      'rgba(153, 102, 255, 0.6)'
-                  ],
-                    // borderColor: 'rgb(255, 99, 132)',
-                    data: this.state.jumlahkandidat.jumlah,
-                    }]
-                }} />:<h3 className="text-center m-5 text-uppercase">Belum ada yang vote</h3>}
+              <div
+                class="modal fade hasilvote"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="my-modal"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">
+                        {this.state.jumlahkandidat.title}
+                      </h5>
+                      <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div className="modal-body">
+                      {this.state.jumlahkandidat.kandidat.length > 0 ? (
+                        <Doughnut
+                          data={{
+                            labels: this.state.jumlahkandidat.kandidat,
+                            datasets: [
+                              {
+                                label: this.state.jumlahkandidat.title,
+                                backgroundColor: [
+                                  "rgba(255, 99, 132, 0.6)",
+                                  "rgba(54, 162, 235, 0.6)",
+                                  "rgba(255, 206, 86, 0.6)",
+                                  "rgba(75, 192, 192, 0.6)",
+                                  "rgba(153, 102, 255, 0.6)",
+                                ],
+                                // borderColor: 'rgb(255, 99, 132)',
+                                data: this.state.jumlahkandidat.jumlah,
+                              },
+                            ],
+                          }}
+                        />
+                      ) : (
+                        <h3 className="text-center m-5 text-uppercase">
+                          Belum ada yang vote
+                        </h3>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
               <div
                 class="modal fade"
                 id="my-modal"
@@ -458,91 +517,90 @@ class ListAll extends Component {
                           </div>
                         ) : (
                           <div className="row">
-                          <div className="col-12 justify-content-center text-center mt-2">
-                            <h1>{Vote && Vote[0].votename}</h1>
-                          </div>
+                            <div className="col-12 justify-content-center text-center mt-2">
+                              <h1>{Vote && Vote[0].votename}</h1>
+                            </div>
                           </div>
                         )}
-                        <div className={LinkList.length>0&&"row mt-3"}>
-                        
-                        {Vote &&
-                          Vote.map((element, i) => {
-                            return (
-                              <>
-                                {LinkList.length === 0 ? (
-                                  <>
-                                    {element.action !== "hapus" && (
-                                      <>
-                                        <div class="form-group">
-                                          <label
-                                            for="recipient-name"
-                                            class="col-form-label"
-                                          >
-                                            Opsi:
-                                          </label>
-                                          <input
-                                            type="text"
-                                            name="kandidat"
-                                            class="form-control"
-                                            onChange={(e) =>
-                                              this.handleCandidateChange(e, i)
-                                            }
-                                            value={element.kandidat}
-                                            id="recipient-title"
-                                          />
-                                        </div>
-                                        <div className="form-group">
-                                          {Vote.length - 1 === i && (
-                                            <button
-                                              type="button"
-                                              class="btn btn-primary mr-3"
-                                              onClick={() =>
-                                                this.handleAddClick(i)
-                                              }
+                        <div className={LinkList.length > 0 && "row mt-3"}>
+                          {Vote &&
+                            Vote.map((element, i) => {
+                              return (
+                                <>
+                                  {LinkList.length === 0 ? (
+                                    <>
+                                      {element.action !== "hapus" && (
+                                        <>
+                                          <div class="form-group">
+                                            <label
+                                              for="recipient-name"
+                                              class="col-form-label"
                                             >
-                                              Add
-                                            </button>
-                                          )}
-                                          {Vote.length !== 1 && (
-                                            <button
-                                              type="button"
-                                              class="btn btn-danger mr-3"
-                                              onClick={() =>
-                                                this.handleRemoveClick(i)
+                                              Opsi:
+                                            </label>
+                                            <input
+                                              type="text"
+                                              name="kandidat"
+                                              class="form-control"
+                                              onChange={(e) =>
+                                                this.handleCandidateChange(e, i)
                                               }
+                                              value={element.kandidat}
+                                              id="recipient-title"
+                                            />
+                                          </div>
+                                          <div className="form-group">
+                                            {Vote.length - 1 === i && (
+                                              <button
+                                                type="button"
+                                                class="btn btn-primary mr-3"
+                                                onClick={() =>
+                                                  this.handleAddClick(i)
+                                                }
+                                              >
+                                                Add
+                                              </button>
+                                            )}
+                                            {Vote.length !== 1 && (
+                                              <button
+                                                type="button"
+                                                class="btn btn-danger mr-3"
+                                                onClick={() =>
+                                                  this.handleRemoveClick(i)
+                                                }
+                                              >
+                                                Remove
+                                              </button>
+                                            )}
+                                          </div>
+                                        </>
+                                      )}
+                                    </>
+                                  ) : (
+                                    <div class="col col-md-6 mt-2">
+                                      <div class="card">
+                                        <div class="card-body">
+                                          <h5 class="card-title text-center">
+                                            {element.kandidat}
+                                          </h5>
+                                          <div className="text-center">
+                                            <a
+                                              href="#"
+                                              onClick={(e) =>
+                                                this.handleVoteClick(i)
+                                              }
+                                              class="btn btn-primary"
                                             >
-                                              Remove
-                                            </button>
-                                          )}
-                                        </div>
-                                      </>
-                                    )}
-                                  </>
-                                ) : (
-                                  <div class="col col-md-6 mt-2">
-                                    <div class="card">
-                                      <div class="card-body">
-                                        <h5 class="card-title text-center">
-                                          {element.kandidat}
-                                        </h5>
-                                        <div className="text-center">
-                                        <a
-                                          href="#"
-                                          onClick={(e) =>
-                                            this.handleVoteClick(i)
-                                          }
-                                          class="btn btn-primary"
-                                        >
-                                          Vote
-                                        </a>
+                                              Vote
+                                            </a>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
-                                )}
-                              </>
-                            );
-                          })}
+                                  )}
+                                </>
+                              );
+                            })}
                         </div>
                       </div>
                       {LinkList.length === 0 && (

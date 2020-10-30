@@ -2,9 +2,6 @@ import React, { Component } from 'react'
 import { imgVote } from '../../asset';
 import Aos from 'aos';
 import './index.css';
-// import { URL_API } from '../../utils/api';
-import axios from 'axios';
-import { Redirect } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 
 class HeaderComp extends Component {

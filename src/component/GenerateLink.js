@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import api from "../api";
 import { setHeader } from "../Helpers/Auth";
-import { type } from "jquery";
-import { useEffect } from "react";
 function GenerateLink(props) {
   const [Code,setCode] = useState('')
   const [Public,setPublic] = useState(false)
@@ -24,6 +22,15 @@ function GenerateLink(props) {
     });
   };
 
+  const handleBulkDelete = async () => {
+    const sharelist = props.AllData.filter((el) => el.isChecked && el);
+    console.log(sharelist);
+    await api.post("bulkdelete/", sharelist, setHeader()).then(res=>{
+      alert('berhasil didelete!')
+      window.location.reload(false);
+    });
+  };
+
   return (
     <>
     
@@ -35,7 +42,7 @@ function GenerateLink(props) {
       Share
     </button>
     <button
-    onClick={(e) => this.handleBulkDelete()}
+    onClick={() => handleBulkDelete()}
     type="button"
     class="btn btn-danger"
     disabled={props.ShareList.length===0&& true}
