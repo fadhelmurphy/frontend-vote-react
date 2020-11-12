@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { login,getUser } from '../../utils/UserFunctions'
+import { login,getUser } from '../../Helpers/UserFunctions'
 // import jwt_decode from 'jwt-decode'
 // import { addContact } from '../../redux/actions'
 // import { connect } from "react-redux";
@@ -12,7 +12,8 @@ class Login extends Component {
       email: '',
       password: '',
       name:'',
-      token:''
+      token:'',
+      alert:''
     }
     
     this.onChange = this.onChange.bind(this)
@@ -34,17 +35,18 @@ class Login extends Component {
 
     login(user)
     .then(async(res) => {
-      if (res) {
-        await this.setState({token:res.token})
+      const {alert,reload} = res
+      this.setState({
+        alert
+      })
+      if (reload) {
+        await this.setState({token:localStorage.getItem("usertoken")})
         await getUser()
         .then(res => {
           this.setState({
-            name: res.data.name
+            name: res
           })
         })
-        // addNewContact({nama:this.state.name,token:this.state.token})
-        console.log(this.state.name)
-        // this.setState({token:getUser.data.name})
         this.props.history.push(`/voting`)
       }
     })
@@ -69,6 +71,10 @@ class Login extends Component {
           <div className="col-md-6 mt-5 mx-auto">
             <form noValidate onSubmit={this.onSubmit}>
               <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
+              <div
+            className="Features"
+            dangerouslySetInnerHTML={{ __html: this.state.alert }}
+          />
               <div className="form-group">
                 <label htmlFor="email">Email address</label>
                 <input

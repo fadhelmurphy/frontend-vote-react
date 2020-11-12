@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Add, GenerateLink } from "../../../component";
-import { logout, getUser, showPriv8 } from "../../../utils/UserFunctions";
+import { Add, GenerateLink } from "./index";
+import { logout, getUser, showPriv8, DeleteOneVote, UpdateOneVote } from "../../../Helpers/UserFunctions";
 import api from "../../../api";
 import { imgVote } from "../../../asset";
 // import { connect } from "react-redux";
@@ -35,6 +35,7 @@ class ListAll extends Component {
         jumlah: [],
         kandidat: [],
       },
+      Alert:''
     };
   }
 
@@ -43,18 +44,22 @@ class ListAll extends Component {
 
     var { Vote } = this.state;
     console.log(Vote);
-    api.post("update", { Vote }, setHeader()).then((res) => {
-      alert("berhasil diupdate!");
-      window.location.reload(false);
-    });
+    UpdateOneVote(Vote)
+    .then(res=>{
+      const {alert,reload} = res
+      this.setState({Alert:alert})
+      if(reload)window.location.reload()
+    })
   };
 
   handleDelete = () => {
     var { Vote } = this.state;
-    api.get("delete/" + Vote[0].id_vote, setHeader()).then((res) => {
-      alert("berhasil didelete!");
-      window.location.reload(false);
-    });
+    DeleteOneVote(Vote[0].id_vote)
+    .then(res=>{
+      const {alert,reload} = res
+      this.setState({Alert:alert})
+      if(reload)window.location.reload()
+    })
   };
   _setError = (key, message) => {
     var obj = this.state.message;
@@ -174,7 +179,7 @@ class ListAll extends Component {
   _getUser = async () => {
     await getUser().then((res) => {
       this.setState({
-        name: res.data.name,
+        name: res,
       });
     });
   };
@@ -245,7 +250,7 @@ class ListAll extends Component {
         {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}
         <div className="container-fluid my-5">
           <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-3 mb-5">
               <ul class="list-group">
                 <li class="list-group-item active">MAIN MENU</li>
                 <a class="list-group-item" style={{ color: "#212529" }}>
@@ -498,7 +503,12 @@ class ListAll extends Component {
                     </div>
                     <form method="POST">
                       <div class="modal-body">
-                        {LinkList.length === 0 ? (
+                        {LinkList.length === 0 ? (<>
+                        
+                          <div
+            className="Features"
+            dangerouslySetInnerHTML={{ __html: this.state.Alert }}
+          />
                           <div class="form-group">
                             <label for="recipient-name" class="col-form-label">
                               Nama Vote:
@@ -513,7 +523,7 @@ class ListAll extends Component {
                               }
                               id="recipient-title"
                             />
-                          </div>
+                          </div></>
                         ) : (
                           <div className="row">
                             <div className="col-12 justify-content-center text-center mt-2">
@@ -521,6 +531,7 @@ class ListAll extends Component {
                             </div>
                           </div>
                         )}
+                        
                         <div className={LinkList.length > 0 && "row mt-3"}>
                           {Vote &&
                             Vote.map((element, i) => {

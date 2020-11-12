@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import api from "../api";
-import { setHeader } from "../Helpers/Auth";
+import api from "../../../api";
+import { setHeader } from "../../../Helpers/Auth";
+import { bulkDelete } from "../../../Helpers/UserFunctions";
 function GenerateLink(props) {
   const [Code,setCode] = useState('')
   const [Public,setPublic] = useState(false)
+  const [Alert,setAlert] = useState('');
   const handleShare = () => {
     var result = props.ShareList.map(function (el) {
       var o = Object.assign({}, el);
@@ -23,12 +25,14 @@ function GenerateLink(props) {
   };
 
   const handleBulkDelete = async () => {
-    const sharelist = props.AllData.filter((el) => el.isChecked && el);
+    const sharelist = await props.AllData.filter((el) => el.isChecked && el);
     console.log(sharelist);
-    await api.post("bulkdelete/", sharelist, setHeader()).then(res=>{
-      alert('berhasil didelete!')
-      window.location.reload(false);
-    });
+    bulkDelete(sharelist)
+    .then(res => {
+      const {reload} = res
+      if(reload)
+      window.location.reload(true);
+    })
   };
 
   return (

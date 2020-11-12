@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { imgVote } from '../../asset';
 import Aos from 'aos';
 import './index.css';
-import {showPriv8} from '../../utils/UserFunctions'
+import {showPriv8} from '../../Helpers/UserFunctions'
 
 class HeaderComp extends Component {
 

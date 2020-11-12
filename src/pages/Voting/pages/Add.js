@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import api from "../api";
-import { setHeader } from "../Helpers/Auth";
+import api from "../../../api";
+import { setHeader } from "../../../Helpers/Auth";
+import { TambahVote } from "../../../Helpers/UserFunctions";
 function Add(props) {
   const [inputList, setInputList] = useState(
     { votename: "", data: [{ kandidat: "" }] });
   const [ErrorList, setErrorList] = useState({votename:"",data:{}})
+  const [Alert,setAlert] = useState('');
 
   // handle input change
   const handleInputChange = (e, index) => {
@@ -65,10 +67,11 @@ function Add(props) {
     });
     if(opsiMsg)
     return alert("mohon isi opsi/kandidat terlebih dahulu!");
-    api.post('add', list,setHeader()).then((res) => {
-      alert('berhasil ditambahkan!')
-      window.location.reload(false);
-    });
+    TambahVote(list).then((res)=>{
+      const {alert,reload} = res
+      setAlert(alert)
+      if(reload)window.location.reload()
+    })
   };
 
   return (
@@ -98,6 +101,10 @@ function Add(props) {
             </div>
             <form method="POST">
               <div class="modal-body">
+              <div
+            className="Features"
+            dangerouslySetInnerHTML={{ __html: Alert }}
+          />
                 <div class="form-group">
                   <label for="exampleInputEmail1">Nama Vote : </label>
                   <input
