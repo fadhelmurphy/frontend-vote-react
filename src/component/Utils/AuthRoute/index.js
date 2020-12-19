@@ -4,6 +4,7 @@ import { isAuthenticated } from "../../../Helpers/Auth";
 import { AuthContext } from "../../../Context";
 import styles from "./styles.module.css";
 import logo from "../../../assets/images/logo.png";
+import Aos from 'aos';
 
 export default ({ component: Component, ...rest }) => {
 
@@ -21,8 +22,10 @@ export default ({ component: Component, ...rest }) => {
 
   if (authenticated) {
     if (loading) {
-      return <img src={logo} className={styles.loader} />;
-    } else return <Route {...rest} component={Component} />;
+      return <>
+      <img src={logo} className={styles.loader} /></>;
+    } else return <>
+    <Route {...rest} component={Component} /></>;
   } else {
     return <Redirect to="/login" />;
   }

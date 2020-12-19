@@ -20,6 +20,7 @@ class index extends Component {
     }
 
     render() {
+        var {customKata} = this.props
         return (
             <div className="container">
                 <div className="row" data-aos="zoom-in" data-aos-duration="700" data-aos-delay="50">
@@ -29,7 +30,7 @@ class index extends Component {
                         </span>
                         <br />
                         <span className="subtitle mt-1 mb-2">
-                            Selamat datang di aplikasi evoting silahkan login untuk memilih
+                            {customKata?customKata:"Selamat datang di aplikasi evoting silahkan login untuk memilih"}
                         </span>
                     </div>
                     <div className="col-md-6 pt-5 text-center">
