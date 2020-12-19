@@ -53,6 +53,7 @@ class Login extends Component {
   }
 
     componentDidMount() {
+      console.log(this.props)
       const token = localStorage.getItem("usertoken")
       if(token!==null){
         this.props.history.push(`/voting`)
