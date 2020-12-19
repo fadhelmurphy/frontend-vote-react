@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Redirect, Route } from "react-router-dom";
-import { isAuthenticated } from "../../Helpers/Auth";
-import { AuthContext } from "../../Context/AuthContext";
+import { isAuthenticated } from "../../../Helpers/Auth";
+import { AuthContext } from "../../../Context";
 import styles from "./styles.module.css";
-import logo from "../../assets/images/logo.png";
+import logo from "../../../assets/images/logo.png";
 
 export default ({ component: Component, ...rest }) => {
+
   const { authenticated, setAuthenticated } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
 

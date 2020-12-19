@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import Aos from 'aos';
 import './index.css';
-import HeaderComp from './HeaderComp';
 import { Sugar } from 'react-preloaders';
+import { Header } from '../../component/Shared';
 
 export default class index extends Component {
 
@@ -15,10 +15,10 @@ export default class index extends Component {
 
     render() {
         return (
-            <div>
+            <>
                 <Sugar background="#1e2125" color="#0f4c75" time={1000} />
-                <HeaderComp />
-            </div>
+                <Header />
+            </>
         )
     }
 }

@@ -8,6 +8,7 @@ import { imgVote } from "../../../asset";
 // import { Sugar } from 'react-preloaders';
 import { setHeader } from "../../../Helpers/Auth";
 import { Doughnut } from "react-chartjs-2";
+import { Header } from "../../Shared";
 
 class ListAll extends Component {
   constructor(props) {
@@ -248,61 +249,7 @@ class ListAll extends Component {
     return (
       <>
         {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}
-        <div className="container-fluid my-5">
-          <div class="row">
-            <div class="col-md-3 mb-5">
-              <ul class="list-group">
-                <li class="list-group-item active">MAIN MENU</li>
-                <a class="list-group-item" style={{ color: "#212529" }}>
-                  <i class="fa fa-tachometer-alt"></i> Dashboard
-                </a>
-                <a class="list-group-item">
-                  <i class="fa fa-user-circle"></i> My Profile
-                </a>
-                <a class="list-group-item">
-                  <i class="fa fa-user-circle"></i> Manage Links
-                </a>
-                <a
-                  href="#"
-                  class="list-group-item"
-                  onClick={() => logout()}
-                  style={{ color: "#212529" }}
-                >
-                  <i class="fa fa-sign-out-alt"></i> Logout
-                </a>
-              </ul>
-            </div>
-            <div class="col-md-9">
-              <div class="card mb-5">
-                <div class="card-body px-5">
-                  <div
-                    className="row"
-                    data-aos="zoom-in"
-                    data-aos-duration="700"
-                    data-aos-delay="50"
-                  >
-                    <div className="col-md-6 pt-5 mt-2">
-                      <span className="title">evoting app</span>
-                      <br />
-                      <span className="subtitle mt-1 mb-2">
-                        Selamat datang {name} di aplikasi evoting. Silahkan
-                        masukan code jika memiliki code untuk Private Vote.
-                      </span>
-                    </div>
-                    <div className="col-md-6 pt-5 text-center">
-                      <img
-                        src={imgVote}
-                        alt=""
-                        width="400"
-                        className="img-fluid"
-                        data-aos="zoom-in"
-                        data-aos-duration="700"
-                        data-aos-delay="50"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              
               <div class="card-body px-0">
                 <div className="row justify-content-between">
                   <div className="col-12 col-md-3">
@@ -381,13 +328,13 @@ class ListAll extends Component {
                 return (
                   <>
                     <div className="row mb-3">
-                      <div className="col">
+                      <div className={LinkList.length === 0?"col-10":"col-12"}>
                         <div class="list-group flex-row">
                           <a
                             // href="#"
                             style={{ cursor: "pointer" }}
                             class={
-                              "list-group-item w-100 mr-3 py-2 align-self-center"
+                              "list-group-item w-100 py-2"
                             }
                             onClick={() => {
                               !isSelected
@@ -407,21 +354,24 @@ class ListAll extends Component {
                             )}
                             {el.name ? el.name : el.votename}
                           </a>
-                          {LinkList.length === 0 && (
+                        </div>
+                      </div>
+                    <div className="col-2">
+                      
+                    {LinkList.length === 0 && (
                             <button
                               type="button"
                               onClick={() =>
                                 this._getHasilVote(el.name, el.jumlahkandidat)
                               }
-                              class="btn btn-primary"
+                              class="btn btn-primary w-100 h-100"
                               data-toggle="modal"
                               data-target=".hasilvote"
                             >
                               Hasil vote
                             </button>
                           )}
-                        </div>
-                      </div>
+                    </div>
                     </div>
                   </>
                 );
@@ -486,7 +436,7 @@ class ListAll extends Component {
                 aria-labelledby="my-modal"
                 aria-hidden="true"
               >
-                <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-dialog modal-xl" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="exampleModalLabel">
@@ -502,7 +452,7 @@ class ListAll extends Component {
                       </button>
                     </div>
                     <form method="POST">
-                      <div class="modal-body">
+                      <div class="modal-body px-4">
                         {LinkList.length === 0 ? (<>
                         
                           <div
@@ -588,7 +538,8 @@ class ListAll extends Component {
                                     </>
                                   ) : (
                                     <div class="col col-md-6 mt-2">
-                                      <div class="card">
+                                      <div class="card border-0 shadow rounded-lg mb-4">
+  <img class="card-img-top" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22362%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20362%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_175c6c72523%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A18pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_175c6c72523%22%3E%3Crect%20width%3D%22362%22%20height%3D%22200%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22134.953125%22%20y%3D%22108.1%22%3E362x200%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Card image cap"/>
                                         <div class="card-body">
                                           <h5 class="card-title text-center">
                                             {element.kandidat}
@@ -599,7 +550,7 @@ class ListAll extends Component {
                                               onClick={(e) =>
                                                 this.handleVoteClick(i)
                                               }
-                                              class="btn btn-primary"
+                                              class="btn btn-primary w-100 active"
                                               style={{cursor:'pointer'}}
                                             >
                                               Vote
@@ -643,9 +594,7 @@ class ListAll extends Component {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+            
       </>
     );
   }

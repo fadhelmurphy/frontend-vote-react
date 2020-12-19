@@ -1,8 +1,8 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import AuthRoute from '../component/AuthRoute';
-import { Home,Login,Private } from '../pages';
-import { ListAll,VoteId } from '../pages/Voting';
+import { AuthRoute } from '../component/Utils';
+import { Home,Login,Voting, PublicVoting } from '../pages';
+// import { ListAll,VoteId } from '../pages/PrivateVoting';
 // import { Admin } from '../utils/Auth';
 export default function index() {
     const rootRouter = [
@@ -10,20 +10,14 @@ export default function index() {
             path:"/",component:Home,exact:true
         },
         {
-            path:"/voting",component:ListAll,exact:true,login:true
+            path:"/voting",component:Voting,exact:true,login:true
         },
         {
-            path:"/voting/:id",component:VoteId,login:true
+            path:"/voting/public/:id",component:PublicVoting,login:false
         },
         {
             path:"/login",component:Login
         },
-        {
-            path:"/vote/priv8",component:Private,exact:true,login:true
-        },
-        {
-            path:"/vote/priv8/:id",component:VoteId,login:true
-        }
     ]
     return (
         <>

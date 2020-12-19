@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { Redirect, Route } from "react-router-dom";
-import { isAuthenticated } from "../../Helpers/Auth";
-import { AuthContext } from "../../Context/AuthContext";
+import { isAuthenticated } from "../../../Helpers/Auth";
+import { AuthContext } from "../../../Context/AuthContext";
 
 export default ({ component: Component, ...rest }) => {
   const { authenticated, setAuthenticated } = useContext(AuthContext);
