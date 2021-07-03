@@ -1,10 +1,14 @@
 import Home from './Home';
 import Login from './Login'
+import Register from './Register'
 import Voting from './Voting'
-import PublicVoting from './PublicVote'
+import PublicVote from './PublicVote'
+import LinkManager from './LinkManager'
 export {
     Home,
     Login,
     Voting,
-    PublicVoting
+    PublicVote,
+    Register,
+    LinkManager
 }

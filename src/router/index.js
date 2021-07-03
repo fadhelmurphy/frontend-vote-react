@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { AuthRoute } from '../component/Utils';
-import { Home,Login,Voting, PublicVoting } from '../pages';
+import { Home,Login,Voting, PublicVote, Register,LinkManager } from '../pages';
 // import { ListAll,VoteId } from '../pages/PrivateVoting';
 // import { Admin } from '../utils/Auth';
 export default function index() {
@@ -10,13 +10,19 @@ export default function index() {
             path:"/",component:Home,exact:true
         },
         {
+            path:"/links",component:LinkManager,exact:true,login:true
+        },
+        {
             path:"/voting",component:Voting,exact:true,login:true
         },
         {
-            path:"/voting/public/:id",component:PublicVoting,login:false
+            path:"/voting/:id",component:PublicVote,
         },
         {
             path:"/login",component:Login
+        },
+        {
+            path:"/register",component:Register
         },
     ]
     return (

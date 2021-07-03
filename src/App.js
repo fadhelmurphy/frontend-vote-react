@@ -3,7 +3,7 @@ import Router from "./router";
 import AuthContext from "./Context/AuthContext";
 import "./App.css";
 import Aos from "aos";
-import { Sugar } from "react-preloaders";
+import { Cube } from "react-preloaders";
 
 export default function App() {
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function App() {
   });
   return (
     <>
-      <Sugar background="#1e2125" color="#0f4c75" time={1000} />
+      <Cube background="#fff" animation="slide" color="#007bff" time={1000} />
       <AuthContext>
         <Router />
       </AuthContext>

@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import {
+  Link
+} from "react-router-dom";
 
 class index extends Component {
   render() {
@@ -6,15 +9,16 @@ class index extends Component {
     return (
         <ul class="list-group">
           <li class="list-group-item active">MAIN MENU</li>
-          <a class="list-group-item" style={{ color: "#212529" }}>
+          <Link to="/voting">
+          <a class="list-group-item">
             <i class="fa fa-tachometer-alt"></i> Dashboard
           </a>
-          <a class="list-group-item">
-            <i class="fa fa-user-circle"></i> My Profile
-          </a>
+          </Link>
+          <Link to="/links">
           <a class="list-group-item">
             <i class="fa fa-user-circle"></i> Manage Links
           </a>
+          </Link>
           <a
             href="#"
             class="list-group-item"

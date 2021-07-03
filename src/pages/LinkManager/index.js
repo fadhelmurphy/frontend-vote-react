@@ -1,11 +1,12 @@
 
+
 import React, { Component } from 'react'
 
-import { ListAll } from '../../component/Contents/Voting';
+import { ListLink } from '../../component/Contents/LinkManager';
 import { Sidebar,Header } from '../../component/Shared';
 import { logout } from '../../Helpers/UserFunctions';
 
-class Voting extends Component{
+class LinkManager extends Component{
     constructor(props){
         super(props)
     }
@@ -14,7 +15,6 @@ class Voting extends Component{
             <>
             <div className="container-fluid my-5">
             <div class="row">
-              
         <div class="col-md-3 mb-5">
   
         <Sidebar lastMenu={logout}/>
@@ -22,10 +22,10 @@ class Voting extends Component{
               <div class="col-md-9">
               <div class="card mb-5">
                 <div class="card-body px-5">
-                  <Header customKata="Selamat datang di aplikasi evoting silahkan masukan code untuk memilih vote private/public"/>
+                  <Header customKata="Link vote yang anda share"/>
                 </div>
               </div>
-                  <ListAll {...this.props}/>
+                  <ListLink {...this.props}/>
                 </div>
                 </div>
                 </div>
@@ -33,4 +33,4 @@ class Voting extends Component{
         )
     }
 }
-export default Voting
+export default LinkManager
