@@ -509,14 +509,14 @@ class ListAll extends Component {
                     </div>
                   )}
       
-      {
+      {LinkList.length === 0 &&(
                                     <button
                                       type="button"
                                       class="btn btn-primary mr-3"
                                       onClick={() => this.handleAddClick()}
                                     >
                                     + Add option
-                                    </button>}
+                                    </button>)}
                   <div className={LinkList.length > 0 && "row mt-3"}>
                     {Vote &&
                       Vote.map((element, i) => {
