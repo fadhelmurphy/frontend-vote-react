@@ -1,34 +1,42 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
+import { Link,useHistory, useLocation } from "react-router-dom";
+import { Layout, Menu } from "antd";
 import {
-  Link
-} from "react-router-dom";
+  UserOutlined,
+  LaptopOutlined,
+  NotificationOutlined,
+} from "@ant-design/icons";
 
 class index extends Component {
+  constructor(props){
+    super(props);
+  }
   render() {
-      const {lastMenu} = this.props
+    const { SubMenu } = Menu;
+    const { Header, Content, Footer, Sider } = Layout;
+    const { lastMenu } = this.props;  
+    const currentUrl = window.location.pathname
     return (
-        <ul class="list-group">
-          <li class="list-group-item active">MAIN MENU</li>
-          <Link to="/voting">
-          <a class="list-group-item">
-            <i class="fa fa-tachometer-alt"></i> Dashboard
-          </a>
-          </Link>
-          <Link to="/links">
-          <a class="list-group-item">
-            <i class="fa fa-user-circle"></i> Manage Links
-          </a>
-          </Link>
-          <a
-            href="#"
-            class="list-group-item"
-            onClick={() => lastMenu()}
-            style={{ color: "#212529" }}
-          >
-            <i class="fa fa-sign-out-alt"></i> Logout
-          </a>
-        </ul>
+      <Sider className="col-12 col-md-6 mb-3 w-100" style={{background:'transparent'}} width={400}>
+        <Menu
+          mode="inline"
+          // defaultSelectedKeys={["1"]}
+          // defaultOpenKeys={["sub1"]}
+    selectedKeys={currentUrl}
+          style={{ height: "100%" }}
+        >
+          <Menu.Item key={"/voting"}>
+            <Link to="/voting">Dashboard</Link>
+          </Menu.Item>
+          <Menu.Item key={"/links"}>
+            <Link to="/links">Manage Links</Link>
+          </Menu.Item>
+          <Menu.Item onClick={() => lastMenu()}>
+            Logout
+          </Menu.Item>
+        </Menu>
+      </Sider>
     );
   }
 }
-export default index
+export default index;

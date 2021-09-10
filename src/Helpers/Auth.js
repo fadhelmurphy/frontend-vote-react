@@ -1,12 +1,12 @@
 import api from "../api";
 
-const isAuthenticated = () => {
+export const isAuthenticated = () => {
   const token = localStorage.getItem("usertoken");
 
   return token != null ? token : false;
 };
 
-const login = async ({ userEmail, password }) => {
+export const login = async ({ userEmail, password }) => {
   try {
     const response = await api.post("/auth/authenticate", {
       email: userEmail,
@@ -26,19 +26,19 @@ const login = async ({ userEmail, password }) => {
   }
 };
 
-const logout = () => {
+export const logout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("email");
   localStorage.removeItem("name");
 };
 
-const getToken = () => {
+export const getToken = () => {
   const token = isAuthenticated();
 
   return token;
 };
 
-const setHeader = () => {
+export const setHeader = () => {
   const token = isAuthenticated();
   return {
     headers: {
@@ -48,7 +48,17 @@ const setHeader = () => {
   };
 }
 
-const register = async ({ email, password, username }) => {
+export const setFileHeader = () => {
+  const token = isAuthenticated();
+  return {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: 'Bearer ' + token
+    },
+  };
+}
+
+export const register = async ({ email, password, username }) => {
   try {
     await api.post("/users/create", {
       email,
@@ -62,4 +72,4 @@ const register = async ({ email, password, username }) => {
   }
 };
 
-export { isAuthenticated, getToken, login, logout, register, setHeader };
+// export { isAuthenticated, getToken, login, logout, register, setHeader,setFileHeader };

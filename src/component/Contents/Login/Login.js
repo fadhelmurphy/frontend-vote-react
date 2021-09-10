@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { login,getUser } from '../../../Helpers/UserFunctions'
+import { Form, Input, Button, Select } from 'antd';
 // import jwt_decode from 'jwt-decode'
 // import { addContact } from '../../redux/actions'
 // import { connect } from "react-redux";
@@ -26,7 +27,7 @@ class Login extends Component {
   onSubmit(e) {
     
     // const { contacts, addNewContact } = this.props;
-    e.preventDefault()
+    // e.preventDefault()
 
     const user = {
       email: this.state.email,
@@ -66,42 +67,40 @@ class Login extends Component {
   }
 
   render() {
+    
     return (
-            <form noValidate onSubmit={this.onSubmit}>
+      <Form name="control-hooks" onFinish={this.onSubmit} 
+      layout={"vertical"}
+      >
               <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
               <div
             className="Features"
             dangerouslySetInnerHTML={{ __html: this.state.alert }}
           />
-              <div className="form-group">
-                <label htmlFor="email">Email address</label>
-                <input
+                <Form.Item name="Email" label="Email address" rules={[{ required: true }]}>
+                <Input
                   type="email"
                   className="form-control"
                   name="email"
                   placeholder="Enter email"
                   value={this.state.email}
                   onChange={this.onChange}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <input
+                /></Form.Item>
+                
+                <Form.Item name="Password" label="Password" rules={[{ required: true }]}>
+                <Input
                   type="password"
                   className="form-control"
                   name="password"
                   placeholder="Password"
                   value={this.state.password}
                   onChange={this.onChange}
-                />
-              </div>
-              <button
-                type="submit"
-                className="btn btn-lg btn-primary btn-block"
-              >
-                Sign in
-              </button>
-            </form>
+                /></Form.Item>
+                
+        <Form.Item layout={"vertical"}>
+          <Button className="btn-block" type="primary" htmlType="submit" size={"large"}>Sign In</Button>
+        </Form.Item>
+            </Form>
     )
   }
 }

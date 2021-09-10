@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import api from "../../../api";
 import { setHeader } from "../../../Helpers/Auth";
 import { bulkDelete } from "../../../Helpers/UserFunctions";
+import { Button  } from 'antd';
 function GenerateLink(props) {
   const [Code,setCode] = useState('')
   const [Public,setPublic] = useState(false)
@@ -38,21 +39,23 @@ function GenerateLink(props) {
   return (
     <>
     
-    <button class="btn btn-success mr-3"
+    <Button
+    className="mr-3"
     data-toggle="modal"
     data-target="#GenModal" 
     onClick={async()=>{await setCode('');await setPublic(false)}}
     disabled={props.ShareList.length===0&& true}>
       Share
-    </button>
-    <button
+    </Button>
+    {" "}
+    <Button
+    className="mr-3"
+    type="primary"
     onClick={() => handleBulkDelete()}
-    type="button"
-    class="btn btn-danger"
     disabled={props.ShareList.length===0&& true}
-  >
-    Delete
-  </button>
+    danger>
+      Delete
+    </Button>
       <div
         class="modal fade"
         id="GenModal"

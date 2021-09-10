@@ -1,6 +1,6 @@
 import React from "react";
 import api from "../api";
-import { setHeader } from "./Auth";
+import { setHeader, setFileHeader } from "./Auth";
 // import api from 'api'
 // import { URL_API } from "./api";
 import { customErr } from "./CustomError";
@@ -50,6 +50,19 @@ export const login = (user) => {
     });
 };
 
+export const deleteVoter = (vote) => {
+  return api.post("deletevoter", { 
+    id_vote:vote.id_vote,
+    email:vote.email
+   }, setHeader())
+   .then((res) => {
+    window.location.replace("/voting");
+   })
+   .catch((err) => {
+     alert('gagal delete voter',err)
+   });
+};
+
 export const showPriv8 = (code) => {
   return api.post("show/priv8", { code }, setHeader());
 };
@@ -76,8 +89,33 @@ export const getUser = () => {
 };
 
 export const TambahVote = (data) => {
+  const formData = new FormData();
+  for (let [key, value] of Object.entries(data)) {
+    if(key!=="data"){
+      formData.append(key,value)
+    }else{
+      value.forEach(element => {
+        console.log(element)
+        formData.append("kandidat[]",element.kandidat)
+        // element.kandidatImage.originFileObj.name = element.kandidatImage.name+"."+getExtension[1]
+        if(element.kandidatImage===""){
+          formData.append("fileName[]","kosong")
+        }else{
+          var getExtension = element.kandidatImage.type.split('/')
+          console.log(element.kandidatImage.name+"."+getExtension[1])
+        formData.append("fileName[]",element.kandidatImage.name+"."+getExtension[1])
+        formData.append("kandidatImage[]",element.kandidatImage.originFileObj,element.kandidatImage.name+"."+getExtension[1])
+        }
+      });
+    }
+  }
+  for (let pair of formData.entries()) {
+    console.log(pair[0],pair[1])
+  }
+  
   return api
-    .post("add", data, setHeader())
+    .post("add", formData, setFileHeader())
+    // .post("add", data, setHeader())
     .then((res) => {
       console.log(res);
       const comment = "menambahkan Vote!";
@@ -167,8 +205,33 @@ export const DeleteOneLink = (data) => {
 };
 
 export const UpdateOneVote = (Vote) => {
+  console.log(Vote)
+  const formData = new FormData();
+  Vote.forEach(element => {
+    // console.log(element)
+    formData.append("id[]",element.id)
+    formData.append("id_vote[]",element.id_vote)
+    formData.append("action[]",element.action)
+    formData.append("kandidat[]",element.kandidat)
+    formData.append("votename[]",element.votename)
+    // element.kandidatImage.originFileObj.name = element.kandidatImage.name+"."+getExtension[1]
+    if(element.kandidatImage===""){
+      formData.append("fileName[]","kosong")
+    }else if(typeof element.kandidatImage === 'object'){
+      var getExtension = element.kandidatImage.type.split('/')
+      console.log(element.kandidatImage.name+"."+getExtension[1])
+    formData.append("fileName[]",element.kandidatImage.name+"."+getExtension[1])
+    formData.append("kandidatImage[]",element.kandidatImage.originFileObj,element.kandidatImage.name+"."+getExtension[1])
+    }else{
+      formData.append("fileName[]",element.kandidatImage)
+    }
+  });
+
+  for (let pair of formData.entries()) {
+    console.log(pair[0],pair[1])
+  }
   return api
-    .post("update", { Vote }, setHeader())
+    .post("update", formData, setFileHeader())
     .then((res) => {
       console.log(res);
       const comment = "mengupdate Vote!";

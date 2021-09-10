@@ -4,29 +4,37 @@ import { VoteId } from "../../component/Contents/Voting";
 import { Sidebar, Header } from "../../component/Shared";
 import { logout } from "../../Helpers/UserFunctions";
 
+import { Layout, Menu } from "antd";
 class Index extends Component {
   constructor(props) {
     super(props);
   }
   render() {
+    const { SubMenu } = Menu;
+    const { Content, Footer, Sider } = Layout;
     return (
       <>
-        <div className="container-fluid my-5">
-          <div class="row">
-            <div class="col-md-3 mb-5">
+      
+      <Layout>
+          <Content style={{ padding: "0 50px" }}>
+            <Header customKata="Selamat datang di aplikasi evoting" />
+          </Content>
+          <Content className={"container"}>
+            <Layout
+              className="row"
+              style={{ padding: "24px 0", background:'white'}}
+            >
               <Sidebar lastMenu={logout} />
-            </div>
-            <div class="col-md-9">
-              <div class="card mb-5">
-                <div class="card-body px-5">
-                  <Header customKata="Silahkan vote sesuai keinginan anda" />
-                </div>
-              </div>
+            <div class="col">
               <VoteId {...this.props} />
             </div>
-          </div>
-        </div>
-      </>
+            </Layout>
+          </Content>
+          <Footer style={{ textAlign: "center" }}>
+            Ant Design ©2018 Created by Ant UED
+          </Footer>
+        </Layout>
+        </>
     );
   }
 }

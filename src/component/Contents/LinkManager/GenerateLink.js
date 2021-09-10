@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import api from "../../../api";
 import { setHeader } from "../../../Helpers/Auth";
 import { bulkDeleteLinks } from "../../../Helpers/UserFunctions";
+import { Button  } from 'antd';
 function GenerateLink(props) {
   const [Code,setCode] = useState('')
   // const [Public,setPublic] = useState(false)
@@ -37,14 +38,14 @@ function GenerateLink(props) {
 
   return (
     <>
-    <button
+    
+    <Button type="primary"
     onClick={() => handleBulkDelete()}
-    type="button"
-    class="btn btn-danger"
     disabled={props.ShareList.length===0&& true}
-  >
-    Delete
-  </button></>
+    danger>
+      Delete
+    </Button>
+    </>
   );
 }
 

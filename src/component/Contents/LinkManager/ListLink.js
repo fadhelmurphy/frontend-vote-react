@@ -15,6 +15,7 @@ import { imgVote } from "../../../asset";
 import { setHeader } from "../../../Helpers/Auth";
 import { Doughnut } from "react-chartjs-2";
 import { Header } from "../../Shared";
+import { Button, Select, Input  } from 'antd';
 class ListAll extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +23,7 @@ class ListAll extends Component {
       AllData: [],
       ShareList: [],
       LinkList: [],
-      VoteList:[],
+      VoteList: [],
       message: {
         code: "",
         votename: "",
@@ -47,11 +48,10 @@ class ListAll extends Component {
     };
   }
 
-  handleUpdate = (event) => {
-    event.preventDefault();
+  handleUpdate = () => {
+    // event.preventDefault();
 
     var { Vote } = this.state;
-    console.log(Vote);
     UpdateOneLink(Vote).then((res) => {
       const { alert, reload } = res;
       this.setState({ Alert: alert });
@@ -91,11 +91,12 @@ class ListAll extends Component {
   };
 
   // handle input change
-  handleCandidateChange = (e, index) => {
-    const { name, value } = e.target;
-    const list = this.state.Vote;
-    this.state.Vote[index][name] = value;
+  handleCandidateChange = (name,value, index) => {
+    // const { name, value } = e.target;
+    let list = this.state.Vote;
+    list[index][name] = value;
     this.setState({ Vote: list });
+    console.log(this.state.Vote)
   };
   // handle click event of the Add button
   handleAddClick = () => {
@@ -105,7 +106,7 @@ class ListAll extends Component {
       id: null,
       votename: "",
       id_url: list[0].id_url,
-      id_vote:""
+      id_vote: "",
     });
     this.setState({ Vote: list });
   };
@@ -113,10 +114,11 @@ class ListAll extends Component {
   handleRemoveClick = (index) => {
     const list = this.state.Vote;
     list[index]["action"] = "hapus";
-    console.log(list)
+    console.log(list);
     this.setState({ Vote: list });
   };
   _getVote = async (id) => {
+    await this.setState({Vote:null})
     const response = await api.get("getlink/" + id, setHeader());
     response.data.vote.map((el) => {
       el["id_vote"] = el.id_vote;
@@ -144,7 +146,7 @@ class ListAll extends Component {
   };
 
   _getVoteList = async () => {
-    const response = await api.get("/", setHeader());
+    const response = await api.get("/AllVote", setHeader());
     var result = response.data.votes.map(function (el) {
       var o = Object.assign({}, el);
       o.isChecked = false;
@@ -225,20 +227,20 @@ class ListAll extends Component {
     this._getUser();
   }
   render() {
+    const { Option } = Select;
     const { AllData, Vote, name, isSelected, LinkList, VoteList } = this.state;
     // const {contacts,removeExistingContact} = this.props
     return (
       <>
         {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}
-
-        <div class="card-body px-0">
-          <div className="row justify-content-end">
-            <div className="col-12 col-md-3 mt-3 mt-md-0 text-lg-right">
+        <div className="col">
+          <div className="row mb-3">
+            <div className={"col-12 "+(isSelected ? "col-md-4 pr-lg-4 text-lg-left" : "col-md-1 text-lg-left")+" mt-3 mt-md-0 align-self-center"}>
               {LinkList.length === 0 && (
                 <>
-                  <div className="row justify-content-between justify-content-lg-end mx-auto">
-                    <button
-                      class={"btn btn-secondary" + (isSelected ? " mr-3" : "")}
+                    
+              <Button
+              class={"ant-btn "+(isSelected ? " mr-3" : "")}
                       onClick={async () => {
                         isSelected &&
                           AllData.map((el) => {
@@ -249,130 +251,51 @@ class ListAll extends Component {
                           isSelected: !this.state.isSelected,
                         });
                       }}
-                    >
-                      {isSelected ? "Deselect" : "Select"}
-                    </button>
+                href="#"
+                data-toggle="modal"
+                data-target="#addModal"
+              >
+                {isSelected ? "Deselect" : "Select"}
+              </Button>
                     {isSelected && <GenerateLink {...this.state} />}
-                  </div>
                 </>
               )}
             </div>
           </div>
-        </div>
-        {(LinkList.length > 0 ? LinkList : AllData).map((el, i) => {
-          return (
-            <>
-              <div className="row mb-3">
-                <div className="col-12">
-                  <div class="list-group flex-row">
-                    <a
-                      // href="#"
-                      style={{ cursor: "pointer" }}
-                      class={"list-group-item w-100 py-2"}
-                      onClick={() => {
-                        !isSelected
-                          ? this._getVote(el.id_url)
-                          : this.handleChecked(i);
-                      }}
-                      data-toggle={!isSelected && "modal"}
-                      data-target={!isSelected && "#my-modal"}
-                    >
-                      {isSelected && (
-                        <input
-                          className="mr-5"
-                          onClick={() => this.handleChecked(i)}
-                          checked={el.isChecked}
-                          type="checkbox"
-                        />
-                      )}
-                      {el.name ? el.name : el.votename}
-                    </a>
+          {(LinkList.length > 0 ? LinkList : AllData).map((el, i) => {
+            return (
+              <>
+                <div className="row mb-3">
+                  <div className="col-12">
+                    <div class="list-group flex-row">
+                      <a
+                        // href="#"
+                        style={{ cursor: "pointer" }}
+                        class={"list-group-item w-100 py-2"}
+                        onClick={() => {
+                          !isSelected
+                            ? this._getVote(el.id_url)
+                            : this.handleChecked(i);
+                        }}
+                        data-toggle={!isSelected && "modal"}
+                        data-target={!isSelected && "#my-modal"}
+                      >
+                        {isSelected && (
+                          <input
+                            className="mr-3"
+                            onClick={() => this.handleChecked(i)}
+                            checked={el.isChecked}
+                            type="checkbox"
+                          />
+                        )}
+                        {process.env.REACT_APP_BASEURL + "voting/" + el.name}
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </>
-          );
-        })}
-        <div
-          class="modal fade hasilvote"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="my-modal"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
-                  {this.state.jumlahkandidat.title}
-                </h5>
-                <button
-                  type="button"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                {this.state.jumlahkandidat.kandidat.length > 0 ? (
-                  <>
-                    <Doughnut
-                      data={{
-                        labels: this.state.jumlahkandidat.kandidat,
-                        datasets: [
-                          {
-                            label: this.state.jumlahkandidat.title,
-                            backgroundColor: [
-                              "rgba(255, 99, 132, 0.6)",
-                              "rgba(54, 162, 235, 0.6)",
-                              "rgba(255, 206, 86, 0.6)",
-                              "rgba(75, 192, 192, 0.6)",
-                              "rgba(153, 102, 255, 0.6)",
-                            ],
-                            // borderColor: 'rgb(255, 99, 132)',
-                            data: this.state.jumlahkandidat.jumlah,
-                          },
-                        ],
-                      }}
-                    />
-                    <table class="table table-bordered mt-5 text-center">
-                      <thead>
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Email</th>
-                          <th scope="col">Pilihan</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.jumlahVoters != null &&
-                          this.state.jumlahVoters.map((voter, i) => (
-                            <tr>
-                              <th scope="row">{i + 1}</th>
-                              <td>{voter.email}</td>
-                              <td scope="row">{voter.pilih}</td>
-                            </tr>
-                          ))}
-                        {this.state.jumlahVoters != null && (
-                          <tr class="table-active">
-                            <td colspan="2">Jumlah voter</td>
-                            <td scope="row">
-                              {this.state.jumlahVoters.length}
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </>
-                ) : (
-                  <h3 className="text-center m-5 text-uppercase">
-                    Belum ada yang vote
-                  </h3>
-                )}
-              </div>
-            </div>
-          </div>
+              </>
+            );
+          })}
         </div>
         <div
           class="modal fade"
@@ -386,7 +309,9 @@ class ListAll extends Component {
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">
-                  {Vote !== null ? Vote[0].id_url : "kosong"}
+                  {Vote !== null
+                    ? process.env.REACT_APP_BASEURL + "voting/" + Vote[0].id_url
+                    : "kosong"}
                 </h5>
                 <button
                   type="button"
@@ -407,24 +332,23 @@ class ListAll extends Component {
                     <label for="recipient-name" class="col-form-label">
                       Url Vote:
                     </label>
-                    <input
+                    <Input
                       type="text"
                       name="id_url"
-                      class="form-control"
                       onChange={(e) => this.handleTitleChange(e)}
                       value={Vote !== null ? Vote[0].id_url : "kosong"}
                       id="recipient-title"
                     />
                   </div>
-                  
+
                   {
-                                    <button
-                                      type="button"
-                                      class="btn btn-primary mr-3"
-                                      onClick={() => this.handleAddClick()}
-                                    >
-                                    + Tambah vote
-                                    </button>}
+                    <Button
+                      type="primary"
+                      onClick={() => this.handleAddClick()}
+                    >
+                      + Add Option
+                    </Button>
+                  }
                   <div className={LinkList.length > 0 && "row mt-3"}>
                     {Vote &&
                       Vote.map((element, i) => {
@@ -440,34 +364,27 @@ class ListAll extends Component {
                                     Nama vote:
                                   </label>
 
-                                  <select
-                                    class="custom-select"
-                                    id="inputGroupSelect01"
+                                  <Select 
+                                  className="w-100"
+                                  defaultValue={element.votename!==null && element.votename}
                                     name="id_vote"
-                                    onChange={(e) =>
-                                      this.handleCandidateChange(e, i)
-                                    }
-                                  >
-                                    <option selected value={element.id_vote}>{element.votename}</option>
-                                    {VoteList && VoteList.map((option)=>{
-                                      return option.name !== element.votename?
-                                    <>
-                                        <option value={option.id_vote}>{option.name}</option>
-                                    </>
-                                    :''
-                                    })}
-                                  </select>
-                                  
+                                    onChange={(value)=>this.handleCandidateChange("id_vote",value, i)
+                                    }>
+                                    {VoteList &&
+                                      VoteList.map((option,ind) => 
+                                            <Option key={ind} value={option.id_vote}>
+                                              {option.name}
+                                            </Option>)}
+      </Select>
                                 </div>
                                 <div className="form-group">
                                   {Vote.length !== 1 && (
-                                    <button
-                                      type="button"
-                                      class="btn btn-danger mr-3"
+                                    <Button
+                                    danger
                                       onClick={() => this.handleRemoveClick(i)}
                                     >
                                       Remove
-                                    </button>
+                                    </Button>
                                   )}
                                 </div>
                               </>
@@ -478,27 +395,28 @@ class ListAll extends Component {
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => this.handleUpdate(e)}
-                    class="btn btn-primary"
-                  >
-                    Update
-                  </button>
-                  <button
-                    onClick={(e) => this.handleDelete()}
-                    type="button"
-                    class="btn btn-danger"
-                  >
-                    Delete
-                  </button>
+                    <Button
+                      data-dismiss="modal"
+                      size={"large"}
+                    >
+                      Close
+                    </Button>
+                    <Button
+                      type="primary"
+                      size={"large"}
+                      onClick={this.handleUpdate}
+                      className="bg-success text-white border-0"
+                    >
+                      Update
+                    </Button>
+                    <Button
+                    danger
+                    type="primary"
+                      size={"large"}
+                      onClick={(e) => this.handleDelete()}
+                    >
+                      Delete
+                    </Button>
                 </div>
               </form>
             </div>

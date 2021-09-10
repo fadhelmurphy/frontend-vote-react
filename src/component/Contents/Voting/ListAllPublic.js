@@ -338,7 +338,7 @@ class ListAllPublic extends Component {
                 return (
                   <>
                     <div className="row mb-3">
-                      <div className={LinkList.length === 0?"col-10":"col-12"}>
+                      <div className={LinkList.length === 0?"col-9":"col-12"}>
                         <div class="list-group flex-row">
                           <a
                             // href="#"
@@ -366,7 +366,7 @@ class ListAllPublic extends Component {
                           </a>
                         </div>
                       </div>
-                    <div className="col-2">
+                    <div className="col-3">
                       
                     {LinkList.length === 0 && (
                             <button
@@ -378,7 +378,7 @@ class ListAllPublic extends Component {
                               data-toggle="modal"
                               data-target=".hasilvote"
                             >
-                              Hasil vote
+                              Hasil
                             </button>
                           )}
                     </div>
