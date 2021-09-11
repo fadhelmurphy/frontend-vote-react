@@ -2,7 +2,7 @@ import React,{Component} from 'react'
 import api from '../../../api'
 import {setHeader} from '../../../Helpers/Auth'
 import { showPub } from '../../../Helpers/UserFunctions'
-import List from './List'
+import VotingId from './VotingId'
 // import { Sugar } from 'react-preloaders';
 
 export default class VoteId extends Component{
@@ -62,6 +62,11 @@ constructor(props){
     console.log(urlFetch)
     if ( urlFetch.status === 200 ){
         console.log("Dan hasilnya adalah true maka setState dilakukan")
+        
+        urlFetch.data.map((el) => {
+      el["name"] = el.votename;
+      // el["kandidatImage"] = "";
+    });
         this.setStateAsync({
               LinkList: await urlFetch.data
         }) 
@@ -87,7 +92,7 @@ constructor(props){
     return(
         <>
         {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}
-          <List {...this.state}/>
+          <VotingId {...this.state}/>
         </>
     )
 }

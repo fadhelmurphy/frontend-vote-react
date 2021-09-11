@@ -48,17 +48,14 @@ class Login extends Component {
             name: res
           })
         })
-        this.props.history.push(`/voting`)
+        // this.props.history.push(`/voting`)
       }
     })
   }
 
-    componentDidMount() {
-      console.log(this.props)
-      const token = localStorage.getItem("usertoken")
-      if(token!==null){
-        this.props.history.push(`/voting`)
-      }
+    componentDidUpdate() {
+      // console.log(this.props)
+      // const token = localStorage.getItem("usertoken")
       // const { contacts, addNewContact } = this.props;
       // if(contacts.token!=null){
       //   this.props.history.push(`/voting`)
@@ -67,7 +64,10 @@ class Login extends Component {
   }
 
   render() {
-    
+    const token = localStorage.getItem("usertoken")
+    if(token!==null || this.state.token!==''){
+      this.props.history.push(`/voting`)
+    }
     return (
       <Form name="control-hooks" onFinish={this.onSubmit} 
       layout={"vertical"}

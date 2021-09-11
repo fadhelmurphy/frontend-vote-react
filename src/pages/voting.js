@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
-import { ListAll } from "../../component/Contents/Voting";
-import { Sidebar, Header } from "../../component/Shared";
-import { logout } from "../../Helpers/UserFunctions";
+import { ListAll } from "../component/Contents/Voting";
+import { Sidebar, Header } from "../component/Shared";
+import { logout } from "../Helpers/UserFunctions";
 
 import { Layout, Menu } from "antd";
 

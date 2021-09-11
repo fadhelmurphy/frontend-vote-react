@@ -1,4 +1,4 @@
-import { Register } from "../../component/Contents/Register";
+import { Register } from "../component/Contents/Register";
 import React, { Component } from "react";
 export default class index extends Component {
     constructor(props) {

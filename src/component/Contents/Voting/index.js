@@ -1,12 +1,10 @@
 
 import ListAll from './ListAll'
-import ListAllPublic from './ListAllPublic'
 import VoteId from './VoteId'
-import Add from './Add'
-import GenerateLink from './GenerateLink'
+import Add from '../../Shared/Button/AddVoteButton/Add'
+import ModalGenerateLink from './ModalGenerateLink'
 export {
-    Add,GenerateLink,
+    Add,ModalGenerateLink,
     ListAll,
-    VoteId,
-    ListAllPublic
+    VoteId
 }

@@ -17,7 +17,10 @@ class index extends Component {
     const { lastMenu } = this.props;  
     const currentUrl = window.location.pathname
     return (
-      <Sider className="col-12 col-md-6 mb-3 w-100" style={{background:'transparent'}} width={400}>
+      <Sider
+      // breakpoint="lg"
+      // collapsedWidth="90%"
+      className="col-12 col-md-6 mb-3" style={{background:'transparent'}} width="340">
         <Menu
           mode="inline"
           // defaultSelectedKeys={["1"]}

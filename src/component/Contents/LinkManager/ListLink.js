@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { Add, GenerateLink } from "./index";
 import {
   logout,
   getUser,
   showPriv8,
   DeleteOneLink,
   UpdateOneLink,
+  bulkDeleteLinks,
 } from "../../../Helpers/UserFunctions";
 import api from "../../../api";
 import { imgVote } from "../../../asset";
@@ -15,7 +15,9 @@ import { imgVote } from "../../../asset";
 import { setHeader } from "../../../Helpers/Auth";
 import { Doughnut } from "react-chartjs-2";
 import { Header } from "../../Shared";
-import { Button, Select, Input  } from 'antd';
+import { Button, Select, Input } from "antd";
+import { List } from "../../Shared";
+import { BulkDeleteButton, DeleteButton } from "../../Shared/Button";
 class ListAll extends Component {
   constructor(props) {
     super(props);
@@ -59,14 +61,14 @@ class ListAll extends Component {
     });
   };
 
-  handleDelete = () => {
-    var { Vote } = this.state;
-    DeleteOneLink(Vote[0].id_url).then((res) => {
-      const { alert, reload } = res;
-      this.setState({ Alert: alert });
-      if (reload) window.location.reload();
-    });
-  };
+  // handleDelete = () => {
+  //   var { Vote } = this.state;
+  //   DeleteOneLink(Vote[0].id_url).then((res) => {
+  //     const { alert, reload } = res;
+  //     this.setState({ Alert: alert });
+  //     if (reload) window.location.reload();
+  //   });
+  // };
   _setError = (key, message) => {
     var obj = this.state.message;
     obj[key] = message;
@@ -91,12 +93,12 @@ class ListAll extends Component {
   };
 
   // handle input change
-  handleCandidateChange = (name,value, index) => {
+  handleCandidateChange = (name, value, index) => {
     // const { name, value } = e.target;
     let list = this.state.Vote;
     list[index][name] = value;
     this.setState({ Vote: list });
-    console.log(this.state.Vote)
+    console.log(this.state.Vote);
   };
   // handle click event of the Add button
   handleAddClick = () => {
@@ -118,13 +120,13 @@ class ListAll extends Component {
     this.setState({ Vote: list });
   };
   _getVote = async (id) => {
-    await this.setState({Vote:null})
+    // await this.setState({Vote:null})
     const response = await api.get("getlink/" + id, setHeader());
+    console.log(response.data);
     response.data.vote.map((el) => {
-      el["id_vote"] = el.id_vote;
+      // el["id_vote"] = el.id_vote;
       el["action"] = "ubah";
     });
-    console.log(response.data.vote);
     this.setState({
       Vote: response.data.vote,
     });
@@ -136,6 +138,8 @@ class ListAll extends Component {
     var result = response.data.votes.map(function (el) {
       var o = Object.assign({}, el);
       o.isChecked = false;
+      o.name = process.env.REACT_APP_BASEURL + el.id_url;
+      o.id_vote = el.id_url;
       return o;
     });
     this.setState({
@@ -235,29 +239,57 @@ class ListAll extends Component {
         {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}
         <div className="col">
           <div className="row mb-3">
-            <div className={"col-12 "+(isSelected ? "col-md-4 pr-lg-4 text-lg-left" : "col-md-1 text-lg-left")+" mt-3 mt-md-0 align-self-center"}>
+            <div
+              className={
+                "col-12 " +
+                (isSelected
+                  ? "col-md-4 pr-lg-4 text-lg-left"
+                  : "col-md-1 text-lg-left") +
+                " mt-3 mt-md-0 align-self-center"
+              }
+            >
               {LinkList.length === 0 && (
                 <>
-                    
-              <Button
-              class={"ant-btn "+(isSelected ? " mr-3" : "")}
-                      onClick={async () => {
-                        isSelected &&
-                          AllData.map((el) => {
-                            el.isChecked = false;
-                          });
-                        await this.setState({
-                          ShareList: [],
-                          isSelected: !this.state.isSelected,
+                  <Button
+                    class={"ant-btn " + (isSelected ? " mr-3" : "")}
+                    onClick={async () => {
+                      isSelected &&
+                        AllData.map((el) => {
+                          el.isChecked = false;
                         });
-                      }}
-                href="#"
-                data-toggle="modal"
-                data-target="#addModal"
-              >
-                {isSelected ? "Deselect" : "Select"}
-              </Button>
-                    {isSelected && <GenerateLink {...this.state} />}
+                      await this.setState({
+                        ShareList: [],
+                        isSelected: !this.state.isSelected,
+                      });
+                    }}
+                    href="#"
+                    data-toggle="modal"
+                    data-target="#addModal"
+                  >
+                    {isSelected ? "Deselect" : "Select"}
+                  </Button>
+                  {
+                    isSelected && (
+                      // <BulkDeleteButton
+                      //   bulkDelete={(value) => bulkDeleteLinks(value)}
+                      //   {...this.state}
+                      // >
+                      //   Delete
+                      // </BulkDeleteButton>
+
+                      <DeleteButton
+                        Data={AllData.filter((el) => el.isChecked && el)}
+                        DeleteFunc={(value) => {
+                          bulkDeleteLinks(value).then((res) => {
+                            const { reload } = res;
+                            if (reload) window.location.reload(true);
+                          });
+                        }}
+                        size="large"
+                      ></DeleteButton>
+                    )
+                    // <GenerateLink {...this.state} />
+                  }
                 </>
               )}
             </div>
@@ -267,7 +299,14 @@ class ListAll extends Component {
               <>
                 <div className="row mb-3">
                   <div className="col-12">
-                    <div class="list-group flex-row">
+                    <List
+                      isSelected={isSelected}
+                      el={el}
+                      i={i}
+                      _getVote={(value) => this._getVote(value)}
+                      handleChecked={(value) => this.handleChecked(value)}
+                    />
+                    {/* <div class="list-group flex-row">
                       <a
                         // href="#"
                         style={{ cursor: "pointer" }}
@@ -290,7 +329,7 @@ class ListAll extends Component {
                         )}
                         {process.env.REACT_APP_BASEURL + "voting/" + el.name}
                       </a>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </>
@@ -364,23 +403,36 @@ class ListAll extends Component {
                                     Nama vote:
                                   </label>
 
-                                  <Select 
-                                  className="w-100"
-                                  defaultValue={element.votename!==null && element.votename}
+                                  <Select
+                                    className="w-100"
+                                    defaultValue={
+                                      element.votename !== null &&
+                                      element.votename
+                                    }
                                     name="id_vote"
-                                    onChange={(value)=>this.handleCandidateChange("id_vote",value, i)
-                                    }>
+                                    onChange={(value) =>
+                                      this.handleCandidateChange(
+                                        "id_vote",
+                                        value,
+                                        i
+                                      )
+                                    }
+                                  >
                                     {VoteList &&
-                                      VoteList.map((option,ind) => 
-                                            <Option key={ind} value={option.id_vote}>
-                                              {option.name}
-                                            </Option>)}
-      </Select>
+                                      VoteList.map((option, ind) => (
+                                        <Option
+                                          key={ind}
+                                          value={option.id_vote}
+                                        >
+                                          {option.name}
+                                        </Option>
+                                      ))}
+                                  </Select>
                                 </div>
                                 <div className="form-group">
                                   {Vote.length !== 1 && (
                                     <Button
-                                    danger
+                                      danger
                                       onClick={() => this.handleRemoveClick(i)}
                                     >
                                       Remove
@@ -395,28 +447,48 @@ class ListAll extends Component {
                   </div>
                 </div>
                 <div class="modal-footer">
-                    <Button
-                      data-dismiss="modal"
-                      size={"large"}
-                    >
-                      Close
-                    </Button>
-                    <Button
-                      type="primary"
-                      size={"large"}
-                      onClick={this.handleUpdate}
-                      className="bg-success text-white border-0"
-                    >
-                      Update
-                    </Button>
-                    <Button
+                  <Button data-dismiss="modal" size={"large"}>
+                    Close
+                  </Button>
+                  <Button
+                    type="primary"
+                    size={"large"}
+                    target="_blank"
+                    href={
+                      Vote !== null &&
+                      process.env.REACT_APP_BASEURL + "voting/" + Vote[0].id_url
+                    }
+                    className="bg-primary text-white border-0"
+                  >
+                    See
+                  </Button>
+                  <Button
+                    type="primary"
+                    size={"large"}
+                    onClick={this.handleUpdate}
+                    className="bg-success text-white border-0"
+                  >
+                    Update
+                  </Button>
+                  <DeleteButton
+                    Data={Vote !== null && Vote[0].id_url}
+                    DeleteFunc={(value) => {
+                      DeleteOneLink(value).then((res) => {
+                        const { alert, reload } = res;
+                        this.setState({ Alert: alert });
+                        if (reload) window.location.reload();
+                      });
+                    }}
+                    size="large"
+                  ></DeleteButton>
+                  {/* <Button
                     danger
                     type="primary"
-                      size={"large"}
-                      onClick={(e) => this.handleDelete()}
-                    >
-                      Delete
-                    </Button>
+                    size={"large"}
+                    // onClick={(e) => this.handleDelete()}
+                  >
+                    Delete
+                  </Button> */}
                 </div>
               </form>
             </div>

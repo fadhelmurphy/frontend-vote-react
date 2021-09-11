@@ -2,9 +2,9 @@
 
 import React, { Component } from 'react'
 
-import { ListLink } from '../../component/Contents/LinkManager';
-import { Sidebar,Header } from '../../component/Shared';
-import { logout } from '../../Helpers/UserFunctions';
+import { ListLink } from '../component/Contents/LinkManager';
+import { Sidebar,Header } from '../component/Shared';
+import { logout } from '../Helpers/UserFunctions';
 
 import { Layout, Menu } from "antd";
 

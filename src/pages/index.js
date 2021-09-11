@@ -1,14 +1,14 @@
-import Home from './Home';
-import Login from './Login'
-import Register from './Register'
-import Voting from './Voting'
-import PublicVote from './PublicVote'
-import LinkManager from './LinkManager'
-export {
-    Home,
-    Login,
-    Voting,
-    PublicVote,
-    Register,
-    LinkManager
+import React, { Component } from 'react'
+import { Header } from '../component/Shared';
+
+export default class index extends Component {
+
+
+    render() {
+        return (
+            <>
+                <Header />
+            </>
+        )
+    }
 }

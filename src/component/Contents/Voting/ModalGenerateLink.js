@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import api from "../../../api";
 import { setHeader } from "../../../Helpers/Auth";
-import { bulkDelete } from "../../../Helpers/UserFunctions";
 import { Button  } from 'antd';
+import check from './img/check.webp'
 function GenerateLink(props) {
   const [Code,setCode] = useState('')
   const [Public,setPublic] = useState(false)
@@ -25,16 +25,6 @@ function GenerateLink(props) {
     });
   };
 
-  const handleBulkDelete = async () => {
-    const sharelist = await props.AllData.filter((el) => el.isChecked && el);
-    console.log(sharelist);
-    bulkDelete(sharelist)
-    .then(res => {
-      const {reload} = res
-      if(reload)
-      window.location.reload(true);
-    })
-  };
 
   return (
     <>
@@ -48,14 +38,6 @@ function GenerateLink(props) {
       Share
     </Button>
     {" "}
-    <Button
-    className="mr-3"
-    type="primary"
-    onClick={() => handleBulkDelete()}
-    disabled={props.ShareList.length===0&& true}
-    danger>
-      Delete
-    </Button>
       <div
         class="modal fade"
         id="GenModal"
@@ -69,7 +51,7 @@ function GenerateLink(props) {
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">
-                Share your vote
+                {Code!==''?"Your votes are ready to see!":"Do you want to share your vote?"}
               </h5>
               <button
                 type="button"
@@ -80,30 +62,28 @@ function GenerateLink(props) {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
+                  {Code!==''&&<>
               <div class="modal-body text-left">
-                <div class="form-group">
-                  <label for="exampleInputEmail1">Code : </label>
-                  <input type="text" class="form-control" name="code" value={(Code!=='')?Code:''} />
-                </div>
-                <div class="form-group"
-                onClick={() => setPublic(!Public)}>
-                  <input
-                    className="mt-3 mr-3"
-                    onClick={() => setPublic(!Public)}
-                    checked={Public}
-                    type="checkbox"
-                  />
-                  <label>Let everyone vote without login (public vote)</label>
-                </div>
+                <img className="img-thumbnail mx-auto d-block border-0" src={check}/>
+                    <p>Click link down below to see your votes.</p>
+                  <a target="_blank" href={process.env.REACT_APP_BASEURL + "voting/" + Code}>{process.env.REACT_APP_BASEURL + "voting/" + Code}</a>
                 {/* <div style={{ marginTop: 20 }}>{JSON.stringify(inputList)}</div> */}
               </div>
+                  </>}
               <div class="modal-footer">
-                <button
+                <Button
+                href={process.env.REACT_APP_BASEURL + "links/"}
+                  class="btn btn-secondary"
+                >
+                  Manage Link
+                </Button>
+                <Button
                   onClick={(e) => handleShare()}
                   class="btn btn-success"
+    type="primary"
                 >
-                  Generate
-                </button>
+                  Share
+                </Button>
               </div>
           </div>
         </div>

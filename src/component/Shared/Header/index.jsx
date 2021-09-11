@@ -24,12 +24,12 @@ class index extends Component {
         return (
             <div className="container">
                 <div className="row" data-aos="zoom-in" data-aos-duration="700" data-aos-delay="50">
-                    <div className="col-md-6 pt-5 mt-2" >
-                        <span className="title" >
-                            evoting app
+                    <div className="col-md-6 py-5 text-center align-self-center" >
+                        <span className="display-4" >
+                            E-Voting App
                         </span>
                         <br />
-                        <span className="subtitle mt-1 mb-2">
+                        <span className="lead mt-1 mb-2">
                             {customKata?customKata:"Selamat datang di aplikasi evoting silahkan login untuk memilih"}
                         </span>
                     </div>

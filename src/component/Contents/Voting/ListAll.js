@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Add, GenerateLink } from "./index";
+import { ModalGenerateLink } from "./index";
 import {
   logout,
   getUser,
@@ -7,16 +7,17 @@ import {
   DeleteOneVote,
   UpdateOneVote,
   deleteVoter,
+  bulkDelete,
 } from "../../../Helpers/UserFunctions";
 import api from "../../../api";
 // import { connect } from "react-redux";
 // import { removeContact } from "../../../redux/actions";
 // import { Sugar } from 'react-preloaders';
 import { setHeader } from "../../../Helpers/Auth";
-import { Doughnut } from "react-chartjs-2";
 import { Upload, Button, Input } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import "antd/dist/antd.css";
+import { AddVoteButton, DeleteButton, HasilButton } from "../../Shared/Button";
+import { List } from "../../Shared";
 
 class ListAll extends Component {
   constructor(props) {
@@ -68,14 +69,14 @@ class ListAll extends Component {
     deleteVoter({ email, id_vote });
   };
 
-  handleDelete = () => {
-    var { Vote } = this.state;
-    DeleteOneVote(Vote[0].id_vote).then((res) => {
-      const { alert, reload } = res;
-      this.setState({ Alert: alert });
-      if (reload) window.location.reload();
-    });
-  };
+  // handleDelete = () => {
+  //   var { Vote } = this.state;
+  //   DeleteOneVote(Vote[0].id_vote).then((res) => {
+  //     const { alert, reload } = res;
+  //     this.setState({ Alert: alert });
+  //     if (reload) window.location.reload();
+  //   });
+  // };
   _setError = (key, message) => {
     var obj = this.state.message;
     obj[key] = message;
@@ -126,6 +127,7 @@ class ListAll extends Component {
     this.setState({ Vote: list });
   };
   _getVote = async (id) => {
+    this.setState({Vote:null})
     const response = await api.get("get/" + id, setHeader());
     response.data.vote.map((el) => {
       el["id_vote"] = id;
@@ -267,7 +269,7 @@ class ListAll extends Component {
       list[index]["kandidatImage"] = "";
       this.setState({ list });
     } else if (newFile.status === "done") {
-      newFile.name = list[index]["kandidat"] + "-" + list[index].votename
+      newFile.name = list[index]["kandidat"] + "-" + list[index].votename;
       list[index]["kandidatImage"] = newFile;
       this.setState({ list });
     }
@@ -302,7 +304,7 @@ class ListAll extends Component {
   render() {
     const { AllData, Vote, name, isSelected, LinkList } = this.state;
     // const {contacts,removeExistingContact} = this.props
-    console.log(Vote)
+    console.log(Vote);
     return (
       <>
         {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}
@@ -310,15 +312,7 @@ class ListAll extends Component {
         <div className="col">
           <div className="row mb-3">
             <div className="col-12 col-md-2 align-self-center">
-              <Button
-                type="primary"
-                href="#"
-                data-toggle="modal"
-                data-target="#addModal"
-              >
-                + Create
-              </Button>
-              <Add
+              <AddVoteButton
                 _setError={(key, message) => {
                   this._setError(key, message);
                 }}
@@ -334,7 +328,7 @@ class ListAll extends Component {
               }
             >
               <div className="row">
-                <div className="col-8">
+                <div className="col-8 col-md-10">
                   <Input
                     type="text"
                     name="code"
@@ -343,7 +337,7 @@ class ListAll extends Component {
                     required
                   />
                 </div>
-                <div className="col-3">
+                <div className="col-3 col-md-2">
                   <Button type="primary" onClick={this._handleFormSubmit}>
                     Enter
                   </Button>
@@ -378,7 +372,24 @@ class ListAll extends Component {
                   >
                     {isSelected ? "Deselect" : "Select"}
                   </Button>
-                  {isSelected && <GenerateLink {...this.state} />}
+                  {isSelected && (
+                    <>
+                      <ModalGenerateLink {...this.state} />
+                      <DeleteButton
+                        Data={AllData.filter((el) => el.isChecked && el)}
+                        DeleteFunc={(value) =>
+                          bulkDelete(value).then((res) => {
+                            const { alert, reload } = res;
+                            this.setState({ Alert: alert });
+                            if (reload) window.location.reload();
+                          })
+                        }
+                        size="default"
+                      >
+                        Delete
+                      </DeleteButton>
+                    </>
+                  )}
                 </>
               )}
             </div>
@@ -393,35 +404,17 @@ class ListAll extends Component {
                       LinkList.length === 0 ? "col-8 col-md-10" : "col-12"
                     }
                   >
-                    <div class="list-group flex-row">
-                      <a
-                        // href="#"
-                        style={{ cursor: "pointer" }}
-                        class={"list-group-item w-100 py-2 text-truncate"}
-                        onClick={() => {
-                          !isSelected
-                            ? this._getVote(el.id_vote)
-                            : this.handleChecked(i);
-                        }}
-                        data-toggle={!isSelected && "modal"}
-                        data-target={!isSelected && "#my-modal"}
-                      >
-                        {isSelected && (
-                          <input
-                            className="mr-3"
-                            onClick={() => this.handleChecked(i)}
-                            checked={el.isChecked}
-                            type="checkbox"
-                          />
-                        )}
-                        {el.name ? el.name : el.votename}
-                      </a>
-                    </div>
+                    <List
+                      isSelected={isSelected}
+                      el={el}
+                      i={i}
+                      _getVote={(value) => this._getVote(value)}
+                      handleChecked={(value) => this.handleChecked(value)}
+                    />
                   </div>
                   <div className="col-3 col-md-2 text-center">
                     {LinkList.length === 0 && (
-                      <Button
-                        className="text-success border-success"
+                      <div
                         onClick={() =>
                           this._getHasilVote(
                             el.name,
@@ -430,112 +423,20 @@ class ListAll extends Component {
                             el.id_vote
                           )
                         }
-                        class="btn btn-primary h-100"
-                        data-toggle="modal"
-                        data-target=".hasilvote"
                       >
-                        Hasil
-                      </Button>
+                        <HasilButton
+                          {...this.state}
+                          handleDeleteVoter={(value) =>
+                            this.handleDeleteVoter.bind(this, value)
+                          }
+                        />
+                      </div>
                     )}
                   </div>
                 </div>
               </>
             );
           })}
-        </div>
-        <div
-          class="modal fade hasilvote"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="my-modal"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
-                  {this.state.jumlahkandidat.title}
-                </h5>
-                <button
-                  type="button"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                {this.state.jumlahkandidat.kandidat.length > 0 ? (
-                  <>
-                    <Doughnut
-                      data={{
-                        labels: this.state.jumlahkandidat.kandidat,
-                        datasets: [
-                          {
-                            label: this.state.jumlahkandidat.title,
-                            backgroundColor: [
-                              "rgba(255, 99, 132, 0.6)",
-                              "rgba(54, 162, 235, 0.6)",
-                              "rgba(255, 206, 86, 0.6)",
-                              "rgba(75, 192, 192, 0.6)",
-                              "rgba(153, 102, 255, 0.6)",
-                            ],
-                            // borderColor: 'rgb(255, 99, 132)',
-                            data: this.state.jumlahkandidat.jumlah,
-                          },
-                        ],
-                      }}
-                    />
-                    <table class="table table-bordered mt-5 text-center">
-                      <thead>
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Email</th>
-                          <th scope="col">Pilihan</th>
-                          <th scope="col">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.jumlahVoters != null &&
-                          this.state.jumlahVoters.map((voter, i) => (
-                            <tr>
-                              <th scope="row">{i + 1}</th>
-                              <td>{voter.email}</td>
-                              <td scope="row">{voter.pilih}</td>
-                              <td>
-                                <button
-                                  type="button"
-                                  class="btn btn-small btn-danger"
-                                  onClick={this.handleDeleteVoter.bind(
-                                    this,
-                                    voter.email
-                                  )}
-                                >
-                                  <span aria-hidden="true">Hapus</span>
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        {this.state.jumlahVoters != null && (
-                          <tr class="table-active">
-                            <td colspan="2">Jumlah voter</td>
-                            <td colspan="2">
-                              {this.state.jumlahVoters.length}
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </>
-                ) : (
-                  <h3 className="text-center m-5 text-uppercase">
-                    Belum ada yang vote
-                  </h3>
-                )}
-              </div>
-            </div>
-          </div>
         </div>
         <div
           class="modal fade"
@@ -625,8 +526,7 @@ class ListAll extends Component {
                                       />
                                     </div>
                                     <div className="form-group">
-                                      
-                                    {" "}
+                                      {" "}
                                       {Vote.length !== 1 && (
                                         <Button
                                           onClick={() =>
@@ -647,16 +547,27 @@ class ListAll extends Component {
                                           this.onImageChange(fileList, i)
                                         }
                                         onPreview={this.onImagePreview}
-                                        defaultFileList={element.kandidatImage!=="kosong"?[
-                                          {
-                                            uid: -1,
-                                            name: element.kandidatImage,
-                                            status: "done",
-                                            url: "http://localhost:8000/storage/"+element.kandidatImage,
-                                            thumbUrl:
-                                            "http://localhost:8000/storage/"+element.kandidatImage,
-                                          },
-                                        ]:''}
+                                        defaultFileList={
+                                          element.kandidatImage !== "kosong"
+                                            ? [
+                                                {
+                                                  uid: -1,
+                                                  name: element.kandidatImage,
+                                                  status: "done",
+                                                  url:
+                                                    process.env
+                                                      .REACT_APP_BACKEND +
+                                                    "storage/" +
+                                                    element.kandidatImage,
+                                                  thumbUrl:
+                                                    process.env
+                                                      .REACT_APP_BACKEND +
+                                                    "storage/" +
+                                                    element.kandidatImage,
+                                                },
+                                              ]
+                                            : ""
+                                        }
                                         beforeUpload={(file) => {
                                           const isJPG =
                                             file.type === "image/jpeg" ||
@@ -672,11 +583,10 @@ class ListAll extends Component {
                                         }}
                                         // onRemove={onImageRemove}
                                       >
-                                       
-                                       <Button icon={<UploadOutlined />}>
-                                            {" "}
-                                            Upload
-                                          </Button>
+                                        <Button icon={<UploadOutlined />}>
+                                          {" "}
+                                          Upload
+                                        </Button>
                                       </Upload>
                                     </div>
                                   </>
@@ -726,14 +636,18 @@ class ListAll extends Component {
                     >
                       Update
                     </Button>
-                    <Button
-                      danger
-                      type="primary"
-                      size={"large"}
-                      onClick={(e) => this.handleDelete()}
-                    >
-                      Delete
-                    </Button>
+
+                    <DeleteButton
+                      Data={Vote != null && Vote[0].id_vote}
+                      DeleteFunc={(val) =>
+                        DeleteOneVote(val).then((res) => {
+                          const { alert, reload } = res;
+                          this.setState({ Alert: alert });
+                          if (reload) window.location.reload();
+                        })
+                      }
+                      size="large"
+                    />
                   </div>
                 )}
               </form>

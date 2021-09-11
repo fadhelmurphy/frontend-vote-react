@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import api from "../../../api";
-import { setHeader } from "../../../Helpers/Auth";
-import { TambahVote } from "../../../Helpers/UserFunctions";
+import api from "../../../../api";
+import { setHeader } from "../../../../Helpers/Auth";
+import { TambahVote } from "../../../../Helpers/UserFunctions";
 import { Upload, Button, Input } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import "antd/dist/antd.css";

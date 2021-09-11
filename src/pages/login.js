@@ -1,4 +1,4 @@
-import { Login } from "../../component/Contents/Login";
+import { Login } from "../component/Contents/Login";
 import React, { Component } from "react";
 export default class index extends Component {
     constructor(props) {
