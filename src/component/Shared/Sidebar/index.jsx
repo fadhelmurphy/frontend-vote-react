@@ -18,9 +18,9 @@ class index extends Component {
     const currentUrl = window.location.pathname
     return (
       <Sider
-      // breakpoint="lg"
-      // collapsedWidth="90%"
-      className="col-12 col-md-6 mb-3" style={{background:'transparent'}} width="340">
+      // breakpoint="md"
+      // collapsedWidth="0%"
+      className="d-none d-md-block col-12 col-md-6 mb-3" style={{background:'transparent'}} width="340">
         <Menu
           mode="inline"
           // defaultSelectedKeys={["1"]}

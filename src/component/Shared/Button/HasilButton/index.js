@@ -1,17 +1,16 @@
-import { Button } from 'antd'
+// import { Button } from 'antd'
 import React from 'react'
 import { Doughnut } from "react-chartjs-2";
 export default function Hasil(props){
     return(<>
-    
+{/*     
     <Button
-                        className="text-success border-success"
+                        className="text-success border-success shadow-sm"
                         class="btn btn-primary h-100"
                         data-toggle="modal"
                         data-target=".hasilvote"
-                      >
-                        Hasil
-                      </Button>
+                        size="large">Hasil
+                      </Button> */}
                       
         <div
           class="modal fade hasilvote"

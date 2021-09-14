@@ -73,16 +73,16 @@ function Add(props) {
   };
 
   const onImageChange = ({ file: newFile }, index) => {
+    console.log(newFile.originFileObj.name.split('.')[1]);
     var list = inputList.data;
     if (newFile.status === "removed") {
       list[index]["kandidatImage"] = "";
       setInputList({ votename: inputList.votename, data: list });
     } else if (newFile.status === "done") {
-      newFile.name = list[index]["kandidat"] + "-" + inputList.votename
+      newFile.name = list[index]["kandidat"] + "-" + inputList.votename + "." +newFile.originFileObj.name.split('.')[1]
       list[index]["kandidatImage"] = newFile;
       setInputList({ votename: inputList.votename, data: list });
     }
-    console.log(list);
   };
 
   const onImagePreview = async (file) => {
@@ -118,19 +118,19 @@ function Add(props) {
       >
         <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
+              <div class="modal-header justify-content-start">
+                <button
+                className="mr-3"
+                  type="button"class="close m-0 p-2 mr-2" 
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title align-self-center" id="exampleModalLabel">
                 Tambah vote
-              </h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
+                </h5>
+              </div>
             <form method="POST">
               <div class="modal-body">
                 <div

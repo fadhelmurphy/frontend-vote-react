@@ -10,7 +10,7 @@ export default function AddVoteButton(props) {
         data-toggle="modal"
         data-target="#addModal"
       >
-        + Create
+        +
       </Button>
       <Add {...props} />
     </>

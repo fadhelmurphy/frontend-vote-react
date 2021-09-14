@@ -1,11 +1,13 @@
 import { Register } from "../component/Contents/Register";
 import React, { Component } from "react";
+import { HomeNav } from "../component/Shared/Nav";
 export default class index extends Component {
     constructor(props) {
         super(props);
     }
   render() {
     return (
+      <>
       <div className="container">
         <div className="row">
           <div className="col-md-6 mt-5 mx-auto">
@@ -13,6 +15,9 @@ export default class index extends Component {
           </div>
         </div>
       </div>
+      
+      <HomeNav/>
+      </>
     );
   }
 }

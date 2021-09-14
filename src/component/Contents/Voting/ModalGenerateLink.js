@@ -30,14 +30,17 @@ function GenerateLink(props) {
     <>
     
     <Button
-    className="mr-3"
+    className="mr-3 text-success shadow-sm"
     data-toggle="modal"
     data-target="#GenModal" 
     onClick={async()=>{await setCode('');await setPublic(false)}}
     disabled={props.ShareList.length===0&& true}>
-      Share
+     <span>
+     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-share-fill" viewBox="0 0 18 18">
+  <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
+</svg> 
+    {" "} Share</span>
     </Button>
-    {" "}
       <div
         class="modal fade"
         id="GenModal"

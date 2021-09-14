@@ -101,10 +101,8 @@ export const TambahVote = (data) => {
         if(element.kandidatImage===""){
           formData.append("fileName[]","kosong")
         }else{
-          var getExtension = element.kandidatImage.type.split('/')
-          console.log(element.kandidatImage.name+"."+getExtension[1])
-        formData.append("fileName[]",element.kandidatImage.name+"."+getExtension[1])
-        formData.append("kandidatImage[]",element.kandidatImage.originFileObj,element.kandidatImage.name+"."+getExtension[1])
+        formData.append("fileName[]",element.kandidatImage.name)
+        formData.append("kandidatImage[]",element.kandidatImage.originFileObj,element.kandidatImage.name)
         }
       });
     }
@@ -218,10 +216,8 @@ export const UpdateOneVote = (Vote) => {
     if(element.kandidatImage===""){
       formData.append("fileName[]","kosong")
     }else if(typeof element.kandidatImage === 'object'){
-      var getExtension = element.kandidatImage.type.split('/')
-      console.log(element.kandidatImage.name+"."+getExtension[1])
-    formData.append("fileName[]",element.kandidatImage.name+"."+getExtension[1])
-    formData.append("kandidatImage[]",element.kandidatImage.originFileObj,element.kandidatImage.name+"."+getExtension[1])
+    formData.append("fileName[]",element.kandidatImage.name)
+    formData.append("kandidatImage[]",element.kandidatImage.originFileObj,element.kandidatImage.name)
     }else{
       formData.append("fileName[]",element.kandidatImage)
     }

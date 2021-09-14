@@ -5,7 +5,7 @@ import { Sidebar, Header } from "../component/Shared";
 import { logout } from "../Helpers/UserFunctions";
 
 import { Layout, Menu } from "antd";
-
+import { AuthNav } from "../component/Shared/Nav";
 class Voting extends Component {
   constructor(props) {
     super(props);
@@ -18,10 +18,11 @@ class Voting extends Component {
         <Layout>
           <Content style={{ padding: "0 50px" }}>
             <Header customKata="Selamat datang di aplikasi evoting" />
+            <AuthNav/>
           </Content>
           <Content className={"container"}>
             <Layout
-              className="row"
+              className="row rounded"
               style={{ padding: "24px 0", background:'white'}}
             >
               <Sidebar lastMenu={logout} />

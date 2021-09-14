@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {
-  logout,
   getUser,
   showPriv8,
   DeleteOneLink,
@@ -15,9 +14,10 @@ import { imgVote } from "../../../asset";
 import { setHeader } from "../../../Helpers/Auth";
 import { Doughnut } from "react-chartjs-2";
 import { Header } from "../../Shared";
-import { Button, Select, Input } from "antd";
+import { Button, Select, Input, Form } from "antd";
 import { List } from "../../Shared";
-import { BulkDeleteButton, DeleteButton } from "../../Shared/Button";
+import {  DeleteButton } from "../../Shared/Button";
+import { CheckOutlined,CloseOutlined,EyeOutlined } from "@ant-design/icons";
 class ListAll extends Component {
   constructor(props) {
     super(props);
@@ -73,7 +73,6 @@ class ListAll extends Component {
     var obj = this.state.message;
     obj[key] = message;
     this.setState({ message: obj });
-    console.log(this.state.message);
   };
   // handleBulkDelete = async () => {
   //   const sharelist = this.state.AllData.filter((el) => el.isChecked && el);
@@ -84,7 +83,8 @@ class ListAll extends Component {
 
   // handle input change
   handleTitleChange = (e, index) => {
-    const { name, value } = e.target;
+    var { name, value } = e.target;
+    value = value.replace(/[^A-Za-z]/ig, '')
     const list = this.state.Vote;
     list.map((el, i) => {
       this.state.Vote[i][name] = value;
@@ -98,7 +98,7 @@ class ListAll extends Component {
     let list = this.state.Vote;
     list[index][name] = value;
     this.setState({ Vote: list });
-    console.log(this.state.Vote);
+
   };
   // handle click event of the Add button
   handleAddClick = () => {
@@ -116,13 +116,11 @@ class ListAll extends Component {
   handleRemoveClick = (index) => {
     const list = this.state.Vote;
     list[index]["action"] = "hapus";
-    console.log(list);
     this.setState({ Vote: list });
   };
   _getVote = async (id) => {
-    // await this.setState({Vote:null})
+    this.setState({Vote:null})
     const response = await api.get("getlink/" + id, setHeader());
-    console.log(response.data);
     response.data.vote.map((el) => {
       // el["id_vote"] = el.id_vote;
       el["action"] = "ubah";
@@ -130,15 +128,15 @@ class ListAll extends Component {
     this.setState({
       Vote: response.data.vote,
     });
+    console.log(this.state.Vote)
   };
 
   _getList = async () => {
-    console.log(setHeader());
     const response = await api.get("/links", setHeader());
     var result = response.data.votes.map(function (el) {
       var o = Object.assign({}, el);
       o.isChecked = false;
-      o.name = process.env.REACT_APP_BASEURL + el.id_url;
+      o.name = process.env.REACT_APP_BASEURL + "voting/" + el.id_url;
       o.id_vote = el.id_url;
       return o;
     });
@@ -146,10 +144,10 @@ class ListAll extends Component {
       AllData: result,
       isLoading: false,
     });
-    console.log(result);
   };
 
   _getVoteList = async () => {
+    this.setState({Vote:null})
     const response = await api.get("/AllVote", setHeader());
     var result = response.data.votes.map(function (el) {
       var o = Object.assign({}, el);
@@ -160,7 +158,6 @@ class ListAll extends Component {
       VoteList: result,
       isLoading: false,
     });
-    console.log(result);
   };
 
   _getUser = async () => {
@@ -208,7 +205,6 @@ class ListAll extends Component {
       await showPriv8(code).then((res) =>
         this.setState({ LinkList: res.data })
       );
-      console.log(this.state.LinkList);
     }
   };
   handleVoteClick = async (index) => {
@@ -251,7 +247,7 @@ class ListAll extends Component {
               {LinkList.length === 0 && (
                 <>
                   <Button
-                    class={"ant-btn " + (isSelected ? " mr-3" : "")}
+                    className={"ant-btn shadow-sm " + (isSelected ? "mr-3" : " text-primary border-primary")}
                     onClick={async () => {
                       isSelected &&
                         AllData.map((el) => {
@@ -262,11 +258,15 @@ class ListAll extends Component {
                         isSelected: !this.state.isSelected,
                       });
                     }}
-                    href="#"
-                    data-toggle="modal"
-                    data-target="#addModal"
                   >
-                    {isSelected ? "Deselect" : "Select"}
+                    {isSelected ? 
+                    <>
+                  <CloseOutlined 
+                  className="align-self-center py-auto"
+                  style={{ verticalAlign: "0" }}/>{" Deselect" }</>: <>
+                  <CheckOutlined 
+                  className="align-self-center py-auto"
+                  style={{ verticalAlign: "0" }}/>{" Select"}</>}
                   </Button>
                   {
                     isSelected && (
@@ -285,7 +285,7 @@ class ListAll extends Component {
                             if (reload) window.location.reload(true);
                           });
                         }}
-                        size="large"
+                        size="default"
                       ></DeleteButton>
                     )
                     // <GenerateLink {...this.state} />
@@ -300,6 +300,8 @@ class ListAll extends Component {
                 <div className="row mb-3">
                   <div className="col-12">
                     <List
+                    LinkPage={true}
+                    Editable={true}
                       isSelected={isSelected}
                       el={el}
                       i={i}
@@ -346,20 +348,18 @@ class ListAll extends Component {
         >
           <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
-                  {Vote !== null
-                    ? process.env.REACT_APP_BASEURL + "voting/" + Vote[0].id_url
-                    : "kosong"}
-                </h5>
+              <div class="modal-header justify-content-start">
                 <button
-                  type="button"
-                  class="close"
+                className="mr-3"
+                  type="button"class="close m-0 p-2 mr-2" 
                   data-dismiss="modal"
                   aria-label="Close"
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>
+                <h5 class="modal-title align-self-center text-truncate" id="exampleModalLabel">
+                 {Vote !== null ? process.env.REACT_APP_BASEURL+"voting/" +Vote[0].id_url : "kosong"}
+                </h5>
               </div>
               <form method="POST">
                 <div class="modal-body px-4">
@@ -372,6 +372,7 @@ class ListAll extends Component {
                       Url Vote:
                     </label>
                     <Input
+                    onkeypress="return /[a-z]/i.test(event.key)" 
                       type="text"
                       name="id_url"
                       onChange={(e) => this.handleTitleChange(e)}
@@ -460,7 +461,9 @@ class ListAll extends Component {
                     }
                     className="bg-primary text-white border-0"
                   >
-                    See
+                   <EyeOutlined 
+                  className="align-self-center py-auto"
+                  style={{ verticalAlign: "0" }}/> View
                   </Button>
                   <Button
                     type="primary"

@@ -7,7 +7,7 @@ import {
   DeleteOneVote,
   UpdateOneVote,
   deleteVoter,
-  bulkDelete,
+  bulkDelete
 } from "../../../Helpers/UserFunctions";
 import api from "../../../api";
 // import { connect } from "react-redux";
@@ -15,8 +15,9 @@ import api from "../../../api";
 // import { Sugar } from 'react-preloaders';
 import { setHeader } from "../../../Helpers/Auth";
 import { Upload, Button, Input } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import { AddVoteButton, DeleteButton, HasilButton } from "../../Shared/Button";
+import { UploadOutlined,CheckOutlined,CloseOutlined } from "@ant-design/icons";
+import { AddVoteButton, DeleteButton } from "../../Shared/Button";
+import { HasilModal } from "../../Shared/Modal";
 import { List } from "../../Shared";
 
 class ListAll extends Component {
@@ -56,7 +57,6 @@ class ListAll extends Component {
     event.preventDefault();
 
     var { Vote } = this.state;
-    console.log(Vote);
     UpdateOneVote(Vote).then((res) => {
       const { alert, reload } = res;
       this.setState({ Alert: alert });
@@ -77,12 +77,12 @@ class ListAll extends Component {
   //     if (reload) window.location.reload();
   //   });
   // };
-  _setError = (key, message) => {
-    var obj = this.state.message;
-    obj[key] = message;
-    this.setState({ message: obj });
-    console.log(this.state.message);
-  };
+  // _setError = (key, message) => {
+  //   var obj = this.state.message;
+  //   obj[key] = message;
+  //   this.setState({ message: obj });
+  //   console.log(this.state.message);
+  // };
   // handleBulkDelete = async () => {
   //   const sharelist = this.state.AllData.filter((el) => el.isChecked && el);
   //   console.log(sharelist);
@@ -136,6 +136,7 @@ class ListAll extends Component {
     });
     this.setState({
       Vote: response.data.vote,
+      VoteResult: response.data.result,
     });
   };
 
@@ -185,18 +186,17 @@ class ListAll extends Component {
   };
 
   _getList = async () => {
-    console.log(setHeader());
     const response = await api.get("AllVote", setHeader());
     var result = response.data.votes.map(function (el) {
       var o = Object.assign({}, el);
       o.isChecked = false;
       return o;
     });
+    console.log(response)
     this.setState({
       AllData: result,
       isLoading: false,
     });
-    console.log(result);
   };
   _getUser = async () => {
     await getUser().then((res) => {
@@ -224,28 +224,38 @@ class ListAll extends Component {
   _handleFormChange = (event) => {
     let formData = { ...this.state.form };
     formData[event.target.name] = event.target.value;
+    let LinkList = this.state.AllData
+    const match = (s) => {
+      const p = Array.from(s).reduce((a, v, i) => `${a}[^${s.toLowerCase().substr(i)}]*?${v}`, '');
+      const re = RegExp(p);
+      
+      return LinkList.filter(({name}) => name.toLowerCase().match(re));
+    };
+    LinkList = match(event.target.value)
     this.setState({
       form: formData,
       LinkList:
-        formData[event.target.name].length > 0 ? this.state.LinkList : [],
+        formData[event.target.name].length > 0 ? LinkList : [],
     });
   };
 
-  _handleFormSubmit = async () => {
-    this.setState({ isSelected: false });
-    const code = this.state.form.code;
-    if (code === "") {
-      this.setState({
-        message: { code: "Harap masukan code" },
-        LinkList: [],
-      });
-    } else {
-      await showPriv8(code).then((res) =>
-        this.setState({ LinkList: res.data })
-      );
-      console.log(this.state.LinkList);
-    }
-  };
+  // _handleFormSubmit = async () => {
+  //   this.setState({ isSelected: false });
+  //   const code = this.state.form.code;
+  //   if (code === "") {
+  //     this.setState({
+  //       message: { code: "Harap masukan code" },
+  //       LinkList: [],
+  //     });
+  //   } else {
+  //     let LinkList = this.state.AllData
+  //     LinkList = LinkList.filter(el=>el.name.toLowerCase()===code.toLowerCase())
+  //     // await showPriv8(code).then((res) =>
+  //       this.setState({ LinkList })
+  //     ;
+  //     // console.log(this.state.LinkList);
+  //   }
+  // };
   handleVoteClick = async (index) => {
     const { Vote } = this.state;
     api.post("sendvote", Vote[index], setHeader()).then((res) => {
@@ -269,11 +279,10 @@ class ListAll extends Component {
       list[index]["kandidatImage"] = "";
       this.setState({ list });
     } else if (newFile.status === "done") {
-      newFile.name = list[index]["kandidat"] + "-" + list[index].votename;
+      newFile.name = list[index]["kandidat"] + "-" + list[index].votename+ "." +newFile.originFileObj.name.split('.')[1];
       list[index]["kandidatImage"] = newFile;
       this.setState({ list });
     }
-    console.log(list);
   };
 
   onImagePreview = async (file) => {
@@ -302,20 +311,18 @@ class ListAll extends Component {
     this._getUser();
   }
   render() {
-    const { AllData, Vote, name, isSelected, LinkList } = this.state;
-    // const {contacts,removeExistingContact} = this.props
-    console.log(Vote);
+    const { AllData, Vote, VoteResult, isSelected, LinkList } = this.state;
     return (
       <>
         {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}
 
         <div className="col">
           <div className="row mb-3">
-            <div className="col-12 col-md-2 align-self-center">
+            <div className="d-none d-md-block col-12 col-md-1 align-self-center">
               <AddVoteButton
-                _setError={(key, message) => {
-                  this._setError(key, message);
-                }}
+                // _setError={(key, message) => {
+                //   this._setError(key, message);
+                // }}
                 {...this.state}
               />
             </div>
@@ -323,25 +330,25 @@ class ListAll extends Component {
             <div
               className={
                 "col-12 " +
-                (isSelected ? "col-md-4" : "col-md-8") +
+                (isSelected ? "col-md-6" : "col-md-9") +
                 " mt-3 mt-md-0 align-self-center"
               }
             >
               <div className="row">
-                <div className="col-8 col-md-10">
+                <div className="col-12">
                   <Input
                     type="text"
                     name="code"
                     onChange={this._handleFormChange}
-                    placeholder="masukkan code voting"
+                    placeholder="Search vote name"
                     required
                   />
                 </div>
-                <div className="col-3 col-md-2">
+                {/* <div className="col-3 col-md-2">
                   <Button type="primary" onClick={this._handleFormSubmit}>
-                    Enter
+                    Search
                   </Button>
-                </div>
+                </div> */}
               </div>
 
               <small className="text-danger">{this.state.message.code}</small>
@@ -350,15 +357,13 @@ class ListAll extends Component {
               className={
                 "col-12 " +
                 (isSelected
-                  ? "col-md-6 text-lg-right"
+                  ? "col-md-5"
                   : "col-md-2 text-lg-center") +
                 " mt-3 mt-md-0 align-self-center"
               }
             >
-              {LinkList.length === 0 && (
-                <>
                   <Button
-                    class={"ant-btn " + (isSelected ? "mr-3" : "")}
+                    className={"ant-btn shadow-sm " + (isSelected ? "mr-3" : " text-primary border-primary")}
                     onClick={async () => {
                       isSelected &&
                         AllData.map((el) => {
@@ -369,8 +374,14 @@ class ListAll extends Component {
                         isSelected: !this.state.isSelected,
                       });
                     }}
-                  >
-                    {isSelected ? "Deselect" : "Select"}
+                  >{isSelected ? 
+                    <>
+                  <CloseOutlined 
+                  className="align-self-center py-auto"
+                  style={{ verticalAlign: "0" }}/>{" Deselect" }</>: <>
+                  <CheckOutlined 
+                  className="align-self-center py-auto"
+                  style={{ verticalAlign: "0" }}/>{" Select"}</>}
                   </Button>
                   {isSelected && (
                     <>
@@ -385,13 +396,9 @@ class ListAll extends Component {
                           })
                         }
                         size="default"
-                      >
-                        Delete
-                      </DeleteButton>
+                      />
                     </>
                   )}
-                </>
-              )}
             </div>
           </div>
 
@@ -401,19 +408,28 @@ class ListAll extends Component {
                 <div className="row mb-3">
                   <div
                     className={
-                      LinkList.length === 0 ? "col-8 col-md-10" : "col-12"
+                      "col-12"
                     }
                   >
                     <List
+                    Editable={true}
                       isSelected={isSelected}
                       el={el}
                       i={i}
+                      _getHasilVote={(value)=>this._getHasilVote(
+                        value.name,
+                        value.jumlahkandidat,
+                        value.jumlahVoters,
+                        value.id_vote)}
                       _getVote={(value) => this._getVote(value)}
                       handleChecked={(value) => this.handleChecked(value)}
                     />
                   </div>
-                  <div className="col-3 col-md-2 text-center">
-                    {LinkList.length === 0 && (
+        
+        <HasilModal {...this.state} 
+                          handleDeleteVoter={(value) =>
+                            this.handleDeleteVoter.bind(this, value)}/>
+                  {/* <div className="col-3 col-md-2 text-center">
                       <div
                         onClick={() =>
                           this._getHasilVote(
@@ -431,8 +447,7 @@ class ListAll extends Component {
                           }
                         />
                       </div>
-                    )}
-                  </div>
+                  </div> */}
                 </div>
               </>
             );
@@ -448,18 +463,18 @@ class ListAll extends Component {
         >
           <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
-                  {Vote !== null ? Vote[0].votename : "kosong"}
-                </h5>
+              <div class="modal-header justify-content-start">
                 <button
-                  type="button"
-                  class="close"
+                className="mr-3"
+                  type="button"class="close m-0 p-2 mr-2" 
                   data-dismiss="modal"
                   aria-label="Close"
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>
+                <h5 class="modal-title align-self-center" id="exampleModalLabel">
+                 {Vote !== null ? Vote[0].votename : "kosong"}
+                </h5>
               </div>
               <form method="POST">
                 <div class="modal-body px-4">
@@ -628,6 +643,24 @@ class ListAll extends Component {
                     <Button data-dismiss="modal" size={"large"}>
                       Close
                     </Button>
+                    
+                    {/* <div
+                        onClick={() =>Vote != null && 
+                          this._getHasilVote(
+                            Vote[0].name,
+                            VoteResult.jumlahkandidat,
+                            VoteResult.jumlahVoters,
+                            Vote[0].id_vote
+                          )
+                        }
+                      >
+                        <HasilButton
+                          {...this.state}
+                          handleDeleteVoter={(value) =>
+                            this.handleDeleteVoter.bind(this, value)
+                          }
+                        />
+                      </div> */}
                     <Button
                       type="primary"
                       size={"large"}

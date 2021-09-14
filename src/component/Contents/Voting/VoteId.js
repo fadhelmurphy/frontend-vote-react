@@ -86,9 +86,6 @@ constructor(props){
     }) 
     }
     render(){
-        const {LinkList} = this.state
-        console.log(LinkList)
-        console.log(this.props)
     return(
         <>
         {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}

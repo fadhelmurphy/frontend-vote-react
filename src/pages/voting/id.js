@@ -5,6 +5,7 @@ import { Sidebar, Header } from "../../component/Shared";
 import { logout } from "../../Helpers/UserFunctions";
 
 import { Layout, Menu } from "antd";
+import { AuthNav } from "../../component/Shared/Nav";
 class Index extends Component {
   constructor(props) {
     super(props);
@@ -18,6 +19,7 @@ class Index extends Component {
       <Layout>
           <Content style={{ padding: "0 50px" }}>
             <Header customKata="Selamat datang di aplikasi evoting" />
+            <AuthNav/>
           </Content>
           <Content className={"container"}>
             <Layout

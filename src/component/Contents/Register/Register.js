@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { register,getUser } from '../../../Helpers/UserFunctions'
+import { Form, Input, Button } from 'antd';
 // import jwt_decode from 'jwt-decode'
 // import { addContact } from '../../redux/actions'
 // import { connect } from "react-redux";
@@ -26,14 +27,13 @@ class Register extends Component {
   onSubmit(e) {
     
     // const { contacts, addNewContact } = this.props;
-    e.preventDefault()
+    // e.preventDefault()
 
     const user = {
       nama: this.state.nama,
       email: this.state.email,
       password: this.state.password
     }
-
     register(user)
     .then(async(res) => {
       const {alert,reload} = res
@@ -68,52 +68,48 @@ class Register extends Component {
 
   render() {
     return (
-            <form noValidate onSubmit={this.onSubmit}>
+      
+      <Form name="control-hooks" onFinish={this.onSubmit} 
+      layout={"vertical"}
+      >
               <h1 className="h3 mb-3 font-weight-normal">Register Page</h1>
               <div
             className="Features"
             dangerouslySetInnerHTML={{ __html: this.state.alert }}
           />
-              <div className="form-group">
-                <label htmlFor="email">Nama Lengkap</label>
-                <input
-                  type="text"
+                <Form.Item name="nama" label="Nama" rules={[{ required: true }]}>
+                <Input
+                  type="name"
                   className="form-control"
                   name="nama"
-                  placeholder="Masukkan nama lengkap"
-                  value={this.state.nama}
+                  placeholder="Masukkan Nama"
+                  value={this.state.name}
                   onChange={this.onChange}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="email">Email address</label>
-                <input
+                /></Form.Item>
+                <Form.Item name="Email" label="Email address" rules={[{ required: true }]}>
+                <Input
                   type="email"
                   className="form-control"
                   name="email"
                   placeholder="Enter email"
                   value={this.state.email}
                   onChange={this.onChange}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <input
+                /></Form.Item>
+                
+                <Form.Item name="Password" label="Password" rules={[{ required: true }]}>
+                <Input
                   type="password"
                   className="form-control"
                   name="password"
                   placeholder="Password"
                   value={this.state.password}
                   onChange={this.onChange}
-                />
-              </div>
-              <button
-                type="submit"
-                className="btn btn-lg btn-primary btn-block"
-              >
-                Sign up
-              </button>
-            </form>
+                /></Form.Item>
+                
+        <Form.Item layout={"vertical"}>
+          <Button className="btn-block" type="primary" htmlType="submit" size={"large"}>Sign Up</Button>
+        </Form.Item>
+            </Form>
     )
   }
 }
