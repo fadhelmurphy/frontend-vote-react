@@ -4,10 +4,6 @@ import { imgVote } from "../../../asset";
 class index extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      messageErr: "",
-      redirect: "/voting",
-    };
   }
 
   componentDidMount() {

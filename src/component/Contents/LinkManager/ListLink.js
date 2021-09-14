@@ -136,7 +136,7 @@ class ListAll extends Component {
     var result = response.data.votes.map(function (el) {
       var o = Object.assign({}, el);
       o.isChecked = false;
-      o.name = process.env.REACT_APP_BASEURL + "voting/" + el.id_url;
+      o.name = el.id_url;
       o.id_vote = el.id_url;
       return o;
     });

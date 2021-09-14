@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import api from "../../../api";
 import { setHeader } from "../../../Helpers/Auth";
 import { List } from "../../Shared";
+import './VotingId.css'
 export default class VotingId extends Component {
   state = {
     Vote: null,
@@ -15,6 +16,7 @@ export default class VotingId extends Component {
       el["action"] = "ubah";
     });
     this.setState({
+      Option:null,
       Vote: response.data.vote,
     });
   };
@@ -48,13 +50,21 @@ export default class VotingId extends Component {
           LinkList.map((el, i) => (
             <div className="row mb-3">
               <div className="col-12">
+              {el.voterCanVote===null?
                 <List
                   isSelected={false}
                   el={el}
                   i={i}
                   _getVote={(value) => this._getVote(value)}
                   handleChecked={(value) => this.handleChecked(value)}
-                />
+                />:
+                <div class={"list-group-item w-100 py-2 d-flex text-wrap bg-light"}>
+                <span class="mr-2 w-100 align-self-center py-2 ">
+                <p className="m-0">{"You have voted in "}<span style={{color:'rgb(64, 169, 255)'}}>{el.name}</span>
+                {" with option : "}<span style={{color:'rgb(54, 207, 201)'}}>{el.voterCanVote}</span></p>
+                
+            </span>
+                </div>}
                 {/* <div class="list-group flex-row"
           
           onClick={() => this._getVote(el.id_vote)}>
@@ -107,23 +117,24 @@ export default class VotingId extends Component {
                       return (
                         <>
                           <div class="col-12 mt-2">
-                            <div class="card shadow rounded-lg mb-4">
-                              <div class="card-body p-0">
+                            <div class={"card mb-4 "+(Option === i?'ml-5':'')}>
+                              <div class={"card-body shadow-sm rounded-lg p-0"} style={{border:(Option === i?'3px solid #096dd9':'')}}
+                                  onClick={() => this.optionClick(i)}>
                                 <div
-                                  className="row"
-                                  onClick={() => this.optionClick(i)}
+                                  className="row m-0"
                                 >
                                   <div className="col-2 justify-content-center align-self-center">
-                                    <div className="text-center">
+                                    <div className="text-center inputcustom">
                                       <input
                                         type="radio"
-                                        name="site_name"
+                                        className="inputradio"
                                         value={i}
                                         checked={Option === i}
                                       />
+                                      <span class="checkmark"></span>
                                     </div>
                                   </div>
-                                  <div className="col-4">
+                                  <div className="col-4 p-0">
                                     <img
                                       className="img-fluid w-100"
                                       src={
@@ -137,9 +148,11 @@ export default class VotingId extends Component {
                                     />
                                   </div>
                                   <div className="col-6 justify-content-center align-self-center">
-                                  <p class="text-center font-weight-bold">
-                                      {element.kandidat}
-                                    </p>
+                                  <h6 className={"text-center font-weight-bold m-0 "}
+                                  style={{color:(Option === i?'#096dd9':'')}}
+                                  >
+                                      {element.kandidat.toUpperCase()}
+                                    </h6>
                                   </div>
                                 </div>
                               </div>
