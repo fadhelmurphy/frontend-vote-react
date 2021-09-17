@@ -4,12 +4,12 @@ import React from 'react'
 
 import { Link } from "react-router-dom";
 import { logout } from '../../../../Helpers/UserFunctions';
-import Add from '../../Button/AddVoteButton/Add';
+// import Add from '../../Button/AddVoteButton/Add';
 export default function AuthNav(props){
     return(
         <>
         
-        <nav class="navbar navbar-dark bg-primary navbar-expand fixed-bottom d-md-none d-lg-none d-xl-none p-0 pb-2 m-3 rounded" style={{backgroundImage:'linear-gradient(to right, #00d2ff, #3a7bd5)'}}>
+        <nav class="navbar navbar-dark bg-primary navbar-expand fixed-bottom d-md-none d-lg-none d-xl-none p-0 pb-2 m-3 rounded" style={{backgroundImage:'linear-gradient(to right, #00d2ff, #3a7bd5)',zIndex:1}}>
           <ul class="navbar-nav nav-justified w-100">
             <li class="nav-item">
             <Link to="/voting" class="nav-link pt-2 pb-0 px-0 text-white">
@@ -37,9 +37,11 @@ export default function AuthNav(props){
             <li class="nav-item">
               <a 
         type="primary"
-        href="#"
-        data-toggle="modal"
-        data-target="#addModal" class="nav-link pt-2 pb-0 px-0 text-white">
+        onClick={()=>props.setState({showAddModal:true})}
+        // href="#"
+        // data-toggle="modal"
+        // data-target="#addModal" 
+        class="nav-link pt-2 pb-0 px-0 text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
   <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
@@ -82,7 +84,7 @@ export default function AuthNav(props){
           </ul>
         </nav>
               
-              <Add />
+              {/* <Add /> */}
         </>
     )
 }

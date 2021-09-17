@@ -6,7 +6,6 @@ export const AuthContext = React.createContext();
 export default class extends React.Component {
   constructor(props) {
     super(props);
-
     let state = {
       authenticated: false,
       setAuthenticated: this.setAuthenticated
@@ -22,9 +21,10 @@ export default class extends React.Component {
   };
 
   render() {
+  const {children} = this.props
     return (
       <AuthContext.Provider value={this.state}>
-        {this.props.children}
+        <children {...this.props}/>
       </AuthContext.Provider>
     );
   }

@@ -4,11 +4,16 @@ import api from "../../../api";
 import { setHeader } from "../../../Helpers/Auth";
 import { List } from "../../Shared";
 import './VotingId.css'
+import { VoteModal } from "../../Shared/Modal";
 export default class VotingId extends Component {
-  state = {
-    Vote: null,
-    Option: null,
-  };
+  constructor(props){
+    super(props)
+    this.state = {
+      Vote: null,
+      Option: null,
+      showVoteModal:false,
+    };
+  }
   _getVote = async (id) => {
     const response = await api.get("get/" + id, setHeader());
     response.data.vote.map((el) => {
@@ -20,30 +25,8 @@ export default class VotingId extends Component {
       Vote: response.data.vote,
     });
   };
-  handleVoteClick = async () => {
-    const { Vote, Option } = this.state;
-    if (Option == null) {
-      return alert("Anda belum memilih");
-    }
-    api.post("sendvote", Vote[Option], setHeader()).then((res) => {
-      // console.log(res)
-      if (res.data === "berhasil") {
-        alert("Anda berhasil vote");
-        window.location.reload(false);
-      } else {
-        alert("Anda sudah vote!");
-        window.location.reload(false);
-      }
-    });
-  };
-  optionClick = async (val) => {
-    this.setState({
-      Option: val,
-    });
-  };
   render() {
     const { LinkList } = this.props;
-    const { Vote, Option } = this.state;
     return (
       <>
         {LinkList != null &&
@@ -52,11 +35,13 @@ export default class VotingId extends Component {
               <div className="col-12">
               {el.voterCanVote===null?
                 <List
+                {...this.state}
                   isSelected={false}
                   el={el}
                   i={i}
                   _getVote={(value) => this._getVote(value)}
                   handleChecked={(value) => this.handleChecked(value)}
+                      setState={(value)=>this.setState(value)}
                 />:
                 <div class={"list-group-item w-100 py-2 d-flex text-wrap bg-light"}>
                 <span class="mr-2 w-100 align-self-center py-2 ">
@@ -80,6 +65,8 @@ export default class VotingId extends Component {
               </div>
             </div>
           ))}
+          <VoteModal {...this.state} setState={val=>this.setState(val)} />
+{/*           
         <div
           class="modal fade"
           id="my-modal"
@@ -162,6 +149,7 @@ export default class VotingId extends Component {
                       );
                     })}
                 </div>
+              
               </div>
               <div className="modal-footer">
               <Button type="primary" 
@@ -175,6 +163,7 @@ export default class VotingId extends Component {
             </div>
           </div>
         </div>
+       */}
       </>
     );
   }

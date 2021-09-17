@@ -17,6 +17,7 @@ function loadComponent(name) {
 }
 
 export default function index() {
+  
   const rootRouter = [
     {
       url: "/",

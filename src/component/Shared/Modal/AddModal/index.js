@@ -4,6 +4,7 @@ import { setHeader } from "../../../../Helpers/Auth";
 import { TambahVote } from "../../../../Helpers/UserFunctions";
 import { Upload, Button, Input } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { Modal } from 'antd';
 import "antd/dist/antd.css";
 
 function Add(props) {
@@ -107,33 +108,32 @@ function Add(props) {
   };
 
   return (
-    <div className="container">
-      <div
-        class="modal fade"
-        id="addModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="addModal"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-lg" role="document">
-          <div class="modal-content">
-              <div class="modal-header justify-content-start">
-                <button
-                className="mr-3"
-                  type="button"class="close m-0 p-2 mr-2" 
-                  data-dismiss="modal"
-                  aria-label="Close"
+    <>
+    <Modal
+    title="Add Vote"
+      visible={props.showAddModal}
+      
+      style={{ top: 10 }}
+      width={1000}
+      zIndex={2}
+okButtonProps={{
+        style: {
+          display: "none",
+        },
+      }}
+      onCancel={()=>props.setState({showAddModal:false})}
+      // okText="Ya"
+      cancelText="Close"
+      footer={[
+                <Button
+                  className="bg-success text-white border-0"
+                  size={"large"}
+                  onClick={(e) => handleSubmit(e)}
                 >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-                <h5 class="modal-title align-self-center" id="exampleModalLabel">
-                Tambah vote
-                </h5>
-              </div>
-            <form method="POST">
-              <div class="modal-body">
-                <div
+                  Submit
+                </Button>]}
+    >
+        <div
                   className="Features"
                   dangerouslySetInnerHTML={{ __html: Alert }}
                 />
@@ -220,6 +220,34 @@ function Add(props) {
                     </div>
                   );
                 })}
+      </Modal>
+    <div className="container">
+      <div
+        class="modal fade"
+        id="addModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="addModal"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+              <div class="modal-header justify-content-start">
+                <button
+                className="mr-3"
+                  type="button"class="close m-0 p-2 mr-2" 
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title align-self-center" id="exampleModalLabel">
+                Tambah vote
+                </h5>
+              </div>
+            <form method="POST">
+              <div class="modal-body">
+              
                 {/* <div style={{ marginTop: 20 }}>{JSON.stringify(inputList)}</div> */}
               </div>
               <div class="modal-footer">
@@ -236,6 +264,7 @@ function Add(props) {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

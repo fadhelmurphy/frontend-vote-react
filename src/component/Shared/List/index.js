@@ -1,8 +1,8 @@
 import React from "react";
 import { HasilButton } from "../Button";
 import { EditOutlined, TeamOutlined,FundOutlined,AppstoreOutlined } from "@ant-design/icons";
-export default function List({ isSelected, el, i, _getVote,_getHasilVote, handleChecked, Editable, LinkPage }) {
-  // const {LinkList,AllData} = props
+export default function List({ isSelected, el, i, _getVote,_getHasilVote, handleChecked, Editable, LinkPage,setState, }) {
+  
   return (
     <>
       <div
@@ -10,11 +10,12 @@ export default function List({ isSelected, el, i, _getVote,_getHasilVote, handle
       >
         <div class={"list-group-item w-100 py-2 d-flex text-wrap"} 
                 style={{ cursor: !Editable && "pointer" }}
-                        data-toggle={!Editable && "modal"}
-                        data-target={!Editable && "#my-modal"}
+                        // data-toggle={!Editable && "modal"}
+                        // data-target={!Editable && "#my-modal"}
         
         onClick={() => {
           !isSelected ? _getVote(el.id_vote) : handleChecked(i);
+          !Editable && setState({showVoteModal:true})
         }}>
           {isSelected && (
             <input
@@ -50,8 +51,12 @@ export default function List({ isSelected, el, i, _getVote,_getHasilVote, handle
           <>
               <span
               className={"align-self-center text-secondary d-flex "+(!LinkPage ?"mr-3":"")}
-                data-toggle={!isSelected && "modal"}
-                data-target={!isSelected && "#my-modal"}
+                // data-toggle={!isSelected && "modal"}
+                // data-target={!isSelected && "#my-modal"}
+                
+                onClick={() =>{
+                          setState({showEditModal:true})
+                        }}
                 style={{ cursor: "pointer" }}
               >
                 <EditOutlined
@@ -61,17 +66,17 @@ export default function List({ isSelected, el, i, _getVote,_getHasilVote, handle
               </span>
               </>
               :''}
-          {Editable && !LinkPage && !isSelected ?
+          {(Editable && !LinkPage && !isSelected) ?
           <>
               <span
               className="align-self-center text-secondary d-flex"
-                data-toggle={!isSelected && "modal"}
-                data-target={!isSelected && ".hasilvote"}
                 style={{ cursor: "pointer" }}
                 
-                onClick={() =>
+                onClick={() =>{
                           _getHasilVote(el
                           )
+                          setState({showHasilModal:true})
+                        }
                         }
               >
                 <FundOutlined

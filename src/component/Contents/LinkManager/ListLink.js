@@ -18,6 +18,8 @@ import { Button, Select, Input, Form } from "antd";
 import { List } from "../../Shared";
 import {  DeleteButton } from "../../Shared/Button";
 import { CheckOutlined,CloseOutlined,EyeOutlined } from "@ant-design/icons";
+import { LinkModal } from "../../Shared/Modal";
+import { useHistory } from "react-router-dom";
 class ListAll extends Component {
   constructor(props) {
     super(props);
@@ -47,19 +49,10 @@ class ListAll extends Component {
       },
       jumlahVoters: null,
       Alert: "",
+      showEditModal:false,
     };
   }
 
-  handleUpdate = () => {
-    // event.preventDefault();
-
-    var { Vote } = this.state;
-    UpdateOneLink(Vote).then((res) => {
-      const { alert, reload } = res;
-      this.setState({ Alert: alert });
-      if (reload) window.location.reload();
-    });
-  };
 
   // handleDelete = () => {
   //   var { Vote } = this.state;
@@ -81,43 +74,6 @@ class ListAll extends Component {
   //   window.location.reload(false);
   // };
 
-  // handle input change
-  handleTitleChange = (e, index) => {
-    var { name, value } = e.target;
-    value = value.replace(/[^A-Za-z]/ig, '')
-    const list = this.state.Vote;
-    list.map((el, i) => {
-      this.state.Vote[i][name] = value;
-    });
-    this.setState({ Vote: list });
-  };
-
-  // handle input change
-  handleCandidateChange = (name, value, index) => {
-    // const { name, value } = e.target;
-    let list = this.state.Vote;
-    list[index][name] = value;
-    this.setState({ Vote: list });
-
-  };
-  // handle click event of the Add button
-  handleAddClick = () => {
-    const list = this.state.Vote;
-    list.push({
-      action: "tambah",
-      id: null,
-      votename: "",
-      id_url: list[0].id_url,
-      id_vote: "",
-    });
-    this.setState({ Vote: list });
-  };
-  // handle click event of the Remove button
-  handleRemoveClick = (index) => {
-    const list = this.state.Vote;
-    list[index]["action"] = "hapus";
-    this.setState({ Vote: list });
-  };
   _getVote = async (id) => {
     this.setState({Vote:null})
     const response = await api.get("getlink/" + id, setHeader());
@@ -128,7 +84,6 @@ class ListAll extends Component {
     this.setState({
       Vote: response.data.vote,
     });
-    console.log(this.state.Vote)
   };
 
   _getList = async () => {
@@ -183,43 +138,6 @@ class ListAll extends Component {
   //   this.setState({code:id})
   // }
 
-  _handleFormChange = (event) => {
-    let formData = { ...this.state.form };
-    formData[event.target.name] = event.target.value;
-    this.setState({
-      form: formData,
-      LinkList:
-        formData[event.target.name].length > 0 ? this.state.LinkList : [],
-    });
-  };
-
-  _handleFormSubmit = async () => {
-    this.setState({ isSelected: false });
-    const code = this.state.form.code;
-    if (code === "") {
-      this.setState({
-        message: { code: "Harap masukan code" },
-        LinkList: [],
-      });
-    } else {
-      await showPriv8(code).then((res) =>
-        this.setState({ LinkList: res.data })
-      );
-    }
-  };
-  handleVoteClick = async (index) => {
-    const { Vote } = this.state;
-    api.post("sendvote", Vote[index], setHeader()).then((res) => {
-      // console.log(res)
-      if (res.data === "berhasil") {
-        alert("Anda berhasil vote");
-        window.location.reload(false);
-      } else {
-        alert("Anda sudah vote!");
-        window.location.reload(false);
-      }
-    });
-  };
 
   componentDidMount() {
     this._getList();
@@ -300,6 +218,7 @@ class ListAll extends Component {
                 <div className="row mb-3">
                   <div className="col-12">
                     <List
+                    {...this.state}
                     LinkPage={true}
                     Editable={true}
                       isSelected={isSelected}
@@ -307,6 +226,7 @@ class ListAll extends Component {
                       i={i}
                       _getVote={(value) => this._getVote(value)}
                       handleChecked={(value) => this.handleChecked(value)}
+                      setState={val=>this.setState(val)}
                     />
                     {/* <div class="list-group flex-row">
                       <a
@@ -338,165 +258,7 @@ class ListAll extends Component {
             );
           })}
         </div>
-        <div
-          class="modal fade"
-          id="my-modal"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="my-modal"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
-              <div class="modal-header justify-content-start">
-                <button
-                className="mr-3"
-                  type="button"class="close m-0 p-2 mr-2" 
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-                <h5 class="modal-title align-self-center text-truncate" id="exampleModalLabel">
-                 {Vote !== null ? process.env.REACT_APP_BASEURL+"voting/" +Vote[0].id_url : "kosong"}
-                </h5>
-              </div>
-              <form method="POST">
-                <div class="modal-body px-4">
-                  <div
-                    className="Features"
-                    dangerouslySetInnerHTML={{ __html: this.state.Alert }}
-                  />
-                  <div class="form-group">
-                    <label for="recipient-name" class="col-form-label">
-                      Url Vote:
-                    </label>
-                    <Input
-                    onkeypress="return /[a-z]/i.test(event.key)" 
-                      type="text"
-                      name="id_url"
-                      onChange={(e) => this.handleTitleChange(e)}
-                      value={Vote !== null ? Vote[0].id_url : "kosong"}
-                      id="recipient-title"
-                    />
-                  </div>
-
-                  {
-                    <Button
-                      type="primary"
-                      onClick={() => this.handleAddClick()}
-                    >
-                      + Add Option
-                    </Button>
-                  }
-                  <div className={LinkList.length > 0 && "row mt-3"}>
-                    {Vote &&
-                      Vote.map((element, i) => {
-                        return (
-                          <>
-                            {element.action !== "hapus" && (
-                              <>
-                                <div class="form-group">
-                                  <label
-                                    for="recipient-name"
-                                    class="col-form-label"
-                                  >
-                                    Nama vote:
-                                  </label>
-
-                                  <Select
-                                    className="w-100"
-                                    defaultValue={
-                                      element.votename !== null &&
-                                      element.votename
-                                    }
-                                    name="id_vote"
-                                    onChange={(value) =>
-                                      this.handleCandidateChange(
-                                        "id_vote",
-                                        value,
-                                        i
-                                      )
-                                    }
-                                  >
-                                    {VoteList &&
-                                      VoteList.map((option, ind) => (
-                                        <Option
-                                          key={ind}
-                                          value={option.id_vote}
-                                        >
-                                          {option.name}
-                                        </Option>
-                                      ))}
-                                  </Select>
-                                </div>
-                                <div className="form-group">
-                                  {Vote.length !== 1 && (
-                                    <Button
-                                      danger
-                                      onClick={() => this.handleRemoveClick(i)}
-                                    >
-                                      Remove
-                                    </Button>
-                                  )}
-                                </div>
-                              </>
-                            )}
-                          </>
-                        );
-                      })}
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <Button data-dismiss="modal" size={"large"}>
-                    Close
-                  </Button>
-                  <Button
-                    type="primary"
-                    size={"large"}
-                    target="_blank"
-                    href={
-                      Vote !== null &&
-                      process.env.REACT_APP_BASEURL + "voting/" + Vote[0].id_url
-                    }
-                    className="bg-primary text-white border-0"
-                  >
-                   <EyeOutlined 
-                  className="align-self-center py-auto"
-                  style={{ verticalAlign: "0" }}/> View
-                  </Button>
-                  <Button
-                    type="primary"
-                    size={"large"}
-                    onClick={this.handleUpdate}
-                    className="bg-success text-white border-0"
-                  >
-                    Update
-                  </Button>
-                  <DeleteButton
-                    Data={Vote !== null && Vote[0].id_url}
-                    DeleteFunc={(value) => {
-                      DeleteOneLink(value).then((res) => {
-                        const { alert, reload } = res;
-                        this.setState({ Alert: alert });
-                        if (reload) window.location.reload();
-                      });
-                    }}
-                    size="large"
-                  ></DeleteButton>
-                  {/* <Button
-                    danger
-                    type="primary"
-                    size={"large"}
-                    // onClick={(e) => this.handleDelete()}
-                  >
-                    Delete
-                  </Button> */}
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+      <LinkModal {...this.state} setState={(val)=>this.setState(val)}/>
       </>
     );
   }

@@ -18,7 +18,7 @@ export default class index extends Component {
             className="row"
           >
             <div className="col-12 py-5 text-center align-self-center">
-              <span className="display-4 font-weight-bold"
+              <span className="display-4"
               
             data-aos="zoom-in"
             data-aos-duration="700"
@@ -26,7 +26,7 @@ export default class index extends Component {
               <br />
               <h6 className="my-3 text-muted">
                 Selamat datang di aplikasi evoting silahkan login untuk memilih.
-              <br />
+                <br/>
                 Jika anda belum memiliki akun silahkan register
               </h6>
               <br /> 

@@ -14,8 +14,7 @@ class LinkManager extends Component{
         super(props)
     }
     render(){
-      const { SubMenu } = Menu;
-      const { Content, Footer, Sider } = Layout;
+      const { Content, Footer } = Layout;
       return (
         <>
         <Layout>

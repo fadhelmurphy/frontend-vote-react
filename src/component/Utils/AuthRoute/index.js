@@ -11,13 +11,12 @@ export default ({ component: Component, ...rest }) => {
 
   useEffect(() => {
     if (isAuthenticated()) {
-      setAuthenticated(true);
+      setAuthenticated({auth:true});
     } else {
-      setAuthenticated(false);
+      setAuthenticated({auth:false});
     }
-  }, []);
-
-  if (authenticated) {
+  }, []); 
+  if (authenticated.auth) {
     
     return <>
     <Route {...rest} component={Component} /></>;
