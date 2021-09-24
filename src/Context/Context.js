@@ -80,9 +80,6 @@ const Context = ({ children }) => {
         const comment = "Berhasil mengupdate Vote!";
         hasil = customErr(res.status, comment);
         _getList();
-        dispatch({
-          type: "EDIT_MODAL"
-        });
         return hasil;
       })
       .catch((err) => {
@@ -115,10 +112,6 @@ const Context = ({ children }) => {
         console.log(res);
         const comment = "delete Vote!";
         hasil = customErr(res.status, comment);
-
-        dispatch({
-          type: "EDIT_MODAL"
-        });
         return hasil;
       })
       .catch((err) => {
@@ -176,9 +169,6 @@ const Context = ({ children }) => {
         const { reload } = hasil;
         if(reload){
           _getList()
-          dispatch({
-          type:"ADD_MODAL"
-        })
         return hasil
       }
       })
@@ -229,7 +219,7 @@ const Context = ({ children }) => {
     const response = await api.get("links", setHeader());
     dispatch({
       type: "GET_ALL_LINKS_SUCCESS",
-      payload: response
+      payload: response.data.data
     });
   };
 

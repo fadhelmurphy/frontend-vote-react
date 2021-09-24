@@ -134,8 +134,8 @@ class ListAll extends Component {
   componentDidMount() {
     const {_getListLink} = this.context
     _getListLink()
-    this._getVoteList();
-    this._getUser();
+    // this._getVoteList();
+    // this._getUser();
   }
   render() {
     

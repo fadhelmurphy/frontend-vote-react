@@ -19,6 +19,9 @@ export default function Edit({ setState, ShowEditModal, LinkList }) {
 
     // var { Vote } = props;
     _postUpdateOneVote(DetailVote);
+    setState({
+      ShowEditModal: !ShowEditModal
+    })
   };
   // handle input change
   const handleCandidateChange = (e, index) => {
