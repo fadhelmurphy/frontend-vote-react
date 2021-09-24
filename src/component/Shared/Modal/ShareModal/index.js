@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import { Button, Modal } from "antd";
 import api from "../../../../api";
-import { setHeader } from "../../../../Helpers/Auth";
+// import { setHeader } from "../../../../Helpers/Auth";
 import check from "./img/check.webp";
-export default function ShareModal(props) {
+import { setHeader } from "../../../../Helpers/UserFunctions";
+import { GetRootContext } from "../../../../Context/Context";
+export default function ShareModal({ShareList,ShowShareModal,IsSelected,setState}) {
+//  const {ShowShareModal} = GetRootContext().state.vote
+ const {dispatch} = GetRootContext()
   const [Code, setCode] = useState(null);
   const handleShare = () => {
-    var result = props.ShareList.map(function (el) {
-      var o = Object.assign({}, el);
-      o.isPublic = "private";
-      return o;
+    var result = ShareList.map(function (el) {
+      return el.id;
     });
-    api.post("generate/private", { result }, setHeader()).then((res) => {
-      setCode(res.data);
+    api.post("links", {id:result}, setHeader()).then((res) => {
+      setCode(res.data.code);
     });
   };
   return (
@@ -23,7 +25,7 @@ export default function ShareModal(props) {
             ? "Your votes are ready to see!"
             : "Do you want to share your vote?"
         }
-        visible={props.showShareModal}
+        visible={ShowShareModal}
         style={{ top: 10 }}
         width={1000}
         zIndex={2}
@@ -47,7 +49,12 @@ export default function ShareModal(props) {
             Share
           </Button>,
         ]}
-        onCancel={() => props.setState({ showShareModal: false })}
+        onCancel={() => {
+          setState({ShowShareModal:!ShowShareModal,
+            IsSelected:!IsSelected
+          })
+      }
+      }
         // okText="Ya"
         cancelText="Close"
       >

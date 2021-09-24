@@ -5,7 +5,7 @@ import Aos from "aos";
 import { imgVote } from "../asset";
 import { Button } from 'antd';
 import { Link } from "react-router-dom";
-export default class index extends Component {
+export default class Home extends Component {
   componentDidMount() {
     Aos.init();
   }

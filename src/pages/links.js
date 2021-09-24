@@ -8,7 +8,7 @@ import { logout } from '../Helpers/UserFunctions';
 
 import { Layout, Menu } from "antd";
 import { AuthNav } from '../component/Shared/Nav';
-
+import { RootContext } from '../Context/Context';
 class LinkManager extends Component{
     constructor(props){
         super(props)
@@ -27,8 +27,8 @@ class LinkManager extends Component{
               className="site-layout-background row rounded"
               style={{ padding: "24px 0", background:'white'}}
             >
-              <Sidebar lastMenu={logout} />
-                <ListLink {...this.props} />
+              <Sidebar />
+                <ListLink />
             </Layout>
           </Content>
           <Footer style={{ textAlign: "center" }}>

@@ -4,7 +4,11 @@ import { Bar } from "react-chartjs-2";
 import { Tabs,Table, Tag, Space } from "antd";
 import { Modal } from 'antd';
 import { DeleteButton } from "../../Button"; 
-export default function Hasil(props) {
+import { GetRootContext } from "../../../../Context/Context";
+export default function Hasil({ShowResultModal,handleDeleteVoter,setState}) {
+  const {DetailVote} = GetRootContext().state.vote
+
+  const {dispatch} = GetRootContext()
 
 const { TabPane } = Tabs;
 const columns = [
@@ -27,7 +31,7 @@ const columns = [
     <DeleteButton
     Data={text.email}
     DeleteFunc={(val) =>
-      props.handleDeleteVoter(
+      handleDeleteVoter(
           val
                                   )
     }
@@ -43,8 +47,10 @@ var dynamicColors = function() {
   var b = Math.floor(Math.random() * 255);
   return "rgb(" + r + "," + g + "," + b + ")";
 };
-props.jumlahkandidat.jumlah.forEach(() => {
+var candidate_name = []
+DetailVote && DetailVote.candidates.forEach(({name}) => {
   coloR.push(dynamicColors());
+  candidate_name.push(name)
 });
 
   return (
@@ -60,7 +66,7 @@ props.jumlahkandidat.jumlah.forEach(() => {
                       
       <Modal
       title="Result"
-        visible={props.showHasilModal}
+        visible={ShowResultModal}
         
         style={{ top: 10 }}
         width={1000}
@@ -70,23 +76,25 @@ props.jumlahkandidat.jumlah.forEach(() => {
             display: "none",
           },
         }}
-        onCancel={props.setState}
+        onCancel={()=>setState({
+          ShowResultModal:!ShowResultModal
+        })}
         // okText="Ya"
         cancelText="Close"
       >
               <Tabs defaultActiveKey="1">
                 <TabPane tab="Chart" key="1">
-                  {props.jumlahkandidat.kandidat.length > 0 ? (
+                  {DetailVote && DetailVote.voters_count > 0 ? (
                     <>
                       <Bar
                         data={{
-                          labels: props.jumlahkandidat.kandidat,
+                          labels: candidate_name,
                           datasets: [
                             {
-                              label: props.jumlahkandidat.title,
+                              label: DetailVote.title,
                               backgroundColor: coloR,
                               // borderColor: 'rgb(255, 99, 132)',
-                              data: props.jumlahkandidat.jumlah,
+                              data: DetailVote.candidates.length,
                             },
                           ],
                         }}
@@ -99,14 +107,14 @@ props.jumlahkandidat.jumlah.forEach(() => {
                   )}
                 </TabPane>
                 <TabPane tab="Detail" key="2">
-                {props.jumlahkandidat.kandidat.length > 0 ? (
-                <Table columns={columns} dataSource={props.jumlahVoters}
+                {DetailVote && DetailVote.voters_count > 0 ? (
+                <Table columns={columns} dataSource={DetailVote.voters}
                 
       summary={() => (
         <Table.Summary fixed>
           <Table.Summary.Row>
             <Table.Summary.Cell index={0}><h6>Jumlah Voters</h6></Table.Summary.Cell>
-            <Table.Summary.Cell index={1}><h6>{props.jumlahVoters != null && (props.jumlahVoters.length)}</h6></Table.Summary.Cell>
+            <Table.Summary.Cell index={1}><h6>{DetailVote.voters_count}</h6></Table.Summary.Cell>
           </Table.Summary.Row>
         </Table.Summary>
       )}
@@ -119,84 +127,6 @@ props.jumlahkandidat.jumlah.forEach(() => {
                 </TabPane>
               </Tabs>
       </Modal>
-
-      {/* <div
-        class="modal fade hasilvote"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="my-modal"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
-                {props.jumlahkandidat.title}
-              </h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <Tabs defaultActiveKey="1">
-                <TabPane tab="Chart" key="1">
-                  {props.jumlahkandidat.kandidat.length > 0 ? (
-                    <>
-                      <Bar
-                        data={{
-                          labels: props.jumlahkandidat.kandidat,
-                          datasets: [
-                            {
-                              label: props.jumlahkandidat.title,
-                              backgroundColor: [
-                                "rgba(255, 99, 132, 0.6)",
-                                "rgba(54, 162, 235, 0.6)",
-                                "rgba(255, 206, 86, 0.6)",
-                                "rgba(75, 192, 192, 0.6)",
-                                "rgba(153, 102, 255, 0.6)",
-                              ],
-                              // borderColor: 'rgb(255, 99, 132)',
-                              data: props.jumlahkandidat.jumlah,
-                            },
-                          ],
-                        }}
-                      />
-                    </>
-                  ) : (
-                    <h3 className="text-center m-5 text-uppercase">
-                      Belum ada yang vote
-                    </h3>
-                  )}
-                </TabPane>
-                <TabPane tab="Detail" key="2">
-                {props.jumlahkandidat.kandidat.length > 0 ? (
-                <Table columns={columns} dataSource={props.jumlahVoters}
-                
-      summary={() => (
-        <Table.Summary fixed>
-          <Table.Summary.Row>
-            <Table.Summary.Cell index={0}><h6>Jumlah Voters</h6></Table.Summary.Cell>
-            <Table.Summary.Cell index={1}><h6>{props.jumlahVoters != null && (props.jumlahVoters.length)}</h6></Table.Summary.Cell>
-          </Table.Summary.Row>
-        </Table.Summary>
-      )}
-                />
-                ): (
-                    <h3 className="text-center m-5 text-uppercase">
-                      Belum ada yang vote
-                    </h3>
-                  )}
-                </TabPane>
-              </Tabs>
-            </div>
-          </div>
-        </div>
-      </div> */}
     </>
   );
 }

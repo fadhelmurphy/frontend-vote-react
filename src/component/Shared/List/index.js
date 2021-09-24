@@ -1,23 +1,44 @@
 import React from "react";
 import { HasilButton } from "../Button";
-import { EditOutlined, TeamOutlined,FundOutlined,AppstoreOutlined } from "@ant-design/icons";
-export default function List({ isSelected, el, i, _getVote,_getHasilVote, handleChecked, Editable, LinkPage,setState, }) {
-  
+import {
+  EditOutlined,
+  TeamOutlined,
+  FundOutlined,
+  AppstoreOutlined
+} from "@ant-design/icons";
+import { GetRootContext } from "../../../Context/Context";
+// import { _getVote } from "../../../Helpers/UserFunctions";
+export default function List({
+  el,
+  i,
+  handleChecked,
+  Editable,
+  LinkPage,
+  setState,
+  IsSelected,
+  ShowEditModal,
+  ShowResultModal
+}) {
+  const RootContext = GetRootContext();
+  const { dispatch, _getVote } = RootContext;
   return (
     <>
-      <div
-        class="list-group shadow-sm"
-      >
-        <div class={"list-group-item w-100 py-2 d-flex text-wrap"} 
-                style={{ cursor: !Editable && "pointer" }}
-                        // data-toggle={!Editable && "modal"}
-                        // data-target={!Editable && "#my-modal"}
-        
-        onClick={() => {
-          !isSelected ? _getVote(el.id_vote) : handleChecked(i);
-          !Editable && setState({showVoteModal:true})
-        }}>
-          {isSelected && (
+      <div class="list-group shadow-sm">
+        <div
+          class={"list-group-item w-100 py-2 d-flex text-wrap"}
+          style={{ cursor: !Editable && "pointer" }}
+          // data-toggle={!Editable && "modal"}
+          // data-target={!Editable && "#my-modal"}
+
+          onClick={() => {
+            !IsSelected ? _getVote(el.id) : handleChecked(i);
+            !Editable &&
+              dispatch({
+                type: "VOTE_MODAL"
+              });
+          }}
+        >
+          {IsSelected && (
             <input
               className="mr-3 align-self-center"
               onClick={() => handleChecked(i)}
@@ -26,58 +47,70 @@ export default function List({ isSelected, el, i, _getVote,_getHasilVote, handle
             />
           )}
           <span
-          className={"mr-2 w-100 align-self-center py-2 "+(LinkPage?"text-truncate":"")}>
-            <h5 className="m-0">{el.name}</h5>
-            {!LinkPage?
-            <>
-            <span>
-              
-            <p className="m-0 text-secondary">
-            <TeamOutlined
-                  className="align-self-center py-auto"
-                  style={{ verticalAlign: "0",color:'#40a9ff' }}
-                />{" "}
-                <span className="mr-1">{(el.jumlahVoters && el.jumlahVoters.length>0?el.jumlahVoters.length:0)+" voters"}</span>{" "} 
-            <AppstoreOutlined
-                  className="align-self-center py-auto"
-                  style={{ verticalAlign: "0",color:'#36cfc9'}}
-                />{" "}
-                {(el.jumlahOpsi && el.jumlahOpsi>0?el.jumlahOpsi:0)+" Options"}</p>
-            </span>
-            </>
-            :''}
+            className={
+              "mr-2 w-100 align-self-center py-2 " +
+              (LinkPage ? "text-truncate" : "")
+            }
+          >
+            <h5 className="m-0">{LinkPage ? el.key : el.title}</h5>
+            {!LinkPage ? (
+              <>
+                <span>
+                  <p className="m-0 text-secondary">
+                    <TeamOutlined
+                      className="align-self-center py-auto"
+                      style={{ verticalAlign: "0", color: "#40a9ff" }}
+                    />{" "}
+                    <span className="mr-1">{el.voters_count + " voters"}</span>{" "}
+                    <AppstoreOutlined
+                      className="align-self-center py-auto"
+                      style={{ verticalAlign: "0", color: "#36cfc9" }}
+                    />{" "}
+                    {el.candidates_count + " Options"}
+                  </p>
+                </span>
+              </>
+            ) : (
+              ""
+            )}
           </span>
-          {Editable && !isSelected ?
-          <>
+          {Editable && !IsSelected ? (
+            <>
               <span
-              className={"align-self-center text-secondary d-flex "+(!LinkPage ?"mr-3":"")}
-                // data-toggle={!isSelected && "modal"}
-                // data-target={!isSelected && "#my-modal"}
-                
-                onClick={() =>{
-                          setState({showEditModal:true})
-                        }}
+                className={
+                  "align-self-center text-secondary d-flex " +
+                  (!LinkPage ? "mr-3" : "")
+                }
+                // data-toggle={!IsSelected && "modal"}
+                // data-target={!IsSelected && "#my-modal"}
+
+                onClick={() => {
+                  setState({
+                    ShowEditModal: !ShowEditModal
+                  });
+                }}
                 style={{ cursor: "pointer" }}
               >
                 <EditOutlined
                   className="align-self-center py-auto mr-2"
                   style={{ verticalAlign: "0" }}
-                />Edit
+                />
+                Edit
               </span>
-              </>
-              :''}
-          {(Editable && !LinkPage && !isSelected) ?
-          <>
+            </>
+          ) : (
+            ""
+          )}
+          {Editable && !LinkPage && !IsSelected ? (
+            <>
               <span
-              className="align-self-center text-secondary d-flex"
+                className="align-self-center text-secondary d-flex"
                 style={{ cursor: "pointer" }}
-                
-                onClick={() =>{
-                          _getHasilVote(el
-                          )
-                          setState({showHasilModal:true})
-                        }
-                        }
+                onClick={() => {
+                  setState({
+                    ShowResultModal: !ShowResultModal
+                  });
+                }}
               >
                 <FundOutlined
                   className="align-self-center py-auto text-success mr-2"
@@ -85,8 +118,10 @@ export default function List({ isSelected, el, i, _getVote,_getHasilVote, handle
                 />
                 Results
               </span>
-              </>
-              :''}
+            </>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </>

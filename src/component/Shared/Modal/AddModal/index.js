@@ -1,18 +1,24 @@
 import React, { useState } from "react";
 import api from "../../../../api";
-import { setHeader } from "../../../../Helpers/Auth";
-import { TambahVote } from "../../../../Helpers/UserFunctions";
+import { 
+  // TambahVote,
+   _getList } from "../../../../Helpers/UserFunctions";
 import { Upload, Button, Input } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { Modal } from 'antd';
 import "antd/dist/antd.css";
+import { GetRootContext } from "../../../../Context/Context";
 
-function Add(props) {
+function Add({ShowAddModal,setState}) {
+
+const RootContext = GetRootContext()
+const {_postTambahVote} = RootContext
+
   const [inputList, setInputList] = useState({
-    votename: "",
-    data: [{ kandidat: "", kandidatImage: "" }],
+    title: "",
+    data: [{ name: "", image: "" }],
   });
-  const [ErrorList, setErrorList] = useState({ votename: "", data: {} });
+  const [ErrorList, setErrorList] = useState({});
   const [Alert, setAlert] = useState("");
 
   // handle input change
@@ -20,56 +26,66 @@ function Add(props) {
     const { name, value } = e.target;
     var list = inputList.data;
     list[index][name] = value;
-    setInputList({ votename: inputList.votename, data: list });
+    setInputList({ title: inputList.title, data: list });
   };
 
   // handle click event of the Remove button
   const handleRemoveClick = (index) => {
     var list = inputList.data;
     list.splice(index, 1);
-    setInputList({ votename: inputList.votename, data: list });
+    setInputList({ title: inputList.title, data: list });
   };
 
   // handle click event of the Add button
   const handleAddClick = () => {
     setInputList({
-      votename: inputList.votename,
-      data: [...inputList.data, { kandidat: "", kandidatImage: "" }],
+      title: inputList.title,
+      data: [...inputList.data, { name: "", image: "" }],
     });
   };
 
   const handletitle = (e) => {
     const { value } = e.target;
-    setInputList({ votename: value, data: inputList.data });
+    setInputList({ title: value, data: inputList.data });
   };
   const handleSubmit = (event) => {
+    
     var opsiMsg = false;
     var theData = ErrorList;
     event.preventDefault();
     const list = inputList;
     console.log(list);
-    if (list.votename.length === 0) {
-      // props._setError("votename", "mohon isi judul vote terlebih dahulu");
-      theData.votename = "mohon isi judul vote terlebih dahulu!";
+    if (list.title.length === 0) {
+      // props._setError("title", "mohon isi judul vote terlebih dahulu");
+      theData.title = "mohon isi judul vote terlebih dahulu!";
       alert("mohon isi judul vote terlebih dahulu!");
-      return setErrorList({ votename: theData.votename, data: theData.data });
-    } else {
-      theData.votename = "";
-      setErrorList({ votename: theData.votename, data: theData.data });
+      setErrorList((prevState)=>({...prevState, title: theData.title }));
+    }else{
+      
+      setErrorList((prevState)=>({...prevState, title: null}));
     }
-
+    theData.data = []
     list.data.forEach((element, i) => {
-      if (element.kandidat.length === 0) {
+      if (element.name.length === 0) {
         theData.data[i] = "mohon isi opsi/kandidat vote terlebih dahulu!";
-        setErrorList({ votename: theData.votename, data: theData.data });
+        setErrorList((prevState)=>({...prevState,data: theData.data }));
         opsiMsg = true;
+      }else{
+        theData.data[i] = null
+        setErrorList((prevState)=>({...prevState,data: theData.data }));
       }
     });
-    if (opsiMsg) return alert("mohon isi opsi/kandidat terlebih dahulu!");
-    TambahVote(list).then((res) => {
-      const { alert, reload } = res;
-      setAlert(alert);
-      if (reload) window.location.reload();
+    if (opsiMsg) return alert("mohon isi opsi/kandidat terlebih dahulu!")
+    _postTambahVote(list).then(async (res) => {
+      const { reload } = res;
+      if(reload){
+        
+        setState({ShowAddModal:!ShowAddModal
+        })
+        setInputList({
+          title: "",
+          data: [{ name: "", image: "" }]})
+      }
     });
   };
 
@@ -77,12 +93,12 @@ function Add(props) {
     console.log(newFile.originFileObj.name.split('.')[1]);
     var list = inputList.data;
     if (newFile.status === "removed") {
-      list[index]["kandidatImage"] = "";
-      setInputList({ votename: inputList.votename, data: list });
+      list[index]["image"] = "";
+      setInputList({ title: inputList.title, data: list });
     } else if (newFile.status === "done") {
-      newFile.name = list[index]["kandidat"] + "-" + inputList.votename + "." +newFile.originFileObj.name.split('.')[1]
-      list[index]["kandidatImage"] = newFile;
-      setInputList({ votename: inputList.votename, data: list });
+      newFile.name = list[index]["name"] + "-" + inputList.title + "." +newFile.originFileObj.name.split('.')[1]
+      list[index]["image"] = newFile;
+      setInputList({ title: inputList.title, data: list });
     }
   };
 
@@ -106,12 +122,11 @@ function Add(props) {
       onSuccess("ok");
     }, 0);
   };
-
   return (
     <>
     <Modal
     title="Add Vote"
-      visible={props.showAddModal}
+      visible={ShowAddModal}
       
       style={{ top: 10 }}
       width={1000}
@@ -121,7 +136,9 @@ okButtonProps={{
           display: "none",
         },
       }}
-      onCancel={()=>props.setState({showAddModal:false})}
+      onCancel={()=>setState({
+        ShowAddModal: !ShowAddModal
+      })}
       // okText="Ya"
       cancelText="Close"
       footer={[
@@ -133,22 +150,22 @@ okButtonProps={{
                   Submit
                 </Button>]}
     >
-        <div
+        {/* <div
                   className="Features"
                   dangerouslySetInnerHTML={{ __html: Alert }}
-                />
+                /> */}
                 <div class="form-group">
                   <label for="exampleInputEmail1">Nama Vote : </label>
                   <Input
                     type="text"
                     class="form-control"
-                    name="votename"
+                    name="title"
                     placeholder="judul vote"
-                    value={inputList.votename}
+                    value={inputList.title}
                     onChange={(e) => handletitle(e)}
                     required
                   />
-                  <small className="text-danger">{ErrorList.votename}</small>
+                  <small className="text-danger">{ErrorList.title}</small>
                 </div>
                 {inputList.data.map((x, i) => {
                   return (
@@ -158,14 +175,14 @@ okButtonProps={{
                         <Input
                           type="text"
                           aria-describedby="emailHelp"
-                          name="kandidat"
+                          name="name"
                           placeholder="Masukkan kandidat"
-                          value={x.kandidat}
+                          value={x.name}
                           onChange={(e) => handleInputChange(e, i)}
                           required
                         />
                         <small className="text-danger">
-                          {ErrorList.data[i]}
+                          {ErrorList.data && ErrorList.data[i]}
                         </small>
                       </div>
                       <div className="form-group">
@@ -191,7 +208,7 @@ okButtonProps={{
                           }}
                           // onRemove={onImageRemove}
                         >
-                          {inputList.data[i].kandidatImage.length === 0 && (
+                          {inputList.data[i].image.length === 0 && (
                             <Button icon={<UploadOutlined />}> Upload</Button>
                           )}
                         </Upload>

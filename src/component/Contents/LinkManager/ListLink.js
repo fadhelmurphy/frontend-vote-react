@@ -5,13 +5,14 @@ import {
   DeleteOneLink,
   UpdateOneLink,
   bulkDeleteLinks,
+  setHeader,
 } from "../../../Helpers/UserFunctions";
 import api from "../../../api";
 import { imgVote } from "../../../asset";
 // import { connect } from "react-redux";
 // import { removeContact } from "../../../redux/actions";
 // import { Sugar } from 'react-preloaders';
-import { setHeader } from "../../../Helpers/Auth";
+// import { setHeader } from "../../../Helpers/Auth";
 import { Doughnut } from "react-chartjs-2";
 import { Header } from "../../Shared";
 import { Button, Select, Input, Form } from "antd";
@@ -20,6 +21,7 @@ import {  DeleteButton } from "../../Shared/Button";
 import { CheckOutlined,CloseOutlined,EyeOutlined } from "@ant-design/icons";
 import { LinkModal } from "../../Shared/Modal";
 import { useHistory } from "react-router-dom";
+import { RootContext } from "../../../Context/Context";
 class ListAll extends Component {
   constructor(props) {
     super(props);
@@ -40,8 +42,6 @@ class ListAll extends Component {
       hasilVote: null,
       isLoading: true,
       name: null,
-      isSelected: false,
-      ShowGen: false,
       jumlahkandidat: {
         title: null,
         jumlah: [],
@@ -49,7 +49,6 @@ class ListAll extends Component {
       },
       jumlahVoters: null,
       Alert: "",
-      showEditModal:false,
     };
   }
 
@@ -88,15 +87,8 @@ class ListAll extends Component {
 
   _getList = async () => {
     const response = await api.get("/links", setHeader());
-    var result = response.data.votes.map(function (el) {
-      var o = Object.assign({}, el);
-      o.isChecked = false;
-      o.name = el.id_url;
-      o.id_vote = el.id_url;
-      return o;
-    });
     this.setState({
-      AllData: result,
+      AllData: response.data.data,
       isLoading: false,
     });
   };
@@ -140,14 +132,19 @@ class ListAll extends Component {
 
 
   componentDidMount() {
-    this._getList();
+    const {_getListLink} = this.context
+    _getListLink()
     this._getVoteList();
     this._getUser();
   }
   render() {
+    
+    const { IsSelected } = this.context.state.vote;
+    const {dispatch} = this.context
     const { Option } = Select;
-    const { AllData, Vote, name, isSelected, LinkList, VoteList } = this.state;
+    const { AllData, Vote, name, LinkList, VoteList } = this.state;
     // const {contacts,removeExistingContact} = this.props
+    console.log(AllData)
     return (
       <>
         {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}
@@ -156,7 +153,7 @@ class ListAll extends Component {
             <div
               className={
                 "col-12 " +
-                (isSelected
+                (IsSelected
                   ? "col-md-4 pr-lg-4 text-lg-left"
                   : "col-md-1 text-lg-left") +
                 " mt-3 mt-md-0 align-self-center"
@@ -165,19 +162,21 @@ class ListAll extends Component {
               {LinkList.length === 0 && (
                 <>
                   <Button
-                    className={"ant-btn shadow-sm " + (isSelected ? "mr-3" : " text-primary border-primary")}
+                    className={"ant-btn shadow-sm " + (IsSelected ? "mr-3" : " text-primary border-primary")}
                     onClick={async () => {
-                      isSelected &&
+                      IsSelected &&
                         AllData.map((el) => {
                           el.isChecked = false;
                         });
                       await this.setState({
                         ShareList: [],
-                        isSelected: !this.state.isSelected,
                       });
+                      dispatch({
+                        type:"IS_SELECTED"
+                      })
                     }}
                   >
-                    {isSelected ? 
+                    {IsSelected ? 
                     <>
                   <CloseOutlined 
                   className="align-self-center py-auto"
@@ -187,7 +186,7 @@ class ListAll extends Component {
                   style={{ verticalAlign: "0" }}/>{" Select"}</>}
                   </Button>
                   {
-                    isSelected && (
+                    IsSelected && (
                       // <BulkDeleteButton
                       //   bulkDelete={(value) => bulkDeleteLinks(value)}
                       //   {...this.state}
@@ -200,7 +199,12 @@ class ListAll extends Component {
                         DeleteFunc={(value) => {
                           bulkDeleteLinks(value).then((res) => {
                             const { reload } = res;
-                            if (reload) window.location.reload(true);
+                            
+                          if (reload) {
+                            dispatch({
+                    type:"IS_SELECTED"
+                  })
+                          }
                           });
                         }}
                         size="default"
@@ -221,12 +225,11 @@ class ListAll extends Component {
                     {...this.state}
                     LinkPage={true}
                     Editable={true}
-                      isSelected={isSelected}
+                      IsSelected={IsSelected}
                       el={el}
                       i={i}
                       _getVote={(value) => this._getVote(value)}
                       handleChecked={(value) => this.handleChecked(value)}
-                      setState={val=>this.setState(val)}
                     />
                     {/* <div class="list-group flex-row">
                       <a
@@ -234,14 +237,14 @@ class ListAll extends Component {
                         style={{ cursor: "pointer" }}
                         class={"list-group-item w-100 py-2"}
                         onClick={() => {
-                          !isSelected
+                          !IsSelected
                             ? this._getVote(el.id_url)
                             : this.handleChecked(i);
                         }}
-                        data-toggle={!isSelected && "modal"}
-                        data-target={!isSelected && "#my-modal"}
+                        data-toggle={!IsSelected && "modal"}
+                        data-target={!IsSelected && "#my-modal"}
                       >
-                        {isSelected && (
+                        {IsSelected && (
                           <input
                             className="mr-3"
                             onClick={() => this.handleChecked(i)}
@@ -279,4 +282,5 @@ class ListAll extends Component {
 // });
 
 // export default connect(mapStateToProps, mapDispatchToProps)(ListAll);
+ListAll.contextType = RootContext
 export default ListAll;

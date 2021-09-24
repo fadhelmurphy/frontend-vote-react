@@ -1,10 +1,17 @@
 import { Modal, Button } from "antd";
 import React, { useState } from "react";
+import { GetRootContext } from "../../../../Context/Context";
+// import { _getList } from "../../../../Helpers/UserFunctions";
 export default function DeleteButton(props) {
   const [state, setstate] = useState({ visible: false });
+  const RootContext = GetRootContext()
   const handleDelete = async () => {
     // var { Vote } = this.state;
     props.DeleteFunc(props.Data);
+    const {_getList} = RootContext
+    _getList();
+    props.setState({ShowEditModal:!props.ShowEditModal})
+    // _getList(RootContext)
     setstate({
       visible: false,
     });
@@ -48,7 +55,7 @@ export default function DeleteButton(props) {
       <Modal
         visible={state.visible}
         onOk={() => handleDelete()}
-        onCancel={hideModal}
+        onCancel={()=>hideModal}
         okText="Ya"
         cancelText="Tidak"
         zIndex={1050}

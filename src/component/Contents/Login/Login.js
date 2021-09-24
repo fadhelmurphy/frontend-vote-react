@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { login,getUser } from '../../../Helpers/UserFunctions'
+// import { LoginCheck,getUser } from '../../../Helpers/UserFunctions'
 import { Form, Input, Button } from 'antd';
+import { RootState,RootContext,withContext } from '../../../Context/Context';
 // import jwt_decode from 'jwt-decode'
 // import { addContact } from '../../redux/actions'
 // import { connect } from "react-redux";
@@ -13,13 +14,15 @@ class Login extends Component {
       email: '',
       password: '',
       name:'',
-      token:'',
       alert:''
     }
     
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
   }
+
+  // static contextType = Vote;
+
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value })
@@ -28,29 +31,19 @@ class Login extends Component {
     
     // const { contacts, addNewContact } = this.props;
     // e.preventDefault()
-
+    const {_postLoginCheck} = this.context
     const user = {
       email: this.state.email,
       password: this.state.password
     }
 
-    login(user)
-    .then(async(res) => {
-      const {alert,reload} = res
-      this.setState({
-        alert
-      })
-      if (reload) {
-        await this.setState({token:localStorage.getItem("usertoken")})
-        await getUser()
-        .then(res => {
-          this.setState({
-            name: res
-          })
-        })
-        // this.props.history.push(`/voting`)
-      }
-    })
+    _postLoginCheck(user)
+    // .then(async(res) => {
+    //   const {alert,reload} = res
+    //   this.setState({
+    //     alert
+    //   })
+    // })
   }
 
     componentDidUpdate() {
@@ -64,8 +57,9 @@ class Login extends Component {
   }
 
   render() {
-    const token = localStorage.getItem("usertoken")
-    if(token!==null || this.state.token!==''){
+    console.log(this.context)
+    const {token} = this.context.state.auth
+    if(token!==null ){
       this.props.history.push(`/voting`)
     }
     return (
@@ -120,5 +114,6 @@ class Login extends Component {
 //   }
 // });
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Login);
+Login.contextType = RootContext;
+// export default withContext(Login)
 export default Login

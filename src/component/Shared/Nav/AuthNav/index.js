@@ -3,9 +3,11 @@ import React from 'react'
 // import Add from "../Button/AddVoteButton/Add";
 
 import { Link } from "react-router-dom";
+import { GetRootContext } from '../../../../Context/Context';
 import { logout } from '../../../../Helpers/UserFunctions';
 // import Add from '../../Button/AddVoteButton/Add';
 export default function AuthNav(props){
+  const{_postLogout} =GetRootContext()
     return(
         <>
         
@@ -76,7 +78,7 @@ export default function AuthNav(props){
               <div class="dropdown-menu ml-n5" aria-labelledby="dropdownMenuProfile">
               <Link class="dropdown-item" to="/links">Manage Links</Link>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" onClick={()=>logout()}>
+                <a class="dropdown-item" href="#" onClick={()=>_postLogout()}>
                   Logout
                 </a>
               </div>

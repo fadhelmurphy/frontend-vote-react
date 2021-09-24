@@ -6,7 +6,8 @@ import {
 import { Button, Input, Modal, Select } from "antd";
 import { DeleteButton } from "../../Button";
 import { CheckOutlined, CloseOutlined, EyeOutlined } from "@ant-design/icons";
-export default function LinkModal({ Vote, LinkList, VoteList,showEditModal, setState, Alert }) {
+import { GetRootContext } from "../../../../Context/Context";
+export default function LinkModal({ Vote, LinkList, VoteList, setState, Alert }) {
   const { Option } = Select;
 
   // handle input change
@@ -54,6 +55,8 @@ export default function LinkModal({ Vote, LinkList, VoteList,showEditModal, setS
       if (reload) window.location.reload();
     });
   };
+ const {ShowEditModal} = GetRootContext().state.vote
+ const {dispatch} = GetRootContext()
   return (
     <>
       <Modal
@@ -62,7 +65,7 @@ export default function LinkModal({ Vote, LinkList, VoteList,showEditModal, setS
             ? process.env.REACT_APP_BASEURL + "voting/" + Vote[0].id_url
             : "kosong"
         }
-        visible={showEditModal}
+        visible={ShowEditModal}
         style={{ top: 10 }}
         width={1000}
         zIndex={2}
@@ -71,13 +74,19 @@ export default function LinkModal({ Vote, LinkList, VoteList,showEditModal, setS
             display: "none",
           },
         }}
-        onCancel={() => setState({ showEditModal: false })}
+        onCancel={() => 
+          dispatch({
+          type:"EDIT_MODAL"
+        })}
         // okText="Ya"
         cancelText="Close"
         footer={[
           <Button
             data-dismiss="modal"
-            onClick={() => setState({ showEditModal: false })}
+            onClick={() => 
+          dispatch({
+          type:"EDIT_MODAL"
+        })}
             size={"large"}
           >
             Close

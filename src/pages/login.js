@@ -2,9 +2,7 @@ import { Login } from "../component/Contents/Login";
 import React, { Component } from "react";
 import { HomeNav } from "../component/Shared/Nav";
 export default class index extends Component {
-    constructor(props) {
-        super(props);
-    }
+    
   render() {
     return (<>
       <div className="container">

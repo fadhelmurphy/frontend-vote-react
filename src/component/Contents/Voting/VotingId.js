@@ -1,10 +1,11 @@
 import { Button } from "antd";
 import React, { Component } from "react";
 import api from "../../../api";
-import { setHeader } from "../../../Helpers/Auth";
 import { List } from "../../Shared";
 import './VotingId.css'
 import { VoteModal } from "../../Shared/Modal";
+import { setHeader } from "../../../Helpers/UserFunctions";
+import { RootContext } from "../../../Context/Context";
 export default class VotingId extends Component {
   constructor(props){
     super(props)
@@ -25,6 +26,16 @@ export default class VotingId extends Component {
       Vote: response.data.vote,
     });
   };
+  componentDidMount(){
+    const {IsSelected,ShowAddModal,ShowEditModal,ShowResultModal,ShowShareModal,ShowVoteModal} = this.context.state.vote
+    const {dispatch} = this.context
+    if(IsSelected || IsSelected || ShowAddModal || ShowEditModal || ShowResultModal || ShowShareModal || ShowVoteModal) {
+      dispatch({
+        type:"RESET_ALL_MODAL"
+      })
+    }
+
+  }
   render() {
     const { LinkList } = this.props;
     return (
@@ -40,7 +51,7 @@ export default class VotingId extends Component {
                   el={el}
                   i={i}
                   _getVote={(value) => this._getVote(value)}
-                  handleChecked={(value) => this.handleChecked(value)}
+                  // handleChecked={(value) => this.handleChecked(value)}
                       setState={(value)=>this.setState(value)}
                 />:
                 <div class={"list-group-item w-100 py-2 d-flex text-wrap bg-light"}>
@@ -168,3 +179,4 @@ export default class VotingId extends Component {
     );
   }
 }
+VotingId.contextType = RootContext

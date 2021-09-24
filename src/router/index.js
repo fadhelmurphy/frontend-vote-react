@@ -47,7 +47,7 @@ export default function index() {
   return (
     <>
       <BrowserRouter>
-        <Suspense fallback={<div>Loading... </div>}>
+        <Suspense fallback={null}>
           <Switch>
             {rootRouter.map((el) => {
               return el.login ? (

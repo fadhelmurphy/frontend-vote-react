@@ -1,5 +1,10 @@
+import {notification } from 'antd';
+
 export const customErr = (status,message)=>{
 if (status>=200&&status<300) {
+  notification['success']({
+    message: `Anda berhasil ${message}!`,
+  });
     return {
         status,
         alert: `<div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -11,6 +16,10 @@ if (status>=200&&status<300) {
         reload:true
     }
 } else if(status>=400&&status<500){
+  
+  notification['error']({
+    message: `Gagal, ${message}!`,
+  });
     return {
         status,
         alert: `<div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -22,6 +31,9 @@ if (status>=200&&status<300) {
         reload:false
     }
 }else if(status>=500&&status<600){
+  notification['warning']({
+    message: `Server sedang bermasalah`,
+  });
     return {
         status,
         alert: `<div class="alert alert-warning alert-dismissible fade show" role="alert">

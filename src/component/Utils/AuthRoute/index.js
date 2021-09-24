@@ -1,23 +1,14 @@
-import React, { useContext, useEffect, 
+import React, { useContext, 
   // useState 
 } from "react";
 import { Redirect, Route } from "react-router-dom";
-import { isAuthenticated } from "../../../Helpers/Auth";
-import { AuthContext } from "../../../Context";
+import { GetRootContext } from "../../../Context/Context";
 
 export default ({ component: Component, ...rest }) => {
-
-  const { authenticated, setAuthenticated } = useContext(AuthContext);
-
-  useEffect(() => {
-    if (isAuthenticated()) {
-      setAuthenticated({auth:true});
-    } else {
-      setAuthenticated({auth:false});
-    }
-  }, []); 
-  if (authenticated.auth) {
-    
+  const RootContext = GetRootContext()
+  console.log(RootContext)
+  const { success} = RootContext.state.auth;
+  if (success) {
     return <>
     <Route {...rest} component={Component} /></>;
   } else {

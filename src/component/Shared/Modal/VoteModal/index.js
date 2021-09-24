@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { Button, Modal } from "antd";
 import api from "../../../../api";
-import { setHeader } from "../../../../Helpers/Auth";
+// import { setHeader } from "../../../../Helpers/Auth";
 import { useHistory } from "react-router-dom";
+import { setHeader } from "../../../../Helpers/UserFunctions";
+import { GetRootContext } from "../../../../Context/Context";
 export default function VoteModal(props){
+  const {dispatch} = GetRootContext()
+  // const {ShowVoteModal} = GetRootContext().state.vote
     const history = useHistory();
   const handleVoteClick = async () => {
     const { Vote, Option } = props;
@@ -30,7 +34,7 @@ export default function VoteModal(props){
     return(
     <>
     <Modal
-    visible={props.showVoteModal}
+    visible={props.ShowVoteModal}
         style={{ top: 10 }}
         width={1000}
         zIndex={2}
@@ -50,7 +54,7 @@ export default function VoteModal(props){
                   >Vote</Button>
         ]}
         
-        onCancel={() => props.setState({ showVoteModal: false })}
+        onCancel={() => props.setState({ShowVoteModal:!props.ShowVoteModal})}
     title={props.Vote !== null ? props.Vote[0].votename : "kosong"}
     >
         

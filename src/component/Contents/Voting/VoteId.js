@@ -1,7 +1,7 @@
 import React,{Component} from 'react'
 import api from '../../../api'
-import {setHeader} from '../../../Helpers/Auth'
-import { showPub } from '../../../Helpers/UserFunctions'
+// import {setHeader} from '../../../Helpers/Auth'
+import { setHeader, showPub } from '../../../Helpers/UserFunctions'
 import VotingId from './VotingId'
 // import { Sugar } from 'react-preloaders';
 
