@@ -1,68 +1,92 @@
 import React from "react";
-import {
-  DeleteOneLink,
-  UpdateOneLink,
-} from "../../../../Helpers/UserFunctions";
+// import {
+//   DeleteOneLink,
+//   UpdateOneLink
+// } from "../../../../Helpers/UserFunctions";
 import { Button, Input, Modal, Select } from "antd";
 import { DeleteButton } from "../../Button";
 import { CheckOutlined, CloseOutlined, EyeOutlined } from "@ant-design/icons";
 import { GetRootContext } from "../../../../Context/Context";
-export default function LinkModal({ Vote, LinkList, VoteList, setState, Alert }) {
+export default function LinkModal({
+  ShowEditModal,
+  LinkList,
+  VoteList,
+  setState,
+  Alert
+}) {
+  const { DetailLink } = GetRootContext().state.link;
+  const { AllVote } = GetRootContext().state.vote;
+  const { dispatch, _postUpdateLink, _getListLink, _postDeleteLink } =
+    GetRootContext();
+
   const { Option } = Select;
 
   // handle input change
   const handleTitleChange = (e, index) => {
     var { name, value } = e.target;
     value = value.replace(/[^A-Za-z]/gi, "");
-    const list = Vote;
-    list.map((el, i) => {
-      Vote[i][name] = value;
+    const list = DetailLink;
+    list[name] = value;
+
+    dispatch({
+      type: "GET_DETAIL_LINK_SUCCESS",
+      payload: list
     });
-    setState({ Vote: list });
+    // setState({ Vote: list });
   };
 
   // handle input change
   const handleCandidateChange = (name, value, index) => {
     // const { name, value } = e.target;
-    let list = Vote;
-    list[index][name] = value;
-    setState({ Vote: list });
+    let list = DetailLink;
+    list.votes[index][name] = value;
+    dispatch({
+      type: "GET_DETAIL_LINK_SUCCESS",
+      payload: list
+    });
   };
   // handle click event of the Add button
   const handleAddClick = () => {
-    const list = Vote;
-    list.push({
-      action: "tambah",
-      id: null,
-      votename: "",
-      id_url: list[0].id_url,
-      id_vote: "",
+    const list = DetailLink;
+    list.votes.push({
+      is_delete: 0,
+      title: "",
+      id_link: list.id
     });
-    setState({ Vote: list });
+
+    dispatch({
+      type: "GET_DETAIL_LINK_SUCCESS",
+      payload: list
+    });
+    // setState({ Vote: list });
   };
   // handle click event of the Remove button
   const handleRemoveClick = (index) => {
-    const list = Vote;
-    list[index]["action"] = "hapus";
-    setState({ Vote: list });
+    const list = DetailLink;
+    // list.votes[index].is_delete = 1;
+    list.votes.splice(index, 1);
+    dispatch({
+      type: "GET_DETAIL_LINK_SUCCESS",
+      payload: list
+    });
+    // setState({ Vote: list });
   };
   const handleUpdate = () => {
     // event.preventDefault();
-
-    UpdateOneLink(Vote).then((res) => {
-      const { alert, reload } = res;
-      setState({ Alert: alert });
-      if (reload) window.location.reload();
+    _postUpdateLink(DetailLink).then(res=>{
+      const {reload} = res
+      reload &&
+      setState({
+        ShowEditModal: !ShowEditModal
+      })
     });
   };
- const {ShowEditModal} = GetRootContext().state.vote
- const {dispatch} = GetRootContext()
   return (
     <>
       <Modal
         title={
-          Vote !== null
-            ? process.env.REACT_APP_BASEURL + "voting/" + Vote[0].id_url
+          DetailLink !== null
+            ? process.env.REACT_APP_BASEURL + "voting/" + DetailLink.key
             : "kosong"
         }
         visible={ShowEditModal}
@@ -71,22 +95,24 @@ export default function LinkModal({ Vote, LinkList, VoteList, setState, Alert })
         zIndex={2}
         okButtonProps={{
           style: {
-            display: "none",
-          },
+            display: "none"
+          }
         }}
-        onCancel={() => 
-          dispatch({
-          type:"EDIT_MODAL"
-        })}
+        onCancel={() =>
+          setState({
+            ShowEditModal: !ShowEditModal
+          })
+        }
         // okText="Ya"
         cancelText="Close"
         footer={[
           <Button
             data-dismiss="modal"
-            onClick={() => 
-          dispatch({
-          type:"EDIT_MODAL"
-        })}
+            onClick={() =>
+              setState({
+                ShowEditModal: !ShowEditModal
+              })
+            }
             size={"large"}
           >
             Close
@@ -96,8 +122,8 @@ export default function LinkModal({ Vote, LinkList, VoteList, setState, Alert })
             size={"large"}
             target="_blank"
             href={
-              Vote !== null &&
-              process.env.REACT_APP_BASEURL + "voting/" + Vote[0].id_url
+              DetailLink !== null &&
+              process.env.REACT_APP_BASEURL + "voting/" + DetailLink.key
             }
             className="bg-primary text-white border-0"
           >
@@ -116,22 +142,20 @@ export default function LinkModal({ Vote, LinkList, VoteList, setState, Alert })
             Update
           </Button>,
           <DeleteButton
-            Data={Vote !== null && Vote[0].id_url}
+            Data={DetailLink}
             DeleteFunc={(value) => {
-              DeleteOneLink(value).then((res) => {
-                const { alert, reload } = res;
-                setState({ Alert: alert });
-                if (reload) window.location.reload();
-              });
+              _postDeleteLink(value);
             }}
+            setState={() =>
+              setState({
+                ShowEditModal: !ShowEditModal
+              })
+            }
             size="large"
-          />,
+          />
         ]}
       >
-        <div
-          className="Features"
-          dangerouslySetInnerHTML={{ __html: Alert }}
-        />
+        <div className="Features" dangerouslySetInnerHTML={{ __html: Alert }} />
         <div class="form-group">
           <label for="recipient-name" class="col-form-label">
             Url Vote:
@@ -139,9 +163,9 @@ export default function LinkModal({ Vote, LinkList, VoteList, setState, Alert })
           <Input
             onkeypress="return /[a-z]/i.test(event.key)"
             type="text"
-            name="id_url"
+            name="key"
             onChange={(e) => handleTitleChange(e)}
-            value={Vote !== null ? Vote[0].id_url : "kosong"}
+            value={DetailLink !== null ? DetailLink.key : "kosong"}
             id="recipient-title"
           />
         </div>
@@ -152,11 +176,11 @@ export default function LinkModal({ Vote, LinkList, VoteList, setState, Alert })
           </Button>
         }
         <div className={LinkList.length > 0 && "row mt-3"}>
-          {Vote &&
-            Vote.map((element, i) => {
+          {DetailLink &&
+            DetailLink.votes.map((element, i) => {
               return (
                 <>
-                  {element.action !== "hapus" && (
+                  {element.is_delete !== 1 && (
                     <>
                       <div class="form-group">
                         <label for="recipient-name" class="col-form-label">
@@ -165,24 +189,22 @@ export default function LinkModal({ Vote, LinkList, VoteList, setState, Alert })
 
                         <Select
                           className="w-100"
-                          defaultValue={
-                            element.votename !== null && element.votename
-                          }
+                          defaultValue={element.title}
                           name="id_vote"
                           onChange={(value) =>
                             handleCandidateChange("id_vote", value, i)
                           }
                         >
-                          {VoteList &&
-                            VoteList.map((option, ind) => (
-                              <Option key={ind} value={option.id_vote}>
-                                {option.name}
+                          {AllVote &&
+                            AllVote.map((option, ind) => (
+                              <Option key={ind} value={option.id}>
+                                {option.title}
                               </Option>
                             ))}
                         </Select>
                       </div>
                       <div className="form-group">
-                        {Vote.length !== 1 && (
+                        {DetailLink.length !== 1 && (
                           <Button danger onClick={() => handleRemoveClick(i)}>
                             Remove
                           </Button>

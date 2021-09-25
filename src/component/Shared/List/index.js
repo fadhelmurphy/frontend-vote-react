@@ -20,18 +20,17 @@ export default function List({
   ShowResultModal
 }) {
   const RootContext = GetRootContext();
-  const { dispatch, _getVote } = RootContext;
+  const { dispatch, _getVote, _getLink } = RootContext;
   return (
     <>
       <div class="list-group shadow-sm">
         <div
           class={"list-group-item w-100 py-2 d-flex text-wrap"}
           style={{ cursor: !Editable && "pointer" }}
-          // data-toggle={!Editable && "modal"}
-          // data-target={!Editable && "#my-modal"}
 
           onClick={() => {
-            !IsSelected ? _getVote(el.id) : handleChecked(i);
+            !IsSelected? !LinkPage? _getVote(el.id):_getLink(el.id) : handleChecked(i) 
+            // !IsSelected && LinkPage ? _getLink(el.id) : handleChecked(i);
             !Editable &&
               dispatch({
                 type: "VOTE_MODAL"

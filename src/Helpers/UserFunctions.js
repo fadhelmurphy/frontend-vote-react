@@ -211,23 +211,23 @@ export const bulkDelete = (data) => {
     });
 };
 
-export const bulkDeleteLinks = (data) => {
-  return api
-    .post("bulkdeletelinks/", data, setHeader())
-    .then((res) => {
-      console.log(res);
-      const comment = "delete Link!";
-      alert("Berhasil " + comment);
-      hasil = customErr(res.status, comment);
-      return hasil;
-    })
-    .catch((err) => {
-      const comment = "Anda gagal delete Link!";
-      alert(comment + " Dengan error code " + err.response.status);
-      hasil = customErr(err.response.status, comment);
-      return hasil;
-    });
-};
+// export const bulkDeleteLinks = (data) => {
+//   return api
+//     .post("bulkdeletelinks/", data, setHeader())
+//     .then((res) => {
+//       console.log(res);
+//       const comment = "delete Link!";
+//       alert("Berhasil " + comment);
+//       hasil = customErr(res.status, comment);
+//       return hasil;
+//     })
+//     .catch((err) => {
+//       const comment = "Anda gagal delete Link!";
+//       alert(comment + " Dengan error code " + err.response.status);
+//       hasil = customErr(err.response.status, comment);
+//       return hasil;
+//     });
+// };
 
 // export const DeleteOneVote = ({dispatch})=>(id) => {
 //   return api
@@ -251,24 +251,24 @@ export const bulkDeleteLinks = (data) => {
 //     });
 // };
 
-export const DeleteOneLink = (data) => {
-  return api
-    .get("deletelink/" + data, setHeader())
-    .then((res) => {
-      console.log(res);
-      const comment = "delete Link!";
-      alert(comment);
-      hasil = customErr(res.status, comment);
-      return hasil;
-    })
-    .catch((err) => {
-      console.log(err)
-      const comment = "Anda gagal delete Link!";
-      alert(comment);
-      hasil = customErr(err.response.status, comment);
-      return hasil;
-    });
-};
+// export const DeleteOneLink = (data) => {
+//   return api
+//     .get("deletelink/" + data, setHeader())
+//     .then((res) => {
+//       console.log(res);
+//       const comment = "delete Link!";
+//       alert(comment);
+//       hasil = customErr(res.status, comment);
+//       return hasil;
+//     })
+//     .catch((err) => {
+//       console.log(err)
+//       const comment = "Anda gagal delete Link!";
+//       alert(comment);
+//       hasil = customErr(err.response.status, comment);
+//       return hasil;
+//     });
+// };
 
 // export const UpdateOneVote = ({dispatch}) =>  (Vote) => {
 //   const formData = new FormData();
@@ -307,21 +307,21 @@ export const DeleteOneLink = (data) => {
 //     });
 // };
 
-export const UpdateOneLink = (Vote) => {
-  return api
-    .post("updatelink", { Vote }, setHeader())
-    .then((res) => {
-      console.log(res);
-      const comment = "mengupdate Link!";
-      alert(comment);
-      hasil = customErr(res.status, comment);
-      return hasil;
-    })
-    .catch((err) => {
-      const comment = "Anda gagal update Link!";
-      alert(comment);
-      hasil = customErr(err.response.status, comment);
-      return hasil;
-    });
-};
+// export const UpdateOneLink = (Vote) => {
+//   return api
+//     .post("updatelink", { Vote }, setHeader())
+//     .then((res) => {
+//       console.log(res);
+//       const comment = "mengupdate Link!";
+//       alert(comment);
+//       hasil = customErr(res.status, comment);
+//       return hasil;
+//     })
+//     .catch((err) => {
+//       const comment = "Anda gagal update Link!";
+//       alert(comment);
+//       hasil = customErr(err.response.status, comment);
+//       return hasil;
+//     });
+// };
 

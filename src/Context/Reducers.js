@@ -39,17 +39,16 @@ export const voteReducer = (state=intialVote, action) => {
 };
 
 const intialLink = {
-  AllLink:[],
+  AllLinks:[],
   DetailLink:null,
-  // ResultVote:null
 }
 
 export const linkReducer = (state=intialLink, action) => {
   switch (action.type) {
     case "GET_ALL_LINKS_SUCCESS":
       return { ...state, AllLinks: action.payload };
-    case "GET_DETAIL_LINKS_SUCCESS":
-      return { ...state, DetailLinks: action.payload };
+    case "GET_DETAIL_LINK_SUCCESS":
+      return { ...state, DetailLink: action.payload };
     default:
       return state;
   }

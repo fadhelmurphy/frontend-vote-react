@@ -12,7 +12,7 @@ import { GetRootContext } from "../../../../Context/Context";
 
 export default function Edit({ setState, ShowEditModal, LinkList }) {
   const RootContext = GetRootContext();
-  const { _postUpdateOneVote, _postDeleteOneVote } = RootContext;
+  const { dispatch,_postUpdateOneVote, _postDeleteOneVote } = RootContext;
   const { DetailVote } = RootContext.state.vote;
   const handleUpdate = (event) => {
     event.preventDefault();
@@ -28,13 +28,23 @@ export default function Edit({ setState, ShowEditModal, LinkList }) {
     const { name, value } = e.target;
     const list = DetailVote;
     list.candidates[index][name] = value;
-    setState({ Vote: list });
+    dispatch({
+      type:'GET_DETAIL_VOTE_SUCCESS',
+      payload:list
+    })
+    // setState({ Vote: list });
   };
   // handle click event of the Remove button
   const handleRemoveClick = (index) => {
     const list = DetailVote;
-    list.candidates[index].is_delete = 1;
-    setState({ Vote: list });
+    list.candidates[index].id !== undefined?
+    list.candidates[index].is_delete = 1
+    :list.candidates.splice(index, 1);
+    dispatch({
+      type:'GET_DETAIL_VOTE_SUCCESS',
+      payload:list
+    })
+    // setState({ Vote: list });
   };
   //  const handleVoteClick = async (index) => {
   //     // const { Vote } = props;
@@ -54,7 +64,12 @@ export default function Edit({ setState, ShowEditModal, LinkList }) {
     const { name, value } = e.target;
     const list = DetailVote;
     list[name] = value;
-    setState({ Vote: list });
+    
+    dispatch({
+      type:'GET_DETAIL_VOTE_SUCCESS',
+      payload:list
+    })
+    // setState({ Vote: list });
   };
 
   // handle click event of the Add button
@@ -62,13 +77,17 @@ export default function Edit({ setState, ShowEditModal, LinkList }) {
     const list = DetailVote;
     list.candidates.push({
       is_delete: 0,
-      // id: null,
       name: "",
       image: null,
       id_vote: list.id
     });
-    setState({ Vote: list });
+    
+    dispatch({
+      type:'GET_DETAIL_VOTE_SUCCESS',
+      payload:list
+    })
   };
+  
 
   // File Upload
 
@@ -77,7 +96,12 @@ export default function Edit({ setState, ShowEditModal, LinkList }) {
     var list = DetailVote;
     if (newFile.status === "removed") {
       list.candidates[index].image = null;
-      setState({ list });
+      // setState({ list });
+      
+    dispatch({
+      type:'GET_DETAIL_VOTE_SUCCESS',
+      payload:list
+    })
     } else if (newFile.status === "done") {
       newFile.name =
         list.candidates[index].name +
@@ -86,7 +110,12 @@ export default function Edit({ setState, ShowEditModal, LinkList }) {
         "." +
         newFile.originFileObj.name.split(".")[1];
       list.candidates[index].image = newFile;
-      setState({ list });
+      // setState({ list });
+      
+    dispatch({
+      type:'GET_DETAIL_VOTE_SUCCESS',
+      payload:list
+    })
     }
   };
 

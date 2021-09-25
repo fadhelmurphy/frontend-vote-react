@@ -84,7 +84,7 @@ class ListAll extends Component {
       );
       const re = RegExp(p);
 
-      return LinkList.filter(({ name }) => name.toLowerCase().match(re));
+      return LinkList.filter(({ title }) => title.toLowerCase().match(re));
     };
     LinkList = match(event.target.value);
     this.setState({

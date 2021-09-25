@@ -10,9 +10,7 @@ export default function ShareModal({ShareList,ShowShareModal,IsSelected,setState
  const {dispatch} = GetRootContext()
   const [Code, setCode] = useState(null);
   const handleShare = () => {
-    var result = ShareList.map(function (el) {
-      return el.id;
-    });
+    var result = ShareList.map(el=>el.id);
     api.post("links", {id:result}, setHeader()).then((res) => {
       setCode(res.data.code);
     });

@@ -8,9 +8,7 @@ export default function DeleteButton(props) {
   const handleDelete = async () => {
     // var { Vote } = this.state;
     props.DeleteFunc(props.Data);
-    const {_getList} = RootContext
-    _getList();
-    props.setState({ShowEditModal:!props.ShowEditModal})
+    props.setState && props.setState({ShowEditModal:!props.ShowEditModal})
     // _getList(RootContext)
     setstate({
       visible: false,
@@ -55,7 +53,7 @@ export default function DeleteButton(props) {
       <Modal
         visible={state.visible}
         onOk={() => handleDelete()}
-        onCancel={()=>hideModal}
+        onCancel={()=>hideModal()}
         okText="Ya"
         cancelText="Tidak"
         zIndex={1050}

@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import {
   getUser,
-  showPriv8,
-  DeleteOneLink,
-  UpdateOneLink,
-  bulkDeleteLinks,
-  setHeader,
+  // showPriv8,
+  // DeleteOneLink,
+  // UpdateOneLink,
+  // bulkDeleteLinks,
+  setHeader
 } from "../../../Helpers/UserFunctions";
 import api from "../../../api";
 import { imgVote } from "../../../asset";
@@ -17,8 +17,8 @@ import { Doughnut } from "react-chartjs-2";
 import { Header } from "../../Shared";
 import { Button, Select, Input, Form } from "antd";
 import { List } from "../../Shared";
-import {  DeleteButton } from "../../Shared/Button";
-import { CheckOutlined,CloseOutlined,EyeOutlined } from "@ant-design/icons";
+import { DeleteButton } from "../../Shared/Button";
+import { CheckOutlined, CloseOutlined, EyeOutlined } from "@ant-design/icons";
 import { LinkModal } from "../../Shared/Modal";
 import { useHistory } from "react-router-dom";
 import { RootContext } from "../../../Context/Context";
@@ -33,25 +33,15 @@ class ListAll extends Component {
       message: {
         code: "",
         votename: "",
-        opsi: [],
+        opsi: []
       },
       form: {
-        code: "",
+        code: ""
       },
-      Vote: null,
-      hasilVote: null,
-      isLoading: true,
-      name: null,
-      jumlahkandidat: {
-        title: null,
-        jumlah: [],
-        kandidat: [],
-      },
-      jumlahVoters: null,
-      Alert: "",
+      IsSelected: false,
+      Alert: ""
     };
   }
-
 
   // handleDelete = () => {
   //   var { Vote } = this.state;
@@ -74,14 +64,14 @@ class ListAll extends Component {
   // };
 
   _getVote = async (id) => {
-    this.setState({Vote:null})
+    this.setState({ DetailLink: null });
     const response = await api.get("getlink/" + id, setHeader());
     response.data.vote.map((el) => {
       // el["id_vote"] = el.id_vote;
       el["action"] = "ubah";
     });
     this.setState({
-      Vote: response.data.vote,
+      Vote: response.data.vote
     });
   };
 
@@ -89,38 +79,34 @@ class ListAll extends Component {
     const response = await api.get("/links", setHeader());
     this.setState({
       AllData: response.data.data,
-      isLoading: false,
+      isLoading: false
     });
   };
 
   _getVoteList = async () => {
-    this.setState({Vote:null})
-    const response = await api.get("/AllVote", setHeader());
-    var result = response.data.votes.map(function (el) {
-      var o = Object.assign({}, el);
-      o.isChecked = false;
-      return o;
-    });
+    this.setState({ Vote: null });
+    const response = await api.get("votes", setHeader());
     this.setState({
-      VoteList: result,
-      isLoading: false,
+      VoteList: response
     });
   };
 
   _getUser = async () => {
     await getUser().then((res) => {
       this.setState({
-        name: res,
+        name: res
       });
     });
   };
   handleChecked = async (index) => {
-    var datachecked = this.state.AllData;
+    const { dispatch } = this.context;
+    const { AllLinks } = this.context.state.link;
+    var datachecked = AllLinks;
     datachecked[index].isChecked = await !datachecked[index].isChecked;
     var sharelist = await datachecked.filter((el) => el.isChecked && el);
+    dispatch({ type: "GET_ALL_LINKS_SUCCESS", payload: datachecked });
     this.setState({
-      AllData: datachecked,
-      ShareList: sharelist,
+      ShareList: sharelist
     });
   };
   // _setPublic(){
@@ -130,21 +116,19 @@ class ListAll extends Component {
   //   this.setState({code:id})
   // }
 
-
   componentDidMount() {
-    const {_getListLink} = this.context
-    _getListLink()
+    const { _getListLink } = this.context;
+    _getListLink();
     // this._getVoteList();
     // this._getUser();
   }
   render() {
-    
-    const { IsSelected } = this.context.state.vote;
-    const {dispatch} = this.context
+    const { AllLinks } = this.context.state.link;
+    const { dispatch,_postBulkDeleteLinks } = this.context;
     const { Option } = Select;
-    const { AllData, Vote, name, LinkList, VoteList } = this.state;
+    const { AllData, Vote, name, LinkList, VoteList, IsSelected } = this.state;
     // const {contacts,removeExistingContact} = this.props
-    console.log(AllData)
+    console.log(AllLinks);
     return (
       <>
         {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}
@@ -162,28 +146,38 @@ class ListAll extends Component {
               {LinkList.length === 0 && (
                 <>
                   <Button
-                    className={"ant-btn shadow-sm " + (IsSelected ? "mr-3" : " text-primary border-primary")}
+                    className={
+                      "ant-btn shadow-sm " +
+                      (IsSelected ? "mr-3" : " text-primary border-primary")
+                    }
                     onClick={async () => {
                       IsSelected &&
-                        AllData.map((el) => {
+                        AllLinks.map((el) => {
                           el.isChecked = false;
                         });
                       await this.setState({
                         ShareList: [],
+                        IsSelected: !IsSelected
                       });
-                      dispatch({
-                        type:"IS_SELECTED"
-                      })
                     }}
                   >
-                    {IsSelected ? 
-                    <>
-                  <CloseOutlined 
-                  className="align-self-center py-auto"
-                  style={{ verticalAlign: "0" }}/>{" Deselect" }</>: <>
-                  <CheckOutlined 
-                  className="align-self-center py-auto"
-                  style={{ verticalAlign: "0" }}/>{" Select"}</>}
+                    {IsSelected ? (
+                      <>
+                        <CloseOutlined
+                          className="align-self-center py-auto"
+                          style={{ verticalAlign: "0" }}
+                        />
+                        {" Deselect"}
+                      </>
+                    ) : (
+                      <>
+                        <CheckOutlined
+                          className="align-self-center py-auto"
+                          style={{ verticalAlign: "0" }}
+                        />
+                        {" Select"}
+                      </>
+                    )}
                   </Button>
                   {
                     IsSelected && (
@@ -195,16 +189,14 @@ class ListAll extends Component {
                       // </BulkDeleteButton>
 
                       <DeleteButton
-                        Data={AllData.filter((el) => el.isChecked && el)}
+                        Data={AllLinks.filter((el) => el.isChecked && el)}
                         DeleteFunc={(value) => {
-                          bulkDeleteLinks(value).then((res) => {
+                          _postBulkDeleteLinks(value).then((res) => {
                             const { reload } = res;
-                            
-                          if (reload) {
-                            dispatch({
-                    type:"IS_SELECTED"
-                  })
-                          }
+
+                            if (reload) {
+                              this.setState({ IsSelected: !IsSelected });
+                            }
                           });
                         }}
                         size="default"
@@ -216,20 +208,21 @@ class ListAll extends Component {
               )}
             </div>
           </div>
-          {(LinkList.length > 0 ? LinkList : AllData).map((el, i) => {
+          {(LinkList.length > 0 ? LinkList : AllLinks).map((el, i) => {
             return (
               <>
                 <div className="row mb-3">
                   <div className="col-12">
                     <List
-                    {...this.state}
-                    LinkPage={true}
-                    Editable={true}
+                      {...this.state}
+                      LinkPage={true}
+                      Editable={true}
                       IsSelected={IsSelected}
                       el={el}
                       i={i}
                       _getVote={(value) => this._getVote(value)}
                       handleChecked={(value) => this.handleChecked(value)}
+                      setState={(value) => this.setState(value)}
                     />
                     {/* <div class="list-group flex-row">
                       <a
@@ -261,7 +254,7 @@ class ListAll extends Component {
             );
           })}
         </div>
-      <LinkModal {...this.state} setState={(val)=>this.setState(val)}/>
+        <LinkModal {...this.state} setState={(val) => this.setState(val)} />
       </>
     );
   }
@@ -282,5 +275,5 @@ class ListAll extends Component {
 // });
 
 // export default connect(mapStateToProps, mapDispatchToProps)(ListAll);
-ListAll.contextType = RootContext
+ListAll.contextType = RootContext;
 export default ListAll;

@@ -76,10 +76,9 @@ const Context = ({ children }) => {
     return api
       .post("votes/" + Vote.id + "/update", formData, setFileHeader())
       .then((res) => {
-        console.log(res);
+        _getList();
         const comment = "Berhasil mengupdate Vote!";
         hasil = customErr(res.status, comment);
-        _getList();
         return hasil;
       })
       .catch((err) => {
@@ -109,7 +108,7 @@ const Context = ({ children }) => {
     return api
       .post("votes/" + id + "/delete", null, setHeader())
       .then((res) => {
-        console.log(res);
+        _getList();
         const comment = "delete Vote!";
         hasil = customErr(res.status, comment);
         return hasil;
@@ -122,19 +121,15 @@ const Context = ({ children }) => {
   };
 
   const _getBulkDelete = (data) => {
+    var newdata = []
+    newdata = data.map(el=>el.id)
+    newdata = {id:newdata}
     return api
-      .get("bulkdelete/", data, setHeader())
+      .post("votes/delete", newdata, setHeader())
       .then((res) => {
-        console.log(res);
+        _getList()
         const comment = "Berhasil delete Vote!";
         hasil = customErr(res.status, comment);
-
-        const { reload } = hasil;
-        if (reload) {
-          dispatch({
-            type: "IS_SELECTED"
-          });
-        }
         return hasil;
       })
       .catch((err) => {
@@ -162,15 +157,11 @@ const Context = ({ children }) => {
       .post("votes", formData, setFileHeader())
       // .post("add", data, setHeader())
       .then((res) => {
-        console.log(res);
+        _getList();
         const comment = "Anda berhasil menambahkan Vote!";
         hasil = customErr(res.status, comment);
         
-        const { reload } = hasil;
-        if(reload){
-          _getList()
         return hasil
-      }
       })
       .catch((err) => {
         const comment = "Anda gagal menambahkan Vote";
@@ -206,11 +197,24 @@ const Context = ({ children }) => {
   // LOGOUT
 
   const _postLogout = async () => {
-    // await api.post("logout", setHeader());
+    return await api.post("logout", {}, setHeader())
+    .then((res)=>{
+      hasil = customErr(
+        res.status,
+        "logout"
+      );
+      
     localStorage.clear();
     dispatch({
       type: "LOGOUT_SUCCESS"
     })
+    })
+    .catch(err=>{
+      hasil = customErr(
+        err.status,
+        "logout"
+      );
+    });
   }
   
   //CRUD LINK
@@ -221,6 +225,72 @@ const Context = ({ children }) => {
       type: "GET_ALL_LINKS_SUCCESS",
       payload: response.data.data
     });
+  };
+
+  const _getLink = async (id) => {
+    dispatch({
+      type: "GET_DETAIL_LINK_SUCCESS",
+      payload: null
+    });
+    const response = await api.get("links/" + id, setHeader());
+    response.data.data.votes.map((el) => {
+      el["is_delete"] = 0;
+    })
+    dispatch({
+      type: "GET_DETAIL_LINK_SUCCESS",
+      payload: response.data.data,
+    });
+  };
+
+  const _postUpdateLink = (Detail) => {
+    var result = Detail.votes.map(el=>el.id_vote);
+    return api
+      .post("links/"+Detail.id+"/update", {id:result}, setHeader())
+      .then((res) => {
+        _getListLink()
+        const comment = "mengupdate Link!";
+        hasil = customErr(res.status, comment);
+        return hasil;
+      })
+      .catch((err) => {
+        const comment = "Anda gagal update Link!";
+        hasil = customErr(err.response.status, comment);
+        return hasil;
+      });
+  };
+
+  const _postDeleteLink = (data) => {
+    return api
+      .post("links/"+data.id+"/delete", {}, setHeader())
+      .then((res) => {
+        _getListLink()
+        const comment = "delete Link!";
+        hasil = customErr(res.status, comment);
+        return hasil;
+      })
+      .catch((err) => {
+        console.log(err)
+        const comment = "Anda gagal delete Link!";
+        hasil = customErr(err.response.status, comment);
+        return hasil;
+      });
+  };
+
+  const _postBulkDeleteLinks = (data) => {
+    var result = data.map(el=>el.id);
+    return api
+      .post("links/delete", {id:result}, setHeader())
+      .then((res) => {
+        _getListLink()
+        const comment = "delete Link!";
+        hasil = customErr(res.status, comment);
+        return hasil;
+      })
+      .catch((err) => {
+        const comment = "Anda gagal delete Link!";
+        hasil = customErr(err.response.status, comment);
+        return hasil;
+      });
   };
 
   // pass in the returned value of useReducer
@@ -240,7 +310,11 @@ const Context = ({ children }) => {
       //action logout
       _postLogout,
       //action link
-      _getListLink
+      _getListLink,
+      _getLink,
+      _postUpdateLink,
+      _postDeleteLink,
+      _postBulkDeleteLinks,
     }),
     [state, dispatch]
   );

@@ -1,14 +1,14 @@
-import {notification } from 'antd';
+import {message } from 'antd';
 
-export const customErr = (status,message)=>{
+export const customErr = (status,custMessage)=>{
 if (status>=200&&status<300) {
-  notification['success']({
-    message: `Anda berhasil ${message}!`,
+  message['success']({
+    content: `Anda berhasil ${custMessage}!`,
   });
     return {
         status,
         alert: `<div class="alert alert-success alert-dismissible fade show" role="alert">
-          Anda berhasil ${message}!
+          Anda berhasil ${custMessage}!
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -17,13 +17,13 @@ if (status>=200&&status<300) {
     }
 } else if(status>=400&&status<500){
   
-  notification['error']({
-    message: `Gagal, ${message}!`,
+  message['error']({
+    content: `Mohon maaf, ${custMessage}!`,
   });
     return {
         status,
         alert: `<div class="alert alert-danger alert-dismissible fade show" role="alert">
-          ${message}!
+          ${custMessage}!
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -31,8 +31,8 @@ if (status>=200&&status<300) {
         reload:false
     }
 }else if(status>=500&&status<600){
-  notification['warning']({
-    message: `Server sedang bermasalah`,
+  message['warning']({
+    content: `Server sedang bermasalah`,
   });
     return {
         status,
