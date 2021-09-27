@@ -8,6 +8,9 @@ import { AuthNav } from "../../component/Shared/Nav";
 class Index extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      ShowAddModal:false
+    }
   }
   render() {
     const { SubMenu } = Menu;
@@ -18,7 +21,8 @@ class Index extends Component {
       <Layout>
           <Content style={{ padding: "0 50px" }}>
             <Header customKata="Selamat datang di aplikasi evoting" />
-            <AuthNav/>
+            <AuthNav {...this.state}
+              setState={(val)=>this.setState(val)}/>
           </Content>
           <Content className={"container"}>
             <Layout
@@ -27,7 +31,8 @@ class Index extends Component {
             >
               <Sidebar/>
             <div class="col">
-              <VoteId {...this.props} />
+              <VoteId {...this.props}  {...this.state}
+              setState={(val)=>this.setState(val)}/>
             </div>
             </Layout>
           </Content>

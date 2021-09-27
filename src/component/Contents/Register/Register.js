@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
-import { register,getUser } from '../../../Helpers/UserFunctions'
+import { 
+  // register,
+  getUser } from '../../../Helpers/UserFunctions'
 import { Form, Input, Button } from 'antd';
+import { RootContext } from '../../../Context/Context';
 // import jwt_decode from 'jwt-decode'
 // import { addContact } from '../../redux/actions'
 // import { connect } from "react-redux";
@@ -28,37 +31,18 @@ class Register extends Component {
     
     // const { contacts, addNewContact } = this.props;
     // e.preventDefault()
-
+    const {_postRegister} = this.context
     const user = {
       nama: this.state.nama,
       email: this.state.email,
       password: this.state.password
     }
-    register(user)
-    .then(async(res) => {
-      const {alert,reload} = res
-      this.setState({
-        alert
-      })
-      if (reload) {
-        await this.setState({token:localStorage.getItem("usertoken")})
-        await getUser()
-        .then(res => {
-          this.setState({
-            name: res
-          })
-        })
-        this.props.history.push(`/voting`)
-      }
-    })
+    _postRegister(user)
   }
 
     componentDidMount() {
-      console.log(this.props)
-      const token = localStorage.getItem("usertoken")
-      if(token!==null){
-        this.props.history.push(`/voting`)
-      }
+      const {success} = this.context.state.auth
+      success && this.props.history.push(`/voting`)
       // const { contacts, addNewContact } = this.props;
       // if(contacts.token!=null){
       //   this.props.history.push(`/voting`)
@@ -130,4 +114,5 @@ class Register extends Component {
 // });
 
 // export default connect(mapStateToProps, mapDispatchToProps)(Login);
+Register.contextType = RootContext
 export default Register

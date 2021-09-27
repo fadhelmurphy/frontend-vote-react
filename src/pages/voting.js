@@ -9,6 +9,9 @@ import { AuthNav } from "../component/Shared/Nav";
 class Voting extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      ShowAddModal:false
+    }
   }
   render() {
     const { SubMenu } = Menu;
@@ -28,7 +31,8 @@ class Voting extends Component {
               style={{ padding: "24px 0", background:'white'}}
             >
               <Sidebar />
-                <ListAll />
+                <ListAll  {...this.state}
+              setState={(val)=>this.setState(val)}/>
             </Layout>
           </Content>
           <Footer style={{ textAlign: "center" }}>

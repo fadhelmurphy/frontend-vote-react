@@ -38,13 +38,13 @@ export default class VotingId extends Component {
   }
   render() {
     const { LinkList } = this.props;
+    console.log(LinkList)
     return (
       <>
         {LinkList != null &&
-          LinkList.map((el, i) => (
+          LinkList.votes.map((el, i) => (
             <div className="row mb-3">
               <div className="col-12">
-              {el.voterCanVote===null?
                 <List
                 {...this.state}
                   isSelected={false}
@@ -60,7 +60,7 @@ export default class VotingId extends Component {
                 {" with option : "}<span style={{color:'rgb(54, 207, 201)'}}>{el.voterCanVote}</span></p>
                 
             </span>
-                </div>}
+                </div>
                 {/* <div class="list-group flex-row"
           
           onClick={() => this._getVote(el.id_vote)}>

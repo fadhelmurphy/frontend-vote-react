@@ -1,11 +1,11 @@
 import React,{Component} from 'react'
 import api from '../../../api'
+import { RootContext } from '../../../Context/Context'
 // import {setHeader} from '../../../Helpers/Auth'
 import { setHeader, showPub } from '../../../Helpers/UserFunctions'
 import VotingId from './VotingId'
 // import { Sugar } from 'react-preloaders';
-
-export default class VoteId extends Component{
+class VoteId extends Component{
         /**
    * @var {state} state object reactjs 
    * default have property of data in value array 
@@ -40,37 +40,33 @@ constructor(props){
    */
   async componentDidMount(){
 
-    const {id} = this.props.match.params
-    console.log("ComponentDidmount Sedang Berjalan")
-    console.log("Await Fetch")
+    const {id} = await this.props.match.params
+    // console.log("ComponentDidmount Sedang Berjalan")
+    // console.log("Await Fetch")
 
     /**
      * Definisi Konstanta {urlFetch} diberi nilai
      * Fetch API dan menggunakan Await untuk Menunggu
      * sampai Fetch API resolve atau mendapatkan hasil
      */
-    const urlFetch = await showPub(id)
+    const {_getLinkByKey} = this.context
     
-    console.log("execute: if urlFetch.status === 200 && 'json' in urlFetch")
-    console.log("Jika True, maka setState data dengan nilai await urlFetch.json()")
+    //  const { DetailLink } = await this.context.state.link;
+    const urlFetch = await _getLinkByKey(id)
+    
+    // console.log("execute: if urlFetch.status === 200 && 'json' in urlFetch")
+    // console.log("Jika True, maka setState data dengan nilai await urlFetch.json()")
 
     /**
      * jika HTTP.satus bernilai 200 dan 'json' ada pada object
      * urlFetch maka setState untuk data menggunakan setStateAsync 
      * dengan nilai await urlFetch.json() 
      */
-    console.log(urlFetch)
-    if ( urlFetch.status === 200 ){
-        console.log("Dan hasilnya adalah true maka setState dilakukan")
-        
-        urlFetch.data.map((el) => {
-      el["name"] = el.votename;
-      // el["kandidatImage"] = "";
-    });
-        this.setStateAsync({
-              LinkList: await urlFetch.data
-        }) 
-    }
+     console.log(urlFetch)
+     urlFetch.status === 200 &&
+     this.setStateAsync({
+           LinkList: await urlFetch.data.data
+     }) 
   }
 
   /**
@@ -94,3 +90,5 @@ constructor(props){
     )
 }
 }
+VoteId.contextType = RootContext
+export default VoteId

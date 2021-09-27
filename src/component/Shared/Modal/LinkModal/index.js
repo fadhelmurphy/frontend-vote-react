@@ -87,7 +87,7 @@ export default function LinkModal({
         title={
           DetailLink !== null
             ? process.env.REACT_APP_BASEURL + "voting/" + DetailLink.key
-            : "kosong"
+            : "Loading..."
         }
         visible={ShowEditModal}
         style={{ top: 10 }}
@@ -165,7 +165,7 @@ export default function LinkModal({
             type="text"
             name="key"
             onChange={(e) => handleTitleChange(e)}
-            value={DetailLink !== null ? DetailLink.key : "kosong"}
+            value={DetailLink !== null ? DetailLink.key : "Loading..."}
             id="recipient-title"
           />
         </div>

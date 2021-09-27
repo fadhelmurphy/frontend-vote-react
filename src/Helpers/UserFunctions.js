@@ -37,27 +37,27 @@ export const setFileHeader = () => {
   };
 }
 
-export const register = (newUser) => {
-  return api
-  .post("register", {
-    name: newUser.nama,
-    email: newUser.email,
-    password: newUser.password,
-  })
-    .then((res) => {
-      console.log(res);
-      hasil = customErr(res.status, "registrasi");
-      return hasil;
-    })
-    .catch((err) => {
-      console.log(err.response)
-      hasil = customErr(
-        err.response.status,
-        "Anda gagal registrasi dengan pesan : "+err.response.data.message
-      );
-      return hasil;
-    });
-};
+// export const register = (newUser) => {
+//   return api
+//   .post("register", {
+//     name: newUser.nama,
+//     email: newUser.email,
+//     password: newUser.password,
+//   })
+//     .then((res) => {
+//       console.log(res);
+//       hasil = customErr(res.status, "registrasi");
+//       return hasil;
+//     })
+//     .catch((err) => {
+//       console.log(err.response)
+//       hasil = customErr(
+//         err.response.status,
+//         "Anda gagal registrasi dengan pesan : "+err.response.data.message
+//       );
+//       return hasil;
+//     });
+// };
 
 // export const _getList = async({dispatch}) => {
 //   const response = await api.get("votes", setHeader());
@@ -116,25 +116,25 @@ export const register = (newUser) => {
 //     });
 // };
 
-export const deleteVoter = (vote) => {
-  return api.post("deletevoter", { 
-    id_vote:vote.id_vote,
-    email:vote.email
-   }, setHeader())
-   .then((res) => {
-    window.location.replace("/voting");
-   })
-   .catch((err) => {
-     alert('gagal delete voter',err)
-   });
-};
+// export const deleteVoter = (vote) => {
+//   return api.post("deletevoter", { 
+//     id_vote:vote.id_vote,
+//     email:vote.email
+//    }, setHeader())
+//    .then((res) => {
+//     window.location.replace("/voting");
+//    })
+//    .catch((err) => {
+//      alert('gagal delete voter',err)
+//    });
+// };
 
-export const showPriv8 = (code) => {
-  return api.post("show/priv8", { code }, setHeader());
-};
+// export const showPriv8 = (code) => {
+//   return api.post("show/priv8", { code }, setHeader());
+// };
 
 export const showPub = (code) => {
-  return api.post("show/priv8", { code }, setHeader());
+  return api.get(code, setHeader());
 };
 
 // export const logout = () => {
@@ -193,23 +193,23 @@ export const getUser = () => {
 //     });
 // };
 
-export const bulkDelete = (data) => {
-  return api
-    .post("bulkdelete/", data, setHeader())
-    .then((res) => {
-      console.log(res);
-      const comment = "delete Vote!";
-      alert("Berhasil " + comment);
-      hasil = customErr(res.status, comment);
-      return hasil;
-    })
-    .catch((err) => {
-      const comment = "Anda gagal delete Vote!";
-      alert(comment + " Dengan error code " + err.response.status);
-      hasil = customErr(err.response.status, comment);
-      return hasil;
-    });
-};
+// export const bulkDelete = (data) => {
+//   return api
+//     .post("bulkdelete/", data, setHeader())
+//     .then((res) => {
+//       console.log(res);
+//       const comment = "delete Vote!";
+//       alert("Berhasil " + comment);
+//       hasil = customErr(res.status, comment);
+//       return hasil;
+//     })
+//     .catch((err) => {
+//       const comment = "Anda gagal delete Vote!";
+//       alert(comment + " Dengan error code " + err.response.status);
+//       hasil = customErr(err.response.status, comment);
+//       return hasil;
+//     });
+// };
 
 // export const bulkDeleteLinks = (data) => {
 //   return api

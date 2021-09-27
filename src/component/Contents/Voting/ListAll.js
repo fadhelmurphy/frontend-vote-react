@@ -40,7 +40,6 @@ class ListAll extends Component {
     this.state = {
       ShareList: [],
       LinkList: [],
-      ShowAddModal:false,
       ShowEditModal:false,
       ShowResultModal:false,
       ShowShareModal:false,
@@ -51,10 +50,10 @@ class ListAll extends Component {
     // this.handleDeleteVoter = this.handleDeleteVoter.bind(this);
   }
 
-  handleDeleteVoter = (email) => {
-    const { id_vote } = this.state.jumlahkandidat;
-    deleteVoter({ email, id_vote });
-  };
+  // handleDeleteVoter = (email) => {
+  //   const { id_vote } = this.state.jumlahkandidat;
+  //   deleteVoter({ email, id_vote });
+  // };
 
   handleChecked = async (index) => {
     const { AllVote } = this.context.state.vote;
@@ -101,7 +100,6 @@ class ListAll extends Component {
     // this._getUser();
   }
   render() {
-    console.log(this.context);
     const {  AllVote } = this.context.state.vote;
     const { dispatch,_getBulkDelete } = this.context;
     const { IsSelected,LinkList,ShowAddModal,ShowShareModal } =
@@ -116,7 +114,7 @@ class ListAll extends Component {
               <Button
                 type="primary"
                 onClick={() =>
-                  this.setState({ShowAddModal:!ShowAddModal})
+                  this.props.setState({ShowAddModal:!ShowAddModal})
                 }
               >
                 +
@@ -265,10 +263,10 @@ class ListAll extends Component {
         <HasilModal
           {...this.state}
           setState={value=>this.setState(value)}
-          handleDeleteVoter={(value) => this.handleDeleteVoter(value)}
+          // handleDeleteVoter={(value) => this.handleDeleteVoter(value)}
         />
 
-        <AddModal {...this.state} setState={value=>this.setState(value)} />
+        <AddModal {...this.props} setState={value=>this.props.setState(value)} />
         <EditModal {...this.state} setState={(value) => this.setState(value)} />
         <ShareModal {...this.state} setState={(value) => this.setState(value) }/>
       </>

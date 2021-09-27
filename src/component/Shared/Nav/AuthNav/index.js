@@ -39,7 +39,7 @@ export default function AuthNav(props){
             <li class="nav-item">
               <a 
         type="primary"
-        onClick={()=>props.setState({showAddModal:true})}
+        onClick={()=>props.setState({ShowAddModal:!props.ShowAddModal})}
         // href="#"
         // data-toggle="modal"
         // data-target="#addModal" 

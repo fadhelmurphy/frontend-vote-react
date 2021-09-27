@@ -19,7 +19,7 @@ import { Button, Select, Input, Form } from "antd";
 import { List } from "../../Shared";
 import { DeleteButton } from "../../Shared/Button";
 import { CheckOutlined, CloseOutlined, EyeOutlined } from "@ant-design/icons";
-import { LinkModal } from "../../Shared/Modal";
+import { AddModal, LinkModal } from "../../Shared/Modal";
 import { useHistory } from "react-router-dom";
 import { RootContext } from "../../../Context/Context";
 class ListAll extends Component {
@@ -255,6 +255,7 @@ class ListAll extends Component {
           })}
         </div>
         <LinkModal {...this.state} setState={(val) => this.setState(val)} />
+        <AddModal {...this.props} setState={value=>this.props.setState(value)} />
       </>
     );
   }

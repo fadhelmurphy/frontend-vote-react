@@ -142,7 +142,7 @@ export default function Edit({ setState, ShowEditModal, LinkList }) {
   return (
     <>
       <Modal
-        title={DetailVote !== null ? DetailVote.title : "kosong"}
+        title={DetailVote !== null ? DetailVote.title : "Loading..."}
         visible={ShowEditModal}
         style={{ top: 10 }}
         width={1000}
@@ -204,7 +204,7 @@ export default function Edit({ setState, ShowEditModal, LinkList }) {
                 name="title"
                 class="form-control"
                 onChange={(e) => handleTitleChange(e)}
-                value={DetailVote !== null ? DetailVote.title : "kosong"}
+                value={DetailVote !== null ? DetailVote.title : "Loading..."}
                 id="recipient-title"
               />
             </div>

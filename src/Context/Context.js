@@ -93,11 +93,21 @@ const Context = ({ children }) => {
       type: "GET_DETAIL_VOTE_SUCCESS",
       payload: null
     });
+    var newVoters = []
     const response = await api.get("votes/" + id, setHeader());
     response.data.data.candidates.map((el) => {
       el["is_delete"] = 0;
+      el.voters.length > 0 && el.voters.forEach((val)=>
+      newVoters.push({
+        pilih:el.name,
+        email:val.email,
+        id_user:val.id,
+        id_candidate:val.id_candidate,
+        id_vote:el.id_vote
+      })
+      )
     });
-
+    response.data.data["voters"] = newVoters
     dispatch({
       type: "GET_DETAIL_VOTE_SUCCESS",
       payload: response.data.data
@@ -170,6 +180,28 @@ const Context = ({ children }) => {
       });
   };
 
+  const _postDeleteVoter = (vote) => {
+    return api.post("votes/"+vote.id_vote+"/delete_user_votes", { 
+      id_candidate:vote.id_candidate,
+      id_user:vote.id_user
+     }, setHeader())
+     .then((res) => {
+      _getList();
+      hasil = customErr(
+        res.status,
+        "Delete voter"
+      );
+      return hasil;
+     })
+     .catch((err) => {
+      hasil = customErr(
+        err.response.status,
+        "gagal delete voter"
+      );
+      return hasil;
+     });
+  };
+
   // LOGIN
   const _postLoginCheck = (user) =>{
     return api
@@ -210,12 +242,36 @@ const Context = ({ children }) => {
     })
     })
     .catch(err=>{
+      localStorage.clear();
       hasil = customErr(
         err.status,
         "logout"
       );
     });
   }
+
+  // REGISTER
+  const _postRegister = (newUser) => {
+    return api
+    .post("register", {
+      name: newUser.nama,
+      email: newUser.email,
+      password: newUser.password,
+    })
+      .then((res) => {
+        hasil = customErr(res.status, "registrasi");
+        localStorage.removeItem(STORAGE_KEY);
+        window.location = '/login'
+        return hasil;
+      })
+      .catch((err) => {
+        hasil = customErr(
+          err.response.status,
+          err.response.data.message
+        );
+        return hasil;
+      });
+  };
   
   //CRUD LINK
 
@@ -233,13 +289,18 @@ const Context = ({ children }) => {
       payload: null
     });
     const response = await api.get("links/" + id, setHeader());
-    response.data.data.votes.map((el) => {
-      el["is_delete"] = 0;
-    })
     dispatch({
       type: "GET_DETAIL_LINK_SUCCESS",
       payload: response.data.data,
     });
+  };
+
+  const _getLinkByKey = (key) => {
+    dispatch({
+      type: "GET_DETAIL_LINK_SUCCESS",
+      payload: null
+    });
+    return api.get(key, setHeader());
   };
 
   const _postUpdateLink = (Detail) => {
@@ -305,13 +366,17 @@ const Context = ({ children }) => {
       _postDeleteOneVote,
       _getBulkDelete,
       _postTambahVote,
+      _postDeleteVoter,
       //action login
       _postLoginCheck,
       //action logout
       _postLogout,
+      //action register
+      _postRegister,
       //action link
       _getListLink,
       _getLink,
+      _getLinkByKey,
       _postUpdateLink,
       _postDeleteLink,
       _postBulkDeleteLinks,
