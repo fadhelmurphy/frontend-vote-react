@@ -3,7 +3,7 @@ import { Button, Modal } from "antd";
 import api from "../../../../api";
 // import { setHeader } from "../../../../Helpers/Auth";
 import check from "./img/check.webp";
-import { setHeader } from "../../../../Helpers/UserFunctions";
+import { setHeader } from "../../../../Helpers/httpheader";
 import { GetRootContext } from "../../../../Context/Context";
 export default function ShareModal({ShareList,ShowShareModal,IsSelected,setState}) {
 //  const {ShowShareModal} = GetRootContext().state.vote

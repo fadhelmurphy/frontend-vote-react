@@ -2,9 +2,8 @@ import React, { Component } from "react";
 
 import { ListAll } from "../component/Contents/Voting";
 import { Sidebar, Header } from "../component/Shared";
-import { logout } from "../Helpers/UserFunctions";
 
-import { Layout, Menu } from "antd";
+import { Layout } from "antd";
 import { AuthNav } from "../component/Shared/Nav";
 class Voting extends Component {
   constructor(props) {
@@ -14,8 +13,7 @@ class Voting extends Component {
     }
   }
   render() {
-    const { SubMenu } = Menu;
-    const { Content, Footer, Sider } = Layout;
+    const { Content, Footer } = Layout;
     return (
       <>
         <Layout>

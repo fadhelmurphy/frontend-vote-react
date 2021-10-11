@@ -54,18 +54,10 @@ export default function Hasil({ ShowResultModal, setState }) {
     DetailVote.candidates.forEach(({ name, voters }) => {
       coloR.push(dynamicColors());
       candidate_name.push(name);
-      candidate_length.push(voters.length);
+      voters && candidate_length.push(voters.length);
     });
   return (
     <>
-      {/*     
-    <Button
-                        className="text-success border-success shadow-sm"
-                        class="btn btn-primary h-100"
-                        data-toggle="modal"
-                        data-target=".hasilvote"
-                        size="large">Hasil
-                      </Button> */}
 
       <Modal
         title="Result"
@@ -114,9 +106,9 @@ export default function Hasil({ ShowResultModal, setState }) {
                 />
               </>
             ) : (
-              <h3 className="text-center m-5 text-uppercase">
+              <h5 className="text-center m-5 text-muted">
                 Belum ada yang vote
-              </h3>
+              </h5>
             )}
           </TabPane>
           <TabPane tab="Detail" key="2">
@@ -138,9 +130,9 @@ export default function Hasil({ ShowResultModal, setState }) {
                 )}
               />
             ) : (
-              <h3 className="text-center m-5 text-uppercase">
+              <h5 className="text-center m-5 text-muted">
                 Belum ada yang vote
-              </h3>
+              </h5>
             )}
           </TabPane>
         </Tabs>

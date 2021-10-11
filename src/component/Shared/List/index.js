@@ -1,5 +1,4 @@
 import React from "react";
-import { HasilButton } from "../Button";
 import {
   EditOutlined,
   TeamOutlined,
@@ -32,9 +31,9 @@ export default function List({
             !IsSelected? !LinkPage? _getVote(el.id):_getLink(el.id) : handleChecked(i) 
             // !IsSelected && LinkPage ? _getLink(el.id) : handleChecked(i);
             !Editable &&
-              dispatch({
-                type: "VOTE_MODAL"
-              });
+            setState({
+              ShowEditModal: !ShowEditModal
+            });
           }}
         >
           {IsSelected && (

@@ -1,25 +1,6 @@
 import React, { Component } from "react";
-import { ModalGenerateLink } from "./index";
+import { Button, Input } from "antd";
 import {
-  logout,
-  getUser,
-  showPriv8,
-  DeleteOneVote,
-  UpdateOneVote,
-  deleteVoter,
-  // bulkDelete,
-  setHeader,
-  // _getList,
-  _getVote
-} from "../../../Helpers/UserFunctions";
-import api from "../../../api";
-// import { connect } from "react-redux";
-// import { removeContact } from "../../../redux/actions";
-// import { Sugar } from 'react-preloaders';
-// import { setHeader } from "../../../Helpers/Auth";
-import { Upload, Button, Input } from "antd";
-import {
-  UploadOutlined,
   CheckOutlined,
   CloseOutlined
 } from "@ant-design/icons";

@@ -2,7 +2,7 @@ import React,{Component} from 'react'
 import api from '../../../api'
 import { RootContext } from '../../../Context/Context'
 // import {setHeader} from '../../../Helpers/Auth'
-import { setHeader, showPub } from '../../../Helpers/UserFunctions'
+import { setHeader, showPub } from '../../../Helpers/httpheader'
 import VotingId from './VotingId'
 // import { Sugar } from 'react-preloaders';
 class VoteId extends Component{
@@ -51,8 +51,12 @@ constructor(props){
      */
     const {_getLinkByKey} = this.context
     
+    
     //  const { DetailLink } = await this.context.state.link;
     const urlFetch = await _getLinkByKey(id)
+    
+    // const { DetailLink } = await this.context.state.link;
+    // console.log(DetailLink)
     
     // console.log("execute: if urlFetch.status === 200 && 'json' in urlFetch")
     // console.log("Jika True, maka setState data dengan nilai await urlFetch.json()")
@@ -62,11 +66,10 @@ constructor(props){
      * urlFetch maka setState untuk data menggunakan setStateAsync 
      * dengan nilai await urlFetch.json() 
      */
-     console.log(urlFetch)
-     urlFetch.status === 200 &&
-     this.setStateAsync({
-           LinkList: await urlFetch.data.data
-     }) 
+    //  if(urlFetch.status === 200){
+    //  this.setStateAsync({
+    //        LinkList: await urlFetch.data.data
+    //  }) }
   }
 
   /**
@@ -76,16 +79,18 @@ constructor(props){
    * @param {state} Object state will set in setState  
    * @returns {Promise} Object Promise will use in Async Function  
    */
-  setStateAsync(state){
-    return new Promise( resolve => {
-        this.setState(state, resolve) 
-    }) 
-    }
+  // setStateAsync(state){
+  //   return new Promise( resolve => {
+  //       this.setState(state, resolve) 
+  //   }) 
+  //   }
     render(){
     return(
         <>
         {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}
-          <VotingId {...this.state}/>
+          <VotingId 
+          // {...this.state}
+          />
         </>
     )
 }

@@ -1,19 +1,21 @@
 const intialAuth = {
     success:false,
-    token:null
+    token:null,
+    email:null
   }
 
 export const authReducer = (state=intialAuth, action) => {
-  switch (action.type) {
+  const {type,payload} = action
+  switch (type) {
     case "LOGIN_SUCCESS":
-      console.log(action.payload.token)
       return {
         ...state,
-        success: action.payload.success,
-        token: action.payload.token
+        success: payload.success,
+        token: payload.token,
+        email: payload.email
       };
     case "LOGOUT_SUCCESS":
-      return { ...state, success: false, token: null };
+      return { ...state, success: false, token: null, email:null };
     default:
       return state;
   }
@@ -26,11 +28,12 @@ const intialVote = {
 }
 
 export const voteReducer = (state=intialVote, action) => {
-  switch (action.type) {
+  const {type,payload} = action
+  switch (type) {
     case "GET_ALL_VOTES_SUCCESS":
-      return { ...state, AllVote: action.payload };
+      return { ...state, AllVote: payload };
     case "GET_DETAIL_VOTE_SUCCESS":
-      return { ...state, DetailVote: action.payload };
+      return { ...state, DetailVote: payload };
     // case "GET_RESULT_VOTE_SUCCESS":
     //     return { ...state, ResultVote: action.payload };
     default:
@@ -41,14 +44,18 @@ export const voteReducer = (state=intialVote, action) => {
 const intialLink = {
   AllLinks:[],
   DetailLink:null,
+  UrlLink:null
 }
 
 export const linkReducer = (state=intialLink, action) => {
-  switch (action.type) {
+  const {type,payload} = action
+  switch (type) {
     case "GET_ALL_LINKS_SUCCESS":
-      return { ...state, AllLinks: action.payload };
+      return { ...state, AllLinks: payload };
     case "GET_DETAIL_LINK_SUCCESS":
-      return { ...state, DetailLink: action.payload };
+      return { ...state, DetailLink: payload };
+    case "GET_URL_LINK_SUCCESS":
+        return { ...state, UrlLink: payload };
     default:
       return state;
   }

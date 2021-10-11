@@ -6,7 +6,7 @@ import {
   // UpdateOneVote,
   // DeleteOneVote,
   setHeader
-} from "../../../../Helpers/UserFunctions";
+} from "../../../../Helpers/httpheader";
 import api from "../../../../api";
 import { GetRootContext } from "../../../../Context/Context";
 
@@ -103,6 +103,7 @@ export default function Edit({ setState, ShowEditModal, LinkList }) {
       payload:list
     })
     } else if (newFile.status === "done") {
+      newFile.originFileObj.option = list.candidates[index].name;
       newFile.name =
         list.candidates[index].name +
         "-" +

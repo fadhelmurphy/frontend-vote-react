@@ -7,6 +7,7 @@ import { Button, Input, Modal, Select } from "antd";
 import { DeleteButton } from "../../Button";
 import { CheckOutlined, CloseOutlined, EyeOutlined } from "@ant-design/icons";
 import { GetRootContext } from "../../../../Context/Context";
+import { Link } from "react-router-dom";
 export default function LinkModal({
   ShowEditModal,
   LinkList,
@@ -73,12 +74,12 @@ export default function LinkModal({
   };
   const handleUpdate = () => {
     // event.preventDefault();
-    _postUpdateLink(DetailLink).then(res=>{
-      const {reload} = res
+    _postUpdateLink(DetailLink).then((res) => {
+      const { reload } = res;
       reload &&
-      setState({
-        ShowEditModal: !ShowEditModal
-      })
+        setState({
+          ShowEditModal: !ShowEditModal
+        });
     });
   };
   return (
@@ -120,18 +121,21 @@ export default function LinkModal({
           <Button
             type="primary"
             size={"large"}
-            target="_blank"
-            href={
-              DetailLink !== null &&
-              process.env.REACT_APP_BASEURL + "voting/" + DetailLink.key
-            }
             className="bg-primary text-white border-0"
           >
-            <EyeOutlined
-              className="align-self-center py-auto"
-              style={{ verticalAlign: "0" }}
-            />{" "}
-            View
+            <a
+              href={
+                DetailLink !== null &&
+                process.env.REACT_APP_BASEURL + "voting/" + DetailLink.key
+              }
+              target="_blank"
+            >
+              <EyeOutlined
+                className="align-self-center py-auto"
+                style={{ verticalAlign: "0" }}
+              />{" "}
+              View
+            </a>
           </Button>,
           <Button
             type="primary"

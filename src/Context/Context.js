@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import api from "../api";
 import { customErr } from "../Helpers/CustomError";
-import { setFileHeader, setHeader } from "../Helpers/UserFunctions";
+import { setFileHeader, setHeader } from "../Helpers/httpheader";
 import { combineReducer } from "./CombinedReducers";
 import { authReducer, linkReducer, voteReducer } from "./Reducers";
 
@@ -202,6 +202,17 @@ const Context = ({ children }) => {
      });
   };
 
+  const _postSendVote = async(id) => {
+    const { UrlLink } = state.link;
+    var status = 0
+    await api.post(`${UrlLink.key}/`, {id}, setHeader()).then((res) => {
+      customErr(res.status,"vote")
+      _getLinkByKey(UrlLink.key)
+      status = res.status
+    });
+    return status
+  }
+
   // LOGIN
   const _postLoginCheck = (user) =>{
     return api
@@ -212,7 +223,7 @@ const Context = ({ children }) => {
       .then((res) => {
         dispatch({
           type: "LOGIN_SUCCESS",
-          payload: res.data
+          payload: {...res.data,...user}
           })
         hasil = customErr(res.status, "login");
         return hasil;
@@ -297,10 +308,16 @@ const Context = ({ children }) => {
 
   const _getLinkByKey = (key) => {
     dispatch({
-      type: "GET_DETAIL_LINK_SUCCESS",
+      type: "GET_URL_LINK_SUCCESS",
       payload: null
     });
-    return api.get(key, setHeader());
+    api.get(key, setHeader()).then((res)=>{
+      dispatch({
+        type: "GET_URL_LINK_SUCCESS",
+        payload: res.data.data
+      });
+      return res
+    })
   };
 
   const _postUpdateLink = (Detail) => {
@@ -367,6 +384,7 @@ const Context = ({ children }) => {
       _getBulkDelete,
       _postTambahVote,
       _postDeleteVoter,
+      _postSendVote,
       //action login
       _postLoginCheck,
       //action logout

@@ -57,7 +57,6 @@ class Login extends Component {
   }
 
   render() {
-    console.log(this.context)
     const {token} = this.context.state.auth
     if(token!==null ){
       this.props.history.push(`/voting`)

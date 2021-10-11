@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import api from "../../../../api";
 import { 
   // TambahVote,
-   _getList } from "../../../../Helpers/UserFunctions";
+   _getList } from "../../../../Helpers/httpheader";
 import { Upload, Button, Input } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { Modal } from 'antd';

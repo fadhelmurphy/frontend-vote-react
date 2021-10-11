@@ -1,7 +1,4 @@
 import React, { Component } from 'react'
-import { 
-  // register,
-  getUser } from '../../../Helpers/UserFunctions'
 import { Form, Input, Button } from 'antd';
 import { RootContext } from '../../../Context/Context';
 // import jwt_decode from 'jwt-decode'

@@ -1,10 +1,6 @@
-import React,{useContext} from "react";
 import api from "../api";
-import { GetRootContext, STORAGE_KEY } from "../Context/Context";
-// import { setHeader, setFileHeader } from "./Auth";
-import { customErr } from "./CustomError";
+import { STORAGE_KEY } from "../Context/Context";
 
-var hasil = "";
 
 export const isAuthenticated = () => {
   const Local = localStorage.getItem(STORAGE_KEY);
@@ -133,26 +129,26 @@ export const setFileHeader = () => {
 //   return api.post("show/priv8", { code }, setHeader());
 // };
 
-export const showPub = (code) => {
-  return api.get(code, setHeader());
-};
+// export const showPub = (code) => {
+//   return api.get(code, setHeader());
+// };
 
 // export const logout = () => {
 //   localStorage.removeItem("usertoken");
 //   window.location.replace("/login");
 // };
 
-export const getUser = () => {
-  return api
-    .get(`getuser`, setHeader())
-    .then((response) => {
-      return response.data.name;
-    })
-    .catch((err) => {
-      console.log("Gagal memuat user ", err);
-      return err;
-    });
-};
+// export const getUser = () => {
+//   return api
+//     .get(`getuser`, setHeader())
+//     .then((response) => {
+//       return response.data.name;
+//     })
+//     .catch((err) => {
+//       console.log("Gagal memuat user ", err);
+//       return err;
+//     });
+// };
 
 // export const TambahVote = (context) => (data) => {
 //   const {dispatch} = context

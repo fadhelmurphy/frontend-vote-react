@@ -1,26 +1,21 @@
 import React, { Component } from "react";
 import {
-  getUser,
   // showPriv8,
   // DeleteOneLink,
   // UpdateOneLink,
   // bulkDeleteLinks,
   setHeader
-} from "../../../Helpers/UserFunctions";
+} from "../../../Helpers/httpheader";
 import api from "../../../api";
-import { imgVote } from "../../../asset";
 // import { connect } from "react-redux";
 // import { removeContact } from "../../../redux/actions";
 // import { Sugar } from 'react-preloaders';
 // import { setHeader } from "../../../Helpers/Auth";
-import { Doughnut } from "react-chartjs-2";
-import { Header } from "../../Shared";
-import { Button, Select, Input, Form } from "antd";
+import { Button, Select } from "antd";
 import { List } from "../../Shared";
 import { DeleteButton } from "../../Shared/Button";
-import { CheckOutlined, CloseOutlined, EyeOutlined } from "@ant-design/icons";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { AddModal, LinkModal } from "../../Shared/Modal";
-import { useHistory } from "react-router-dom";
 import { RootContext } from "../../../Context/Context";
 class ListAll extends Component {
   constructor(props) {
@@ -75,29 +70,22 @@ class ListAll extends Component {
     });
   };
 
-  _getList = async () => {
-    const response = await api.get("/links", setHeader());
-    this.setState({
-      AllData: response.data.data,
-      isLoading: false
-    });
-  };
+  // _getList = async () => {
+  //   const response = await api.get("/links", setHeader());
+  //   this.setState({
+  //     AllData: response.data.data,
+  //     isLoading: false
+  //   });
+  // };
 
-  _getVoteList = async () => {
-    this.setState({ Vote: null });
-    const response = await api.get("votes", setHeader());
-    this.setState({
-      VoteList: response
-    });
-  };
+  // _getVoteList = async () => {
+  //   this.setState({ Vote: null });
+  //   const response = await api.get("votes", setHeader());
+  //   this.setState({
+  //     VoteList: response
+  //   });
+  // };
 
-  _getUser = async () => {
-    await getUser().then((res) => {
-      this.setState({
-        name: res
-      });
-    });
-  };
   handleChecked = async (index) => {
     const { dispatch } = this.context;
     const { AllLinks } = this.context.state.link;
@@ -124,11 +112,9 @@ class ListAll extends Component {
   }
   render() {
     const { AllLinks } = this.context.state.link;
-    const { dispatch,_postBulkDeleteLinks } = this.context;
+    const { _postBulkDeleteLinks } = this.context;
     const { Option } = Select;
-    const { AllData, Vote, name, LinkList, VoteList, IsSelected } = this.state;
-    // const {contacts,removeExistingContact} = this.props
-    console.log(AllLinks);
+    const { LinkList, IsSelected } = this.state;
     return (
       <>
         {/* <Sugar background="#1e2125" color="#0f4c75" time={1000} /> */}

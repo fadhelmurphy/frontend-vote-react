@@ -6,7 +6,6 @@ import { GetRootContext } from "../../../Context/Context";
 
 export default ({ component: Component, ...rest }) => {
   const RootContext = GetRootContext()
-  console.log(RootContext)
   const { success} = RootContext.state.auth;
   if (success) {
     return <>

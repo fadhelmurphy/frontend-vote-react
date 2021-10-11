@@ -4,7 +4,7 @@ import React from 'react'
 
 import { Link } from "react-router-dom";
 import { GetRootContext } from '../../../../Context/Context';
-import { logout } from '../../../../Helpers/UserFunctions';
+import { logout } from '../../../../Helpers/httpheader';
 // import Add from '../../Button/AddVoteButton/Add';
 export default function AuthNav(props){
   const{_postLogout} =GetRootContext()
