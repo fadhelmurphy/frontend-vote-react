@@ -32,12 +32,12 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 ![Desktop](img/dashboard-desktop.png)
 
 #### Mobile
-![Mobile](img/dashboard-mobile.png)
+![Mobile](img/dashboard-mobile.PNG)
 
 ### Voting
 #### Desktop
 ![Desktop](img/voting-desktop.png)
 
 #### Mobile
-![Mobile](img/voting-mobile.png)
+![Mobile](img/voting-mobile.PNG)
 
