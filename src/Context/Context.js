@@ -55,18 +55,21 @@ const Context = ({ children }) => {
   const _postUpdateOneVote = (Vote) => {
     const formData = new FormData();
     formData.append("title", Vote.title);
+    Vote.candidates.map(el=>{if(el.image===null)el.image = "kosong"})
     Vote.candidates.forEach((element) => {
-      console.log(element);
       element.id && formData.append("id[]", element.id);
       formData.append("is_delete[]", element.is_delete);
       formData.append("name[]", element.name);
-      // element.kandidatImage.originFileObj.name = element.kandidatImage.name+"."+getExtension[1]
-      element.image &&
-        element.image.originFileObj &&
+        element.image.originFileObj ?
         formData.append(
           "image[]",
           element.image.originFileObj,
           element.image.name
+        )
+        :
+        formData.append(
+          "image[]",
+          element.image
         );
     });
 

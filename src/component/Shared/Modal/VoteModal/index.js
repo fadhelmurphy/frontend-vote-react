@@ -97,7 +97,7 @@ export default function VoteModal(props) {
                           </div>
                           <div className="col-4 p-0">
                             <img
-                              className="img-fluid w-100"
+                              className="img-fluid w-100" style={{maxHeight:"200px",objectFit:'cover'}}
                               src={
                                 element.image
                                   ? process.env.REACT_APP_BACKEND +

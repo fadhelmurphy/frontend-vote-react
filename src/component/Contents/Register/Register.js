@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Form, Input, Button } from 'antd';
 import { RootContext } from '../../../Context/Context';
+import { Link } from 'react-router-dom';
 // import jwt_decode from 'jwt-decode'
 // import { addContact } from '../../redux/actions'
 // import { connect } from "react-redux";
-
 
 class Register extends Component {
   constructor() {
@@ -89,6 +89,9 @@ class Register extends Component {
                 
         <Form.Item layout={"vertical"}>
           <Button className="btn-block" type="primary" htmlType="submit" size={"large"}>Sign Up</Button>
+        </Form.Item>
+        <Form.Item layout={"vertical"} className="text-center">
+        <Link to="/login">Back to login</Link>
         </Form.Item>
             </Form>
     )

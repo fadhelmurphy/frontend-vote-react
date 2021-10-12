@@ -2,12 +2,6 @@ import { DeleteButton } from "../../Button";
 import React from "react";
 import { Upload, Button, Input, Modal } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import {
-  // UpdateOneVote,
-  // DeleteOneVote,
-  setHeader
-} from "../../../../Helpers/httpheader";
-import api from "../../../../api";
 import { GetRootContext } from "../../../../Context/Context";
 
 export default function Edit({ setState, ShowEditModal, LinkList }) {
@@ -95,7 +89,7 @@ export default function Edit({ setState, ShowEditModal, LinkList }) {
     // const { Vote } = props;
     var list = DetailVote;
     if (newFile.status === "removed") {
-      list.candidates[index].image = null;
+      list.candidates[index].image = "hapus";
       // setState({ list });
       
     dispatch({
@@ -256,7 +250,7 @@ export default function Edit({ setState, ShowEditModal, LinkList }) {
                         onChange={(fileList) => onImageChange(fileList, i)}
                         onPreview={onImagePreview}
                         defaultFileList={
-                          element.image !== null
+                          element.image !== null && element.image !== "hapus"
                             ? [
                                 {
                                   uid: -1,

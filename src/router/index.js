@@ -1,9 +1,6 @@
 import React, { Suspense } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { AuthRoute } from "../component/Utils";
-// import { Home,Login,Voting, PublicVote, Register,LinkManager } from '../pages';
-// import { ListAll,VoteId } from '../pages/PrivateVoting';
-// import { Admin } from '../utils/Auth';
 
 function loadComponent(name) {
     name = name.split(":")

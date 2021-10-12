@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 // import { LoginCheck,getUser } from '../../../Helpers/UserFunctions'
 import { Form, Input, Button } from 'antd';
-import { RootState,RootContext,withContext } from '../../../Context/Context';
+import { RootContext } from '../../../Context/Context';
+import { Link } from "react-router-dom";
 // import jwt_decode from 'jwt-decode'
 // import { addContact } from '../../redux/actions'
 // import { connect } from "react-redux";
@@ -92,6 +93,9 @@ class Login extends Component {
                 
         <Form.Item layout={"vertical"}>
           <Button className="btn-block" type="primary" htmlType="submit" size={"large"}>Sign In</Button>
+        </Form.Item>
+        <Form.Item layout={"vertical"} className="text-center">
+        <Link to="/register">Don't have a account? click here to register</Link>
         </Form.Item>
             </Form>
     )
