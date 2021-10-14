@@ -3,7 +3,7 @@ import React from "react";
 //   DeleteOneLink,
 //   UpdateOneLink
 // } from "../../../../Helpers/UserFunctions";
-import { Button, Input, Modal, Select } from "antd";
+import { Button, Input, Modal, Select, Form } from "antd";
 import { DeleteButton } from "../../Button";
 import { CheckOutlined, CloseOutlined, EyeOutlined } from "@ant-design/icons";
 import { GetRootContext } from "../../../../Context/Context";
@@ -165,13 +165,17 @@ export default function LinkModal({
             Url Vote:
           </label>
           <Input
-            onkeypress="return /[a-z]/i.test(event.key)"
+            // onkeypress="return /[a-z]/i.test(event.key)"
             type="text"
             name="key"
             onChange={(e) => handleTitleChange(e)}
             value={DetailLink !== null ? DetailLink.key : "Loading..."}
             id="recipient-title"
+          maxLength={6}
           />
+          <p class="text-muted">
+            maximum 6 characters
+          </p>
         </div>
 
         {

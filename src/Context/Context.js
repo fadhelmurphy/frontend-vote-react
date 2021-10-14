@@ -326,7 +326,7 @@ const Context = ({ children }) => {
   const _postUpdateLink = (Detail) => {
     var result = Detail.votes.map(el=>el.id_vote);
     return api
-      .post("links/"+Detail.id+"/update", {id:result}, setHeader())
+      .post("links/"+Detail.id+"/update", {id:result,key:Detail.key}, setHeader())
       .then((res) => {
         _getListLink()
         const comment = "mengupdate Link!";
